@@ -1,0 +1,100 @@
+
+系统默认提供常用地址链接伪静态规则，由于各种服务器环境不同，请手动拷贝伪静态规则代码到相应的文件。如后地伪静态地址有更改，请更改伪静态相应内容代码。
+
+配置方法：
+	Apache：建立根目录文件 .htaccess，拷贝对应代码即可
+		(注：Apache需要开启mod_rewrite，打开httpd.conf配置文件 # LoadModule rewrite_module modules/mod_rewrite.so 去除前面的 #)
+
+	IIS：不启用ISAPI组件的建立根目录文件 httpd.ini，拷贝对应代码即可;启用ISAPI组件的可直接建立根目录文件 .htaccess，拷贝Apache代码，再通过组件导入文件生成
+
+	Nginx：打开nginx.conf配置文件，在server里面写需要的规则即可(注：虚拟主机的请配置vhosts.conf里的server)
+		location /{ 
+			拷贝对应代码
+		}
+
+
+
+Apache环境 (根目录/.htaccess文件内容如下)：
+
+# 将 RewriteEngine 模式打开
+RewriteEngine On
+# 商品列表页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^lists-([0-9]+).html$ index.php?m=goods&c=index&a=lists&id=$1&%1
+# 商品详情页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^goods-([0-9]+).html$ index.php?m=goods&c=index&a=detail&sku_id=$1&%1
+# 品牌列表页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^brand-([0-9]+).html$ index.php?m=goods&c=index&a=brand_list&id=$1&%1
+# 会员中心主页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^buyer.html$ index.php?m=member&c=index&a=index&%1
+# 帮助中心列表页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^help-lists-([0-9]+).html$ index.php?m=misc&c=index&a=help_lists&%1
+# 帮助中心内容页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^help-detail-([0-9]+).html$ index.php?m=misc&c=index&a=help_detail&id=$1&%1
+# 文章列表页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^article-lists-([0-9a-zA-Z]+).html$ index.php?m=misc&c=index&a=article_lists&category_id=$1&%1
+# 文章内容页
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^article-detail-([0-9]+).html$ index.php?m=misc&c=index&a=article_detail&id=$1&%1
+
+
+______________________________________________________________________________________________________
+
+IIS6 Web Server (根目录/httpd.ini文件内容如下)：
+
+[ISAPI_Rewrite]
+# 3600 = 1 hour
+CacheClockRate 3600
+RepeatLimit 32
+
+# Protect httpd.ini and httpd.parse.errors files
+# from accessing through HTTP
+# 商品列表页
+RewriteRule ^lists\-([0-9]+)\.html$ index\.php\?m=goods&c=index&a=lists&id=$1&$2
+# 商品详情页
+RewriteRule ^goods\-([0-9]+)\.html$ index\.php\?m=goods&c=index&a=detail&sku_id=$1&$2
+# 品牌列表页
+RewriteRule ^brand\-([0-9]+)\.html$ index\.php\?m=goods&c=index&a=brand_list&id=$1&$2
+# 会员中心主页
+RewriteRule ^buyer\.html$ index\.php\?m=member&c=index&a=index&$1
+# 帮助中心列表页
+RewriteRule ^help\-lists\-([0-9]+)\.html$ index\.php\?m=misc&c=index&a=help_lists&$1
+# 帮助中心内容页
+RewriteRule ^help\-detail\-([0-9]+)\.html$ index\.php\?m=misc&c=index&a=help_detail&id=$1&$2
+# 文章列表页
+RewriteRule ^article\-lists\-([0-9a-zA-Z]+)\.html$ index\.php\?m=misc&c=index&a=article_lists&category_id=$1&$2
+# 文章内容页
+RewriteRule ^article\-detail\-([0-9]+)\.html$ index\.php\?m=misc&c=index&a=article_detail&id=$1&$2
+
+
+______________________________________________________________________________________________________
+
+Nginx Web Server 文件内容如下：
+
+# nginx rewrite  rule
+# 商品列表页
+rewrite ^(.*)\/lists\-([0-9]+)\.html$ $1/index.php?m=goods&c=index&a=lists&id=$2 last;
+# 商品详情页
+rewrite ^(.*)\/goods\-([0-9]+)\.html$ $1/index.php?m=goods&c=index&a=detail&sku_id=$2 last;
+# 品牌列表页
+rewrite ^(.*)\/brand\-([0-9]+)\.html$ $1/index.php?m=goods&c=index&a=brand_list&id=$2 last;
+# 会员中心主页
+rewrite ^(.*)\/buyer\.html$ $1/index.php?m=member&c=index&a=index last;
+# 帮助中心列表页
+rewrite ^(.*)\/help\-lists\-([0-9]+)\.html$ $1/index.php?m=misc&c=index&a=help_lists last;
+# 帮助中心内容页
+rewrite ^(.*)\/help\-detail\-([0-9]+)\.html$ $1/index.php?m=misc&c=index&a=help_detail&id=$2 last;
+# 文章列表页
+rewrite ^(.*)\/article\-lists\-([0-9a-zA-Z]+)\.html$ $1/index.php?m=misc&c=index&a=article_lists&category_id=$2 last;
+# 文章内容页
+rewrite ^(.*)\/article\-detail\-([0-9]+)\.html$ $1/index.php?m=misc&c=index&a=article_detail&id=$2 last;
+if (!-e $request_filename) {
+	return 404;
+}
+# end nginx rewrite rule 

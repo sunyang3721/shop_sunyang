@@ -1,0 +1,61 @@
+{
+	// SPU 数据
+	"spu":{
+		"name"       : "商品名称",
+		"sn"         : "商品货号",
+		"subtitle"   : "副标题（广告语）",
+		"style"      : "标题样式",
+		"catid"      : "商品分类ID",
+		"brand_id"   : "品牌ID",
+		"keyword"    : "SEO关键字",
+		"description": "SEO描述",
+		"content"    : "详细描述",
+		"imgs"       : "商品图册",
+		"thumb"      : "缩略图",
+		"min_price"  : "最低销售价",
+		"max_price"  : "最高销售价",
+		"status"     : "状态",
+		"specs"      : "规格数据",
+		"sku_total"  : "SKU总数",
+		"give_point" : "赠送积分（预留）",
+		"warn_number": "库存警告阈值",
+		"sort"       : "排序",
+		"spec_id"    : "规格主图ID",
+		"type_id"    : "类型ID",
+	},
+	/* SKU列表 */
+	"skus":{
+		{
+			"sku_id"       : "SKU_ID",
+			"spu_id"       : "SPU_ID",
+			"sku_name"     : "名称",
+			"subtitle"     : "副标题",
+			"style"        : "样式",
+			"sn"           : "货号",
+			"barcode"      : "条码",
+			"spec"         : "规格信息",
+			"imgs"         : "图册",
+			"thumb"        : "缩略图",
+			"status"       : "状态",
+			"status_ext"   : "标签",
+			"number"       : "库存",
+			"market_price" : "市场价",
+			"shop_price"   : "销售价",
+			"keyword"      : "SEO关键字",
+			"description"  : "SEO描述",
+			"content"      : "详细描述",
+			"show_in_lists": "是否显示",
+			"warn_number"  : "库存警告",
+			"prom_type"    : "促销类型",
+			"prom_id"      : "促销ID",
+			"up_time"      : "上架时间",
+			"update_time"  : "更新时间",
+			"sort"         : "排序"
+		}
+	},
+
+	/* 商品类型 */
+	"type": {
+		"ID" : "VALUE",
+	}
+}

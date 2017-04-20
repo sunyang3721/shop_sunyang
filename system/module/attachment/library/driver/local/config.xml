@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="code"><![CDATA[local]]></item>
+	<item id="name"><![CDATA[本地]]></item>
+	<item id="description"><![CDATA[通过电子邮件方式向用户发送重要服务通知，建议使用企业邮箱]]></item>
+	<item id="dataline"><![CDATA[2015-05-25 14:57:09]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+    <item id="sort"><![CDATA[2]]></item>
+    <item id="ignore"><![CDATA[mobile_validate,goods_arrival]]></item>
+	<item id="vars"></item>
+</root>

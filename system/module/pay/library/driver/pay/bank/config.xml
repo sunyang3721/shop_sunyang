@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="pay_code"><![CDATA[bank]]></item>
+	<item id="pay_name"><![CDATA[支付宝网银直连]]></item>
+	<item id="pay_desc"><![CDATA[买家可直接通过网上银行进行支付，无需通过支付宝就能完成交易。]]></item>
+	<item id="enabled"><![CDATA[0]]></item>
+	<item id="isonline"><![CDATA[1]]></item>
+	<item id="applie"><![CDATA[pc]]></item>
+	<item id="sort"><![CDATA[3]]></item>
+	<item id="dataline"><![CDATA[2014-12-12 14:57:09]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+	<item id="config[banks]"><![CDATA[ABC,ICBCB2C,BOCBTC,COMM,POSTGC,CMB,SPDB,BJBANK,BJRCB,CEB-DEBIT,CITIC,CMBC,FDB,GDB,HZCBB2C,NBBANK,SHBANK,SHRCB,SPABANK,WZCBB2C-DEBIT]]></item>
+	<item id="setup">
+		<item id="account">
+			<item id="name"><![CDATA[支付宝账户]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝收款账户]]></item>
+		</item>
+		<item id="partner">
+			<item id="name"><![CDATA[合作者身份(parterID)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝提供的合作者身份编码(以2088开头)]]></item>
+		</item>
+		<item id="key">
+			<item id="name"><![CDATA[交易安全校验码(key)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝提供的交易安全校验码]]></item>
+		</item>
+	</item>
+</root>

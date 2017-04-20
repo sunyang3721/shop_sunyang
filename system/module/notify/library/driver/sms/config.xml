@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="code"><![CDATA[sms]]></item>
+	<item id="name"><![CDATA[短信通知]]></item>
+	<item id="description"><![CDATA[通过手机短信向用户发送重要服务通知。]]></item>
+	<item id="dataline"><![CDATA[2017-05-25 14:57:09]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+    <item id="sort"><![CDATA[2]]></item>
+    <item id="ignore"><![CDATA[email_validate,goods_arrival]]></item>
+	<item id="vars">
+		<item id="sms_sign">
+			<item id="name"><![CDATA[短信签名]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[设置短信签名如 云商 ]]></item>
+		</item>
+	</item>
+</root>

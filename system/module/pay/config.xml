@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="name"><![CDATA[支付模块]]></item>
+	<item id="description"><![CDATA[支付系统]]></item>
+	<item id="author"><![CDATA[团队]]></item>
+	<item id="url"><![CDATA[http://www.kuwuya.com]]></item>
+	<item id="version"><![CDATA[1.0.1]]></item>
+	<item id="installfile"><![CDATA[install.php]]></item>
+	<item id="uninstallfile"><![CDATA[uninstall.php]]></item>
+	<item id="setting"><![CDATA[]]></item>
+	<item id="issystem"><![CDATA[1]]></item>
+</root>

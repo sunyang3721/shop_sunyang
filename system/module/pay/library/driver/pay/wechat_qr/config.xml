@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="pay_code"><![CDATA[wechat_qr]]></item>
+	<item id="pay_name"><![CDATA[微信扫码支付]]></item>
+	<item id="pay_desc"><![CDATA[买家通过微信手机端扫描网页上生成的二维码，通过微信钱包进行付款并完成交易
+。]]></item>
+	<item id="enabled"><![CDATA[0]]></item>
+	<item id="isonline"><![CDATA[1]]></item>
+	<item id="applies"><![CDATA[pc]]></item>
+    <item id="sort"><![CDATA[5]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+	<item id="setup">
+		<item id="appid">
+			<item id="name"><![CDATA[APPID]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[appid是微信公众账号或开放平台APP的唯一标识]]></item>
+		</item>
+		<item id="mch_id">
+			<item id="name"><![CDATA[微信支付商户号(mch_id)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[商户申请微信支付后，由微信支付分配的商户收款账号。]]></item>
+		</item>
+		<item id="key">
+			<item id="name"><![CDATA[API密钥(key)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[交易过程生成签名的密钥]]></item>
+		</item>
+		<item id="secret">
+			<item id="name"><![CDATA[Appsecret]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[AppSecret是APPID对应的接口密码，用于获取接口调用凭证access_token时使用]]></item>
+		</item>
+	</item>
+</root>

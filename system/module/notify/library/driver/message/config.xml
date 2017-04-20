@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="code"><![CDATA[message]]></item>
+	<item id="name"><![CDATA[站内信]]></item>
+	<item id="description"><![CDATA[通过商城系统用户站内信方式向用户发送重要服务通知。]]></item>
+	<item id="dataline"><![CDATA[2015-05-25 14:57:09]]></item>
+	<item id="version"><![CDATA[1.0.0]]></item>
+    <item id="sort"><![CDATA[2]]></item>
+    <item id="ignore"><![CDATA[register_validate,forget_pwd,mobile_validate,email_validate,goods_arrival]]></item>
+	<item id="vars">
+		<item id="message">
+			<item id="name"><![CDATA[站内信]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[message]]></item>
+			<item id="tips"><![CDATA[站内信]]></item>
+		</item>
+	</item>
+</root>

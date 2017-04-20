@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="pay_code"><![CDATA[ws_wap]]></item>
+	<item id="pay_name"><![CDATA[支付宝手机支付]]></item>
+	<item id="pay_desc"><![CDATA[手机网站支付主要应用于手机、掌上电脑等无线设备的网页上，通过网页跳转或浏览器自带的支付宝快捷支付实现买家付款的功能，资金即时到账。]]></item>
+	<item id="enabled"><![CDATA[0]]></item>
+	<item id="isonline"><![CDATA[1]]></item>
+	<item id="applie"><![CDATA[wap]]></item>
+	<item id="sort"><![CDATA[4]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+	<item id="setup">
+		<item id="account">
+			<item id="name"><![CDATA[支付宝账户]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝收款账户]]></item>
+		</item>
+		<item id="partner">
+			<item id="name"><![CDATA[合作者身份(parterID)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝提供的合作者身份编码(以2088开头)]]></item>
+		</item>
+		<item id="key">
+			<item id="name"><![CDATA[交易安全校验码(key)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝提供的交易安全校验码]]></item>
+		</item>
+	</item>
+</root>

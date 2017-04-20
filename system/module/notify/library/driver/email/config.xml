@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="code"><![CDATA[email]]></item>
+	<item id="name"><![CDATA[邮件通知]]></item>
+	<item id="description"><![CDATA[通过电子邮件方式向用户发送重要服务通知，建议使用企业邮箱]]></item>
+	<item id="dataline"><![CDATA[2015-05-25 14:57:09]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+    <item id="sort"><![CDATA[2]]></item>
+    <item id="ignore"><![CDATA[mobile_validate,goods_arrival]]></item>
+	<item id="vars">
+		<item id="mail_smtpserver">
+			<item id="name"><![CDATA[SMTP 服务器]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[设置SMTP服务器地址]]></item>
+		</item>
+		<item id="mail_smtpport">
+			<item id="name"><![CDATA[SMTP 端口]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[设置 SMTP 服务器的端口，默认为 25]]></item>
+		</item>
+		<item id="mail_mailuser">
+			<item id="name"><![CDATA[SMTP 身份验证用户名]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[填写SMTP身份验证用户名]]></item>
+		</item>
+		<item id="mail_mailpass">
+			<item id="name"><![CDATA[SMTP 身份验证密码]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[填写SMTP身份验证密码]]></item>
+		</item>
+		<item id="mail_formmail">
+			<item id="name"><![CDATA[发件人邮件地址]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[如果需要验证，必须为本服务器的邮件地址，格式为:user@domain.com]]></item>
+		</item>
+	</item>
+</root>

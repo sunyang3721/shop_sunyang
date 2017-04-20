@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="pay_code"><![CDATA[alipay]]></item>
+	<item id="pay_name"><![CDATA[支付宝即时到账]]></item>
+	<item id="pay_desc"><![CDATA[支付宝网上交易时，买家的交易资金直接打入卖家支付宝账户，快速回笼交易资金.]]></item>
+	<item id="enabled"><![CDATA[0]]></item>
+	<item id="isonline"><![CDATA[1]]></item>
+	<item id="applie"><![CDATA[pc]]></item>
+	<item id="sort"><![CDATA[1]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+	<item id="setup">
+		<item id="account">
+			<item id="name"><![CDATA[支付宝账户]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝收款账户]]></item>
+		</item>
+		<item id="partner">
+			<item id="name"><![CDATA[合作者身份(parterID)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝提供的合作者身份编码(以2088开头)]]></item>
+		</item>
+		<item id="key">
+			<item id="name"><![CDATA[交易安全校验码(key)]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[]]></item>
+			<item id="tips"><![CDATA[支付宝提供的交易安全校验码]]></item>
+		</item>
+	</item>
+</root>

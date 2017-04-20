@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="code"><![CDATA[wechat]]></item>
+	<item id="name"><![CDATA[微信通知]]></item>
+	<item id="description"><![CDATA[通过微信消息向用户发送重要服务通知。]]></item>
+	<item id="icon"><![CDATA[1]]></item>
+	<item id="dataline"><![CDATA[2015-05-25 14:57:09]]></item>
+	<item id="version"><![CDATA[1.0]]></item>
+    <item id="sort"><![CDATA[2]]></item>
+    <item id="ignore"><![CDATA[reg_success,register_validate,mobile_validate,email_validate,forget_pwd,goods_arrival]]></item>
+	<item id="vars">
+		<item id="appid">
+			<item id="name"><![CDATA[微信appid]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[$appid]]></item>
+			<item id="tips"><![CDATA[请到微信公众平台查看]]></item>
+		</item>
+		<item id="appsecret">
+			<item id="name"><![CDATA[微信appsecret]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[<?php echo $appsecret?>]]></item>
+			<item id="tips"><![CDATA[请到微信公众平台查看]]></item>
+		</item>
+		<item id="token">
+			<item id="name"><![CDATA[微信通信token]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[<?php echo $token?>]]></item>
+			<item id="tips"><![CDATA[请先填写自定义通信token]]></item>
+		</item>
+			<item id="encodingaeskey">
+			<item id="name"><![CDATA[微信通信加解密密钥]]></item>
+			<item id="type"><![CDATA[text]]></item>
+			<item id="value"><![CDATA[<?php echo $encodingaeskey?>]]></item>
+			<item id="tips"><![CDATA[启用密文模式必填]]></item>
+		</item>
+	</item>
+</root>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link type="text/css" rel="stylesheet" href="../css/haidao.css" />
+		<link type="text/css" rel="stylesheet" href="../css/admin.css" />
+		<script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="../js/haidao.plug.js"></script>
+		<script type="text/javascript" src="../js/haidao.form.js" ></script>
+		<script type="text/javascript" src="../js/haidao.resizeable.columns.js" ></script>
+	</head>
+	<body>
+		<div class="fixed-nav layout">
+			<ul>
+				<li class="first">通知系统<a id="addHome" title="添加到首页快捷菜单">[+]</a></li>
+				<li class="spacer-gray"></li>
+				<li><a href="email_config.html">邮件设置</a></li>
+				<li><a class="current" href="javascript:;">发送测试</a></li>
+			</ul>
+			<div class="hr-gray"></div>
+		</div>
+		<div class="content padding-big have-fixed-nav">
+			<div class="form-box clearfix">
+				<input data-label="测试发件人：" data-name="name1" class="hd-textbox" data-desc="内容描述" />
+				<input data-label="测试邮件列表：" data-name="Area" class="hd-textarea" data-desc="内容描述信息" />
+			</div>
+			<div class="padding">
+				<input type="button" class="button bg-main" value="测试发送" />
+			</div>
+		</div>
+		<script>
+			$('.form-box').formPlug();
+		</script>
+	<?php include template('footer','admin');?>

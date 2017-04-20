@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link type="text/css" rel="stylesheet" href="{SKIN_PATH}statics/css/haidao.css?v={HD_VERSION}" />
+		<link type="text/css" rel="stylesheet" href="{SKIN_PATH}statics/css/public.css?v={HD_VERSION}" />
+		<script type="text/javascript" src="{SKIN_PATH}statics/js/jquery-1.7.2.min.js?v={HD_VERSION}"></script>
+		<script type="text/javascript" src="{SKIN_PATH}statics/js/haidao.web.general.js?v={HD_VERSION}"></script>
+		<script type="text/javascript" src="{SKIN_PATH}statics/js/common.js?v={HD_VERSION}"></script>
+		<script type="text/javascript" src="{__ROOT__}statics/js/linkage.min.js?v={HD_VERSION}"></script>
+		<script type="text/javascript" src="{__ROOT__}statics/js/dialog/dialog-plus-min.js?v={HD_VERSION}"></script>
+		<link rel="stylesheet" type="text/css" href="{__ROOT__}statics/js/dialog/ui-dialog.css?v={HD_VERSION}" />
+	</head>
+	<body>
+		<div class="reselection clearfix">
+			<div class="item-info">
+				<div id="imgs" class="pic-center"><img src="<?php echo thumb($goods['thumb'],300,300)?>" /></div>
+				<div class="change-spec">
+					<h3>{$goods['sku_name']}</h3>
+					<div class="choose-wrap clearfix">
+						<?php foreach($goods['specs'] AS $specs):?>
+							{if !is_null($specs['id'])}
+							<div class="dl">
+								<div class="dt">{$specs['name']}：</div>
+								<div class="dd item-check">
+								<?php foreach($specs['value'] AS $spec):?>
+									<div class="item" data-id="{$specs['id']}" data-name="{$specs['name']}" data-value="{$spec}">
+										<i></i>
+										<a href="javascript:;" title="">{$spec}</a>
+									</div>
+								<?php endforeach?>
+								</div>
+							</div>
+							{/if}
+						<?php endforeach?>
+						<p class="choose-tips text-sub">请选择您想要的商品信息</p>
+					</div>
+					<a id="sure-spec" class="button bg-sub" href="javascript:;">确认</a>
+				</div>
+			</div>
+		</div>
+		<script>
+			var product_json = <?php echo json_encode($goods['sku_arr'])?>;
+			var sku_obj = <?php echo $goods['spec']?>;
+			var sku_json = "<?php echo $goods['spec_str']?>";
+
+			$(window).load(function(){
+				
+				try {
+					var dialog = top.dialog.get(window);
+				} catch (e) {
+					return;
+				}
+				dialog.title("选择商品规格");
+				dialog.reset();
+				
+				$.each(sku_obj, function(i) {
+					var _this = this;
+					$("div[data-id="+this.id+"]").each(function(){
+						if(_this.value == $(this).data("value")){
+							$(this).addClass("selected");
+						}
+					});
+					changeStatus();
+				});
+				
+				$(".item-check .item").live('click',function(){
+					//var specKey = '';
+				   /* $('.dl').each(function() {
+				    	var _select = $(this).find('.selected');
+				       	if (_select.length <= 0) {
+				            return false;
+				        }
+				        var spec_id = _select.data('id');
+				        //var pec_name = _select.data('name');
+				        var spec_value = _select.data('value');
+				        specKey += spec_id+':'+spec_value+';' ;
+				    });*/
+				    changeStatus();
+				    /*if($('.dl').length > $('#choose .selected').length){
+				    	$('.item-info .item-btn').addClass('disabled').removeClass('cart_add');
+				    	$(".item-info .cart-btn").addClass("disabled");
+				    	return false;
+				    }else{
+				    	$('.item-info .item-btn').removeClass('disabled').addClass('cart_add');
+				    	$(".item-info .cart-btn").removeClass("disabled");
+				    }
+				    if($('.choose-wrap .dl').length == $('.choose-wrap .selected').length){
+						if(product_json[specKey] != undefined){
+				            var item = product_json[specKey];
+				            if(item.spec_md5 != sku_json){
+				           		location.href = sku_url + '&sku_id=' + item.sku_id;
+				       		}
+				        }
+				    }*/
+				    
+				});
+				
+				function changeStatus(){
+				 	var specs_array = new Array();
+				 	var regexp = '';
+				 	/* 取出所有在规格数据 */
+				 	$(".dl").each(function(i){
+				        var selected = $(this).find(".selected");
+				        if(selected.length>0) specs_array[i] = selected.attr("data-id") + ':' + selected.attr("data-value");
+				        else specs_array[i] = "\\\d+:\.+";
+				    });
+				    var id = '';
+				 	$(".dl").each(function(k){
+				 		var selected = $(this).find(".selected");
+				 		id += selected.data("id")+":"+selected.data("value")+";";
+				        /* 遍历属性 */
+				       	/*$(this).find(".item").each(function(){
+				       		$(this).removeClass('disabled');
+				       		var flage = false;
+				       		var temp = specs_array.slice();
+				       		temp[k] = $(this).attr('data-id') + ':' + $(this).attr('data-value');
+				            for(gi in product_json){
+				            	var item = product_json[gi];
+								var item_text = JSON.stringify(item);
+				                var reg = new RegExp(temp.join(";"));
+				                flage = reg.test(item_text);
+				                if(flage) break;
+				            }
+				            if(!flage) $(this).addClass("disabled");
+				       	});*/
+				 	});
+				 	if(product_json[id]!=undefined){
+				    	if(product_json[id].number <= 0){
+				    		$("#sure-spec").removeClass("bg-sub").addClass("bg-gray").html("已售罄");
+				    	}else{
+				    		$("#sure-spec").removeClass("bg-gray").addClass("bg-sub").html("确认");
+				    	}
+				    	$(".choose-wrap").removeClass("error");
+				    	$("#imgs").attr("src",product_json[id].imgs);
+				    }
+				}
+				
+				/* 点击确定按钮 */
+				$("#sure-spec").click(function(){
+					var flog = true;
+					var spec = '';
+					$(".dl").each(function(){
+						if($(this).find(".selected").length<=0) flog = false;
+						spec += $(this).find(".selected").data("id")+':'+$(this).find(".selected").data("value")+';'
+					});
+					if(!flog){
+						$(".choose-wrap").addClass("error");
+						$(".choose-tips").html("请选择您想要的商品信息");
+						return false;
+					}
+					if($(this).hasClass("bg-gray")){
+						$(".choose-wrap").addClass("error");
+						$(".choose-tips").html("该规格类型已售罄,请选择其他规格类型");
+						return false;
+					}
+					$.each(product_json,function(){
+						if(spec == this.spec_md5){
+							if(dialog.data == this.sku_id){
+								dialog.close();
+							}else{
+								var specs = [];
+								specs.push(dialog.data);
+								specs.push(this);
+								dialog.close(specs);
+							}
+						}
+					});
+					return false;
+					
+				})
+			})
+		</script>
+	</body>
+</html>

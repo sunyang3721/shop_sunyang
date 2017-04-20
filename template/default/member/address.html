@@ -1,0 +1,113 @@
+{template header member}
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'];?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					<dl class="margin-big-top member-memu clearfix">
+						{template menu_account member}
+					</dl>
+				</div>
+				<div class="right padding-big-left padding-big-right">
+					<div class="member-order-top margin-top margin-big-bottom small-search clearfix">
+						<div class="fl padding-small-top">
+							<a id="add-address" class="obtn obtn1" href="{url('add')}" data-iframe="true">新增地址</a>
+							<span class="margin-big-left">您已创建 <span>{$count}</span> 个收货地址，最多可创建 20 个</span>
+						</div>
+					</div>
+
+					<div class="margin-big-bottom border border-gray-white clearfix">
+						<div class="table layout text-left address-wrap">
+							<div class="tr">
+								<div class="th layout padding-big-left">收货地址</div>
+							</div>
+							{loop $lists $r}
+							<div class="tr" data-id="{$r[id]}">
+								<div class="td w80 padding-big-left text-lh">
+									<span>收货人：{$r[name]}　　手机：{$r[mobile]}</span><br />
+									<span>{implode(" ", $r[full_district])} {$r[address]}　　{if $r[zipcode]}邮编：{$r[zipcode]} {/if}</span>
+								</div>
+								<div class="td w20 padding-right">
+									<a class="va-m" href="{url('edit', array('id' => $r[id]))}" data-iframe="true">编辑</a>
+									<a class="margin-left margin-big-right va-m" href="javascript:;" data-id="{$r['id']}">删除</a>
+									{if $r[isdefault]}
+									<a class="obtn obtn2 default_address" href="javascript:;">默认地址</a>
+									{else}
+									<a class="obtn obtn1 default_address" href="javascript:;" data-event="default">设为默认</a>
+									{/if}
+								</div>
+							</div>
+							{/loop}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{template footer common}
+<script>
+	$(function(){
+		$(".address-wrap .tr").live('mouseover',function(){
+			$(this).addClass("showbtn");
+		});
+		$(".address-wrap .tr").live('mouseout',function(){
+			$(this).removeClass("showbtn");
+		});
+
+		$('[data-iframe]').live('click',function(){
+			top.dialog({
+				url : $(this).attr('href'),
+				data: $(this).parents(".tr").data('id'),
+				title: 'loading',
+				width: 705,
+				onclose: function () {
+					if(this.returnValue&&this.returnValue=='ok'){
+						window.location.reload();
+					}
+				}
+			})
+			.showModal();
+			return false;
+		})
+	})
+	$('.margin-big-right').live('click',function(){
+		if(!window.confirm('确定将此地址删除?')){
+			return false;
+		};
+		$.post("{url('delete')}",{id : $(this).data('id')},function(ret){
+			if(ret.status == 0) {
+				$.tips({
+					icon:'error',
+					content:ret.message,
+					callback:function() {
+						return false;
+					}
+				});
+			} else {
+				$.tips({
+					icon:'success',
+					content:ret.message,
+					callback:function() {
+						window.location.reload();
+					}
+				});					
+			}
+		},'json')
+	})
+	/* 设为默认 */
+	$("[data-event=default]").live('click',function(){
+		var _this = $(this);
+		$.post("{url('set_default')}", {id : $(this).parents(".tr").data('id')}, function(ret) {
+			if(ret.status == 1) {
+				$(".default_address").removeClass("obtn2").addClass("obtn1").attr('data-event','default').text("设为默认");
+				_this.addClass("obtn2").removeClass("obtn1").attr('data-event','no').text("默认地址");
+			}
+			return false;
+		}, 'json')
+		return false;
+	})
+
+
+</script>

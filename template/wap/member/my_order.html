@@ -1,0 +1,241 @@
+{template header common}
+	<script type="text/javascript">
+      	//mui.init();
+		mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+	    var map = jQuery.parseJSON('{json_encode($_GET)}');
+	    var page = "<?php echo $_GET['page']+1 ?>";
+		var url = "<?php echo url('member/order/get_orders')?>";
+	    function add_more(){
+	    	if($(".user-list-none").length>0) return false;
+    		var param = {
+    			id : "{$_GET['id']}",
+    			sort : "{$result['order']}",
+    			limit : 5,
+    			page : page,
+    			map : map
+			};
+			pull_get_lists(param,url,'up');
+    	}
+	    
+	    function refresh_page(){
+	    	var param = {
+    			id : "{$_GET['id']}",
+    			sort : "{$result['order']}",
+    			limit : 5,
+    			page : 1,
+    			map : map
+			};
+			pull_get_lists(param,url,'down');
+	    }
+		function pull_get_lists(param,url,type){
+				$.get(url,param,function(ret){
+    			if(ret.orders && ret.orders.length > 0){
+    				var _html = '';
+    				var link = "<?php echo url('goods/index/detail')?>";
+    				$.each(ret.orders,function(i,item){
+    					_html += '<li class="order-list list-col-10">';
+						_html += '<div class="order-stuats padding-tb lh-icon-15 list-item">';
+						_html += '	<span class="icon icon-15"><img src="{SKIN_PATH}statics/images/ico_17.png" /></span>';
+						_html += '	<span>订单号：'+ item.sn +'</span>';
+						_html += '	<span class="mui-pull-right text-org">';
+							if (item._showsubs == 'true') {
+								_html += '已拆分';
+							} else {
+								_html += item._status.wait_ch;
+							}
+						_html += '	</span>';
+						_html += '</div>';
+
+							if (item._showsubs == 'true') {
+								_html += '	<div class="padding-small-top padding-small-bottom list-item">';
+								_html += '		<span>商品属不同商家或在不同库房，故拆分物流配送。</span>';
+								_html += '	</div>';								
+							} else {
+								var _length = 0;
+								$.each(item._subs[0]._group ,function(i, el) {
+									_length++;
+								});								
+								if (_length > 1) {
+								    _html += '    	<div class="padding-small-top padding-small-bottom list-item">';
+								    _html += '    		<span>商品在不同库房，故拆分物流配送。</span>';
+								    _html += '    	</div>';
+									
+								}
+							}
+						_html += '<!-- 循环子订单 -->';
+							$.each(item._subs ,function(i, sub) {
+								_html += '	<div class="padding-tb mui-text-right list-item">';
+								_html += '		<span class="shop-name mui-pull-left">官方自营</span>';
+								_html += '		<!-- <span class="margin-big-right">共 8 件商品</span> -->';
+								_html += '		<span>订单总额：<b class="text-org">￥'+ item.real_amount +'</b></span>';
+								_html += '	</div>';
+								$.each(sub._group ,function(o_d_id, v) {
+									_html += '		<div class="order-pic padding-top list-item mui-clearfix">';
+										$.each(v.lists ,function(index, sku) {
+											if (o_d_id > 0) {
+												_html += '				<a href="?m=member&c=order&a=detail&sub_sn='+ sub.sub_sn +'&o_d_id='+ o_d_id +'" class="img-full" data-skuid="'+sku.sku_id+'" data-nums="'+ sku.buy_nums +'">';
+											} else {
+												_html += '				<a href="?m=member&c=order&a=detail&sub_sn='+ sub.sub_sn +'" class="img-full" data-skuid="'+sku.sku_id+'" data-nums="'+ sku.buy_nums +'">';
+											}
+											_html += '					<img src="'+ sku.sku_thumb +'" onerror="javascript:this.src=./statics/images/default_no_upload.png"/>';
+											_html += '				</a>';
+										});
+									_html += '		</div>';
+									_html += '		<div class="order-hand padding-tb mui-text-right list-item" data-sub_sn="'+ sub.sub_sn +'">';
+										if (o_d_id > 0) {
+											_html += '				<a href="?m=member&c=order&a=detail&sub_sn='+ sub.sub_sn +'&o_d_id='+ o_d_id +'" class="mui-btn hd-btn-gray">查看订单</a>';
+											_html += '				<a href="?m=member&c=order&a=delivery&o_d_id='+ o_d_id +'" class="mui-btn hd-btn-gray">查看物流</a>';
+										} else {
+											_html += '        		<a href="?m=member&c=order&a=detail&sub_sn='+ sub.sub_sn +'" class="mui-btn hd-btn-gray">查看订单</a>';
+										}
+										if (item.status == 1 && item.pay_type ==1 && item.pay_status == 0) {
+								    		_html += '            	<a href="?m=order&c=order&a=detail&order_sn='+ item.sn +'" class="mui-btn hd-btn-gray">支付订单</a>';
+										}
+
+										if (sub.status == 1 && sub.confirm_status!=2) {
+								    		_html += '            	<a data-action="cancel" href="javascript:;" class="mui-btn hd-btn-blue">取消订单</a>';
+										}
+
+										if (sub.finish_status == 2 || item.status != 1) {
+								    		_html += '            	<a data-action="again" href="javascript:;" class="mui-btn hd-btn-gray">再次购买</a>';
+										}
+										if (sub.status==1 && o_d_id > 0 && v.delivery.isreceive == 0) {
+								   			_html += '            	<a data-action="finish" href="javascript:;" o-d-id="'+ o_d_id +'" class="mui-btn hd-btn-blue">确认收货</a>';
+										}
+
+									_html += '		</div>';
+								});
+							});
+
+						_html += '</li>';
+					});
+					if(type == 'up'){
+						$('.order-lists').append(_html);
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$('.order-lists').html(_html);
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+    			}else{
+					if(type == 'up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					}
+    			}
+    		},'json')
+		}
+    </script>
+	<script type="text/javascript" src="{SKIN_PATH}statics/js/member.order.js"></script>
+	<div class="hd-grid filter-items bg-white">
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/order/index')}" class="filter-item {if !isset($_GET[type])}current{/if}">全部</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/order/index',array('type'=>1))}" class="filter-item {if ($_GET[type] == 1)}current{/if}">待付款</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/order/index',array('type'=>3))}" class="filter-item {if ($_GET[type] == 3)}current{/if}">待发货</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/order/index',array('type'=>4))}" class="filter-item {if ($_GET[type] == 4)}current{/if}">待收货</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('comment/index/index')}" class="filter-item">待评价</a>
+		</div>
+	</div>
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+	  	<div class="mui-scroll has-scorll-top">
+			<ul class="order-lists mui-clearfix">
+				{loop $orders $r}
+					<li class="order-list list-col-10">
+						<div class="order-stuats padding-tb lh-icon-15 list-item">
+							<span class="icon icon-15"><img src="{SKIN_PATH}statics/images/ico_17.png" /></span>
+							<span>订单号：{$r[sn]}</span>
+							<span class="mui-pull-right text-org">{if ($r[_showsubs] == TRUE)}已拆分{else}{ch_status($r[_status][wait])}{/if}</span>
+						</div>
+						{if ($r[_showsubs] == TRUE)}
+							<div class="padding-small-top padding-small-bottom list-item">
+								<span>商品属不同商家或在不同库房，故拆分物流配送。</span>
+							</div>
+				        {else}
+				        	{if (count($r[_subs][0][_group]) > 1)}
+					        	<div class="padding-small-top padding-small-bottom list-item">
+					        		<span>商品在不同库房，故拆分物流配送。</span>
+					        	</div>
+				        	{/if}
+				        {/if}
+						<!-- 循环子订单 -->
+						{loop $r['_subs'] $sub}
+							<div class="padding-tb mui-text-right list-item">
+								<span class="shop-name mui-pull-left">官方自营</span>
+								<!-- <span class="margin-big-right">共 8 件商品</span> -->
+								<span>订单总额：<b class="text-org">￥{$r[real_amount]}</b></span>
+							</div>
+							{loop $sub[_group] $o_d_id $v}
+								<div class="order-pic padding-top list-item mui-clearfix">
+									{loop $v[lists] $sku}
+										{if ($o_d_id > 0)}
+											<a href="{url('member/order/detail',array('sub_sn' =>$sub[sub_sn],'o_d_id' =>$o_d_id))}" class="img-full" data-skuid="{$sku[sku_id]}" data-nums="{$sku[buy_nums]}">
+										{else}
+											<a href="{url('member/order/detail',array('sub_sn' =>$sub[sub_sn]))}" class="img-full" data-skuid="{$sku[sku_id]}" data-nums="{$sku[buy_nums]}">
+										{/if}
+											<img src="{$sku[sku_thumb]}" onerror="javascript:this.src='./statics/images/default_no_upload.png';"/>
+										</a>
+									{/loop}
+								</div>
+								<div class="order-hand padding-tb mui-text-right list-item" data-sub_sn="{$sub[sub_sn]}">
+									{if ($o_d_id > 0)}
+										<a href="{url('member/order/detail',array('sub_sn' =>$sub[sub_sn],'o_d_id' =>$o_d_id))}" class="mui-btn hd-btn-gray">查看订单</a>
+										<a href="{url('member/order/delivery',array('o_d_id' =>$o_d_id))}" class="mui-btn hd-btn-gray">查看物流</a>
+						        	{else}
+						        		<a href="{url('member/order/detail',array('sub_sn' =>$sub[sub_sn]))}" class="mui-btn hd-btn-gray">查看订单</a>
+						        	{/if}
+									{if ($r[status] == 1 && $r[pay_type] == 1 && $r[pay_status] == 0)}
+					                	<a href="{url('order/order/detail',array('order_sn'=>$r[sn]))}" class="mui-btn hd-btn-gray">支付订单</a>
+					                {/if}
+					                {if ($sub[status] == 1 && $sub[confirm_status]!=2)}
+					                	<a data-action="cancel" href="javascript:;" class="mui-btn hd-btn-blue">取消订单</a>
+					                {/if}
+					                {if ($sub[finish_status] == 2 || $r[status] != 1)}
+					                	<a data-action="again" href="javascript:;" class="mui-btn hd-btn-gray">再次购买</a>
+					                {/if}
+					                {if ($sub['status']==1 && $o_d_id > 0 && $v['delivery']['isreceive'] == 0)}
+					                	<a data-action="finish" href="javascript:;" o-d-id="{$o_d_id}" class="mui-btn hd-btn-blue">确认收货</a>
+					                {/if}
+								</div>
+							{/loop}
+						{/loop}
+					</li>
+				{/loop}
+				<!-- 无订单时 -->
+				{if (!$orders)}
+					<li class="user-list-none mui-text-center">
+						<img src="{SKIN_PATH}statics/images/bg_3.png" />
+						<p class="margin-top text-black hd-h5">您还没有相关的订单</p>
+					</li>
+				{/if}
+			</ul>
+		</div>
+	</div>
+	{template footer common}
+</body>
+</html>

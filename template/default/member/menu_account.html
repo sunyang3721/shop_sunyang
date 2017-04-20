@@ -1,0 +1,9 @@
+<dt class="text-sub text-default">账户设置</dt>
+<dd {if (CONTROL_NAME == 'account' && METHOD_NAME == 'safe')}class="current"{/if}><a href="{url('member/account/safe')}">安全中心</a></dd>
+<dd {if (CONTROL_NAME == 'account' && METHOD_NAME == 'avatar')}class="current"{/if}><a href="{url('member/account/avatar')}">修改头像</a></dd>
+<dd {if (CONTROL_NAME == 'address' && METHOD_NAME == 'index')}class="current"{/if}><a href="{url('member/address/index')}">收货地址</a></dd>
+<dd {if (CONTROL_NAME == 'money' && METHOD_NAME == 'log')}class="current"{/if}><a href="{url('member/money/log')}">账户余额</a></dd>
+{hook/menu_account_extra_menu data}
+{loop $data $menu}
+<dd {if (CONTROL_NAME == $menu[c] && MODULE_NAME == $menu[m] && $_GET['id'] == $menu[id])}class="current"{/if}><a href="{url('plugin/index/index',array('id' => $menu['id']))}">{$menu[name]}</a></dd>
+{/loop}

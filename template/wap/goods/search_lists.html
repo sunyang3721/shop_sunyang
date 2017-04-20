@@ -1,0 +1,132 @@
+{template header common}
+    <script type="text/javascript">
+      	//mui.init();
+		mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+	    var page = "<?php echo $_GET['page']?>";
+		var url = "<?php echo url('goods/index/get_lists')?>";
+	    function add_more(){
+    		var param = {
+    			keyword : "{$_GET['keyword']}",
+    			sort : "{$result['order']}",
+    			limit : 10,
+    			page : page,
+    		};
+    		pull_get_lists(param,url,'up');
+	    }
+	    
+	    function refresh_page(){
+	    	var param = {
+    			keyword : "{$_GET['keyword']}",
+    			sort : "{$result['order']}",
+    			limit : 10,
+    			page : 1,
+    		};
+    		pull_get_lists(param,url,'down');
+	    }
+		function pull_get_lists(param,url,type){
+			$.get(url,param,function(ret){
+    			if(ret.lists && ret.lists.length > 0){
+    				var html = '';
+    				$.each(ret.lists,function(i,item){
+    					html += '<li class="goods-item-list">'
+						    +		'<div class="list-item">'
+							+			'<div class="list-item-pic">'
+							+				'<a href="'+ item.url +'"><img src="'+ item.thumb +'" /></a>'
+							+			'</div>'
+							+		'<div class="list-item-bottom">'
+							+		'<div class="list-item-title">'
+							+			'<a href="'+ item.url +'">'+ item.sku_name +'</a>'
+							+		'</div>'
+							+		'<div class="list-item-text">'
+							+			'<span class="price-org">￥'+item.prom_price+'</span>'
+							+		'</div>'
+							+		'</div>'
+							+		'</div>'
+							+	'</li>';
+					})
+					if(type == 'up'){
+						$('.custom-goods-row').append(html);
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$('.custom-goods-row').html(html);
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+    			}else{
+    				if(page == 1){
+    					var html = '<li class="user-list-none mui-text-center">'
+						+	'<img src="{SKIN_PATH}statics/images/bg_6.png" />'
+						+	'<p class="text-black hd-h4">没有搜索到商品</p>'
+						+	'</li>';
+						$('.custom-goods-row').html(html);
+    				}
+					if(type == 'up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					}	
+    			}
+    		},'json')
+		}
+	    
+    </script>
+    <div class="hd-grid filter-items bg-white">
+			<div class="hd-col-xs-e5">
+				<a href="{create_url('sort','comper,')}" class="filter-item {if $result['sort'] == 'comper'}current{/if}">综合</a>
+			</div>
+			<div class="hd-col-xs-e5">
+				<a href="{create_url('sort','sale,')}" class="filter-item {if $result['sort'] == 'sale'}current{/if}">销量</a>
+			</div>
+			<div class="hd-col-xs-e5">
+				<a href="{create_url('sort','shop_price,'.$result['_by'])}" class="filter-item {if $result['sort'] == 'shop_price'}current{/if}">价格</a>
+			</div>
+			<div class="hd-col-xs-e5">
+				<a href="{create_url('sort','hits,')}" class="filter-item {if $result['sort'] == 'hits'}current{/if}">人气</a>
+			</div>
+		</div>
+	<!--下拉刷新容器-->
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+	  	<div class="mui-scroll">
+	  		<div class="has-scorll-top"></div>
+			<!--数据列表-->
+	  		<ul class="margin-top custom-goods-items custom-goods-row custom-list-goods mui-clearfix">
+			</ul>
+		</div>
+	</div>
+	<script>
+		
+		$(function(){
+			add_more();
+			mui(".filter-items").on('tap','.filter-more',function(){
+				if($(".filter-wrap").hasClass("open")){
+					$(".filter-wrap").hide(0,function(){
+						$(".filter-wrap").removeClass("open");
+					});
+				}else{
+					$(".filter-wrap").show(0,function(){
+						$(".filter-wrap").addClass("open");
+					});
+				}
+			});
+		})
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{template header common}
+<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+	<div class="mui-content">
+	<form class="double-line clearfix" action="{url('ajax_delivery')}" method="post" name="ajax_delivery">
+	    <ul class="mui-table-view layout-list-common comment-form margin-none">
+	    <?php $setting = model('admin/setting','service')->get(); ?>
+	    	<li class="padding border-bottom">
+	    		<h3 class="margin-bottom hd-h5">请把商品快递至以下地址(未经卖家同意，请勿使用到付或平邮)</h3>
+	    		<div class="lh-20">
+	    			<p>收件人：{$setting[seller_name]}</p>
+					<p>邮编：{$setting[seller_zipcode]}</p>
+					<p>联系电话：{$setting[seller_mobile]}</p>
+					<p>邮寄地址：{$setting[seller_address]}</p>
+	    		</div>
+	    	</li>
+	    	<li class="padding border-bottom hd-h5">
+	    		<span class="margin-right-15">物流公司</span>
+	    		<span class="inline">
+	    			<select class="margin-none padding-none" name="delivery_name">
+	    				<option value="">请选择物流公司</option>
+	    				<?php foreach ($deliverys as $key => $delivery){?>
+						<option value="{$key}">{$delivery}</option>
+						<?php }?>
+	    			</select>
+	    		</span>
+	    	</li>
+	    	<li class="padding-lr border-bottom hd-h5">
+	    		<span class="margin-right-15">物流单号</span>
+	    		<span class="inline"><input name="delivery_sn" type="text" class="padding-none margin-none border-none" value="" placeholder="请填写物流单号" /></span>
+	    	</li>
+	    	<li>
+	    		<textarea class="border-none margin-none hd-h5" name="delivery_desc" placeholder="如有特别说明请注明"></textarea>
+	    	</li>
+	    </ul>
+	    <div class="padding">
+	    	<input type="hidden" name="id" value="{$_GET['id']}" />
+	    	<input type="submit" class="mui-btn full mui-btn-primary hd-h3 ajax_delivery" value="提交申请">
+	    </div>
+	</form>
+	</div>
+	{template footer common}
+<script type="text/javascript">
+	$('.ajax_delivery').bind('click',function(){
+		var ajax_refund = $("form[name=ajax_delivery]").Validform({
+			showAllError:true,
+			ajaxPost:true,
+			callback:function(ret) {
+				if(ret.status == 0) {
+					$.tips({
+						content:ret.message,
+						callback:function() {
+							return false;
+						}
+					});
+				} else {
+					$.tips({
+						content:ret.message,
+						callback:function() {
+							window.location.reload();
+						}
+					});
+				}
+			}
+		})
+	})
+</script>

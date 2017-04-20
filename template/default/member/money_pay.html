@@ -1,0 +1,104 @@
+{template header member}
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'];?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					<dl class="margin-big-top member-memu clearfix">
+						{template menu_account member}
+					</dl>
+				</div>
+				<div class="right padding-big-left padding-big-right">
+					<form action="" method="post" name="form" target="_blank">
+						<div class="margin-big-top clearfix">
+						<input class="input w25 inline" name="money" type="input" placeholder="请输入充值金额" datatype="/^[0-9]{1}\d*(\.\d{1,2})?$/" />
+						<span class="margin-big-left text-default">充值完成后，您可以进入账户充值记录页面进行查看余额充值状态。</span>
+					</div>
+					<div class="margin-big-top tip-title">
+						<span class="padding-big-left text-lh-30">支付方式</span>
+						<div class="bg clearfix">
+							<div class="fl border border-mix w10"></div>
+						</div>
+					</div>
+
+					<div class="margin-big-top balance-pay-way item-checked clearfix">
+						{loop $payments $pay}
+						<div class="item" data-paycode='{$pay[pay_code]}' data-paybank='{$pay[pay_bank]}'>
+							<i></i>
+							<a href="javascript:;"><img src="{__ROOT__}statics/images/banks/{$pay[pay_ico]}.png"></a>
+						</div>
+						{/loop}
+					</div>
+					<div class="margin-big-top text-center cart-btn-wrap">
+						<input type="hidden" name="pay_code" value=""/>
+						<input type="hidden" name="pay_bank" value=""/>
+						<input type="submit" name="submit" id="submit" value="立即支付" class="cart-btn text-default" />
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="{__ROOT__}statics/js/dialog/dialog-plus-min.js?v={HD_VERSION}"></script>
+		<link type="text/css" rel="stylesheet" href="{__ROOT__}statics/js/dialog/ui-dialog.css?v={HD_VERSION}" />
+		<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v=5.3.2&hd_v={HD_VERSION}" ></script>
+		<script type="text/javascript">
+			$(function(){
+				$("[name=form]").Validform({
+					beforeSubmit:function(curform){
+						submittip();
+					}
+				});
+				$('.item').on('click',function(){
+					$(this).siblings().removeClass('selected');
+					$(this).addClass('selected');
+					$('input[name="pay_code"]').val($(this).attr('data-paycode'));
+					$('input[name="pay_bank"]').val($(this).attr('data-paybank'));
+				})
+				$('.item:eq(0)').trigger('click');
+				//付款信息提示
+				function submittip(){
+					dialog({
+						content: '<div class="padding-large"><p class="text-lh-little text-small">请问您完成付款了吗?<br />如没有,请在新打开的网上银行页面进行付款的操作<br />如果遇到问题，请联系客服人员</p></div>',
+						title: '提示信息',
+						width: 330,
+						okValue: '完成付款',
+						ok: function(){
+							checkpay();
+
+						},
+						cancelValue: '返回选择其他银行',
+						cancel: function(){
+
+						}
+					})
+					.showModal();
+					return false;
+				};
+				function checkpay(){
+					$.getJSON('<?php echo url('payissuccess')?>',{},function(ret){
+						if(ret.status == 0 ){
+							pay_error();
+						}else{
+							window.location.href='<?php echo url('member/money/log') ?>';
+						}
+					})
+				}
+				function pay_error(){
+					dialog({
+						content: '<div class="padding-large"><p class="text-lh-little text-small">充值失败或未确认！<br />未能收到来自银行的付款成功通知<br />如果您确认在网上银行已付款成功，系统将与所选择的网上银行进行对账。<br />若您的付款得到确认，订单将完成支付。</p></div>',
+						title: '提示信息',
+						width: 460,
+						okValue: '我知道了',
+						ok: function(){
+
+						}
+					})
+					.showModal();
+					return false;
+				}
+			})
+		</script>
+		{template footer common}

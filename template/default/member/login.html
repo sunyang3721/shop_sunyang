@@ -1,0 +1,72 @@
+{template toper common}
+<?php $setting = model('admin/setting','service')->get();?>
+		<!-- 头部 -->
+		<div class="header container">
+			<div class="logo fl">
+				<span><a href="/"><img src="{SKIN_PATH}statics/images/logo.png" /></a></span>
+			</div>
+			<div class="fr">
+				<span class="text-default login-tips">还未注册？请 <a class="text-sub" href="<?php echo url('register',array('url_forward'=>$_GET['url_forward'])); ?>">注册</a></span>
+			</div>
+		</div>
+		<!-- 登录 -->
+		<div class="layout border-top login-wrap">
+			<div class="container clearfix">
+				<div class="fr padding-big login-box border bg-white">
+					<p class="border-bottom text-lh-large text-default">欢迎登录{$setting[site_name]}</p>
+					<form action="{url('login')}" method="POST" name="login_form">
+						<input type="hidden" name="url_forward" value="{$_GET[url_forward]}">
+						<div class="list clearfix">
+							<div class="m-t-15 margin-bottom">登录名：</div>
+							<input class="input radius" type="text" name="username" datatype="s2-15|mobile|email" placeholder="用户名/邮箱/手机号" nullmsg="请输入用户名/邮箱/手机号" errmsg="格式不正确"/>
+							<span class="validform_checktip"></span>
+						</div>
+						<div class="list">
+							<div class="m-t-15 margin-bottom">密码：<a class="fr text-sub" href="<?php echo url('forget_password',array('url_forward'=>$_GET['url_forward'])); ?>">忘记密码？</a></div>
+							<input class="input radius" type="password" name="password" placeholder="请输入登录密码" datatype="*" nullmsg="请输入密码"/>
+							<span class="validform_checktip"></span>
+						</div>
+						{hook/before_login_btn}
+						<input id="popup-submit" class="margin-big-top button bg-sub layout text-big" type="submit" value="登录" name="dosubmit"/>
+					</form>
+					<div class="third-login-wrap">
+						{hook/login_box_footer}
+					</div>
+					<style type="text/css">
+						.third-login-wrap { margin-top: 10px; margin-bottom: -20px; padding: 10px 5px; font-size: 0; }
+						.third-login-wrap .third_login { display: inline-block; margin: 0 10px; padding-left: 40px; width: 40px; height: 40px; background: url({SKIN_PATH}statics/images/other_login.png) no-repeat; overflow: hidden; }
+						.third-login-wrap .login-alipay { background-position: -182px -46px; }
+						.third-login-wrap .login-qq { background-position: -62px -46px; }
+						.third-login-wrap .login-sina { background-position: -2px -46px; }
+						.third-login-wrap .login-wechat { background-position: -122px -46px; }
+					</style>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+		var login = $("form[name=login_form]").Validform({
+			showAllError:true,
+			ajaxPost:true,
+			callback:function(ret) {
+				if(ret.status == 0) {
+					$.tips({
+						icon:'error',
+						content:ret.message,
+						callback:function() {
+							return false;
+						}
+					});
+				} else {
+					$.tips({
+						icon:'success',
+						content:ret.message,
+						callback:function() {
+							window.location.href = ret.referer;
+						}
+					});
+				}
+			}
+		})
+		</script>
+		<!--底部-->
+		{template footer common}

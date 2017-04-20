@@ -1,0 +1,250 @@
+{template header member}
+<div class="margin-big-top layout">
+	<div class="container border border-gray-white member clearfix">
+		<div class="left padding-big">
+			<div class="user-head margin-big-left margin-big-top">
+				<img src="<?php echo $member['avatar'];?>" height="148" />
+				<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+			</div>
+			<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+			{template menu_index member}
+		</div>
+		<div class="right padding-big-left padding-big-right line">
+			<div class="member-order-top margin-top margin-bottom small-search clearfix">
+				<div class="fl padding-small-top">
+					<ul class="order-menu">
+						<li><a class="current">订单详情</a></li>
+						<div class="mat show"></div>
+					</ul>
+				</div>
+				{hook/order_detail_header_extra_info}
+				<div class="fr search border">
+					<form class="clearfix" method="get">
+						<input type="hidden" name="m" value="member" />
+						<input type="hidden" name="c" value="order" />
+						<input type="hidden" name="a" value="index" />
+						<input class="input border-none bg-none fl" type="text" placeholder="请输入订单号" name="sn" value="">
+						<input class="button text-small text-white radius-none border-none bg-gray-white fr" type="submit" value="查询">
+					</form>
+				</div>
+			</div>
+			{if !empty($detail)}
+			<div class="border border-gray-white bg-gray-white padding-small text-default clearfix">
+				<div class="fl margin-left w60">
+					<p>当前订单状态：{ch_status($detail[_status][wait])}</p>
+					<p>感谢您在{$setting[site_name]}购物，收货后欢迎您对商品进行评价。</p>
+					{hook/countdown_time}
+				</div>
+				<div class="fr margin-right margin-small-top text-right" sub-sn="{$detail[sub_sn]}">
+					{if ($detail[status] == 1 && $detail[pay_type] == 1 && $detail[pay_status] == 0)}
+					<a class="button" href="{url('order/order/detail',array('order_sn' => $detail[order_sn]))}" title="点此去支付该订单">支付订单</a>
+					{/if}
+					{if ($detail[status] == 1 && $detail[confirm_status]!=2)}
+					<a class="button action_cancel" href="javascript:;">取消订单</a>
+					{/if}
+					{if ($detail[finish_status] == 2 || $detail[status] != 1)}
+					<a class="obtn obtn1 show margin-small-bottom action_again" href="javascript:;">再次购买</a>
+					{/if}
+
+					{if (!empty($detail[_delivery]) && $detail[_delivery][isreceive] == 0)}
+
+					<a class="obtn obtn3 show margin-small-bottom action_finish" href="javascript:;" o-d-id="{$detail[_delivery][id]}">确认收货</a>
+					{/if}
+
+					<!-- <a class="button bg-gray-white " href="javascript:;" onclick="alert('攻城狮正在撸码中，敬请期待...')">打印订单</a> -->
+				</div>
+			</div>
+			<div class="margin-big-top margin-big-left process clearfix">
+				<ul>
+					<?php $i = 1; ?>
+					{loop $detail[_axis] $k $_axi}
+					<li class="process-list {if ($i == 1)}proce-right{elseif ($i == count($detail[_axis]))}proce-left{/if} {if ($_axi!=0)}all{/if}">
+						<div class="proce"></div>
+						<div class="node">
+							<div class="item">
+								<span>{ch_status('time_'.$k)}</span>
+							</div>
+						</div>
+					</li>
+					<?php $i++; ?>
+					{/loop}
+				</ul>
+			</div>
+			<div class="margin-big-top border delivery-wrap clearfix">
+				<div class="dw-left border-right">
+					<div class="border-bottom text-lh-large padding-big-left title-tips">
+						<b class="text-default">订单信息</b>
+					</div>
+					<table class="margin-left margin-right margin-small-top margin-small-bottom">
+						<tr>
+							<td><span class="dw-label">收货姓名：</span></td>
+							<td><p>{$detail[_main][address_name]} 收</p></td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">收货地址：</span></td>
+							<td><p>{$detail[_main][address_detail]}</p></td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">联系方式：</span></td>
+							<td><p>{$detail[_main][address_mobile]}</p></td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">买家留言：</span></td>
+							<td>
+								<p>{if $detail[remark]}{$detail[remark]}{else}-{/if}</p>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td><span class="dw-label">发票信息：</span></td>
+							<td>
+								{if $detail[_main][invoice_title]}
+								<p>抬头：{$detail[_main][invoice_title]}</p>
+								<p>内容：{if $detail[_main][invoice_content]}{$detail[_main][invoice_content]}{else}-{/if}</p>
+								{else}
+								<p>-</p>
+								{/if}
+							</td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">订单号：</span></td>
+							<td><p>{if ($detail['_showsubs'] == true)}{$detail[sub_sn]}{else}{$detail[order_sn]}{/if}</p></td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">支付方式：</span></td>
+							<td>
+								<p>{if $detail[pay_type] == 1}在线支付{else}货到付款{/if}</p>
+							</td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">运费：</span></td>
+							<td>
+								<p>￥{$detail[delivery_price]}</p>
+							</td>
+						</tr>
+						{if ($detail[_main][invoice_title] && $detail[_main][invoice_content])}
+						<tr>
+							<td><span class="dw-label">发票税率：</span></td>
+							<td>
+								<p>+￥{$detail[_main][invoice_tax]}</p>
+							</td>
+						</tr>
+						{/if}
+						<!-- <tr>
+                            <td><span class="dw-label">活动优惠：</span></td>
+                            <td>
+                                <p>-￥0.00</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="dw-label">优惠券：</span></td>
+                            <td>
+                                <p>-￥0.00</p>
+                            </td>
+                        </tr> -->
+						<tr>
+							<td><span class="dw-label">应付金额：</span></td>
+							<td>
+								<p><span class="text-mix">￥{$detail[real_price]}</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">实付金额：</span></td>
+							<td>
+								<p>
+									<span class="text-mix">￥{$detail[_main][paid_amount]}</span>
+									{if ($detail[pay_type] == 1)}
+									{if $detail[pay_status] == 0}（未支付）{else}（已付款）{/if}
+									{else}
+									{if ($detail[finish_status] > 0)}（已付款）{else}（未支付）{/if}
+									{/if}
+								</p>
+							</td>
+						</tr>
+						{if (!empty($detail['_delivery']))}
+						<tr class="border-top">
+							<td><span class="dw-label">配送方式：</span></td>
+							<td><p>{$detail['_delivery'][delivery_name]}</p></td>
+						</tr>
+						<tr>
+							<td><span class="dw-label">配送单号：</span></td>
+							<td>
+								<p>{if $detail['_delivery'][delivery_sn]}{$detail['_delivery'][delivery_sn]}{else}-{/if}</p>
+							</td>
+						</tr>
+						{/if}
+						{hook/order_detail_info}
+					</table>
+				</div>
+				<div class="dw-right padding-left padding-big-right">
+					<p>订单跟踪</p>
+					{loop $detail[_track] $k $track}
+					<p {if $k == 0}class="text-sub"{/if}>{date('Y-m-d H:i:s',$track['time'])}&nbsp;&nbsp;&nbsp;&nbsp;{$track['msg']}</p>
+					{/loop}
+				</div>
+			</div>
+			<div class="margin-big-top margin-big-bottom border order-handle">
+				<div class="clearfix order-table-info">
+					<div class="th">
+						<div class="td1">商品清单</div>
+						<div class="td2">数量</div>
+						<div class="td3">单价</div>
+						<div class="td4">优惠</div>
+						<div class="td5">操作</div>
+					</div>
+					{loop $detail[_skus] $sku}
+					<div class="td fl" data-skuid="{$sku['sku_id']}" data-number="{$sku['buy_nums']}">
+						<div class="td1 goods-info">
+							<div class="goods-pic pic-center"><a href="{url('goods/index/detail',array('sku_id' => $sku['sku_id']))}" target="_blank"><img src="{$sku[sku_thumb]}"></a></div>
+							<div class="goods-text clearfix">
+								<p class="title"><a href="{$sku['url']}" >{$sku[sku_name]}</a></p>
+								<p>{$sku[_sku_spec]}</p>
+								{if ($sku[is_give] == 1)}
+								<span class="text-lh-little margin-little-top show"><em class="fl bg-blue padding-small-left padding-small-right text-white">赠品</em></span>
+								{/if}
+								{if ($sku[promotion])}
+								<span class="text-lh-little margin-little-top show text-ellipsis text-gray" title="{$sku[promotion][title]}"><em class="fl bg-light-red padding-small-left padding-small-right text-white margin-small-right">{ch_prom($sku[promotion][type])}</em>{$sku[promotion][title]}</span>
+								{/if}
+							</div>
+						</div>
+						<div class="td2">
+							<span>×{$sku[buy_nums]}</span>
+						</div>
+						<div class="td3">
+							<span class="text-mix">￥{$sku['sku_price']}</span>
+						</div>
+						<div class="td4">
+							<span>￥0</span>
+						</div>
+						<div class="td5">
+							<div class="cart-hand">
+								{if ($sku[delivery_status] == 2)}
+								{if ($sku[iscomment] == 1)}
+								<a class="disabled-btn" href="javascript:;">已评价</a>
+								{else}
+								<a class="default-btn" href="?m=comment">去评价</a>
+								{/if}
+								{/if}
+								{if ($setting[return_time] == 1 && $sku[delivery_status] > 0)}
+								<a class="default-btn <?php if($sku[delivery_status] == 1) echo 'service-btn';?>" href="{url('member/service/return_refund',array('id' => $sku[id]))}" target="_blank">售后</a>
+								{/if}
+								{if ($setting[return_time] == 2 && $sku[delivery_status] == 2)}
+								<a class="default-btn" href="{url('member/service/return_refund',array('id' => $sku[id]))}" target="_blank">售后</a>
+								{/if}
+
+							</div>
+						</div>
+					</div>
+					{/loop}
+				</div>
+			</div>
+			{else}
+			<div class="border border-gray-white bg-gray-white padding-small text-default clearfix">
+				<div class="fl margin-left w80">
+					<p>当前订单不存在...</p>
+				</div>
+			</div>
+			{/if}
+		</div>
+	</div>
+</div>
+{template footer common}

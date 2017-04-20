@@ -1,0 +1,477 @@
+{template header common}
+<script type="text/javascript" src="{SKIN_PATH}statics/js/goods_detail.js?v={HD_VERSION}"></script>
+<script type="text/javascript">
+	mui.init();
+    var goods = {
+	    "spu_id"      : "{$goods[spu_id]}",
+	    "sku_id"      : "{$goods[sku_id]}",
+	    "number" 		  : "{$goods[number]}",
+	    // 促销类型
+	    "prom_type"   :"{$goods[prom_type]}"
+	};
+	var theme_path = "{THEME_PATH}";
+</script>
+<script type="text/javascript" src="{__ROOT__}statics/js/jquery.lazyload.js?v={HD_VERSION}"></script>
+<div id="detail-nav" class="mui-row bg-white padding-lr">
+	<span class="mui-col-xs-4 active" data-scroll="0"><a href="javascript:;" data-id="detail">商品详情</a></span>
+	<span class="mui-col-xs-4" data-scroll="0"><a href="javascript:;" data-id="comment">商品评价</a></span>
+	<span class="mui-col-xs-4" data-scroll="0"><a href="javascript:;" data-id="consult">商品咨询</a></span>
+</div>
+<div class="hd-detail-content">
+	<div id="hd_detail">
+		<div class="hd-scroller">
+			<div class="mui-slider bg-white">
+			    <div class="mui-slider-group">
+			    	{loop $goods[img_list] $img}
+			        <div class="mui-slider-item">
+			            <a href="javascript:;"><img src="{SKIN_PATH}statics/images/loading.gif" class="lazy" data-original="{$img}" /></a>
+			        </div>
+					{/loop}
+			    </div>
+			    <div class="mui-slider-indicator">
+			    	{loop $goods[img_list] $k $img}
+			        	<div class="mui-indicator {if $k == 0}mui-active{/if}"></div>
+					{/loop}
+			    </div>
+			</div>
+
+			<div class="basic-info list-col-10 margin-none mui-clearfix">
+				<p class="pro-title text-black" data-skuid="{$goods[sku_id]}">{$goods[sku_name]}{hook/detail_price_right}</p>
+				<div class="pro-act act-link lh-18" style="color:<?php echo $goods['style'] ? $goods['style'] : '#000'?>">
+					{$goods[subtitle]}
+				</div>
+				<!-- <div class="pro-act act-link">
+                    【商家自营】吃心不改，不做饿梦，调味品爽12，爆款直降，还有买一得二，更有满59元减10元！
+                    <a href="" class="act-link text-pink">点击进入</a>
+                </div> -->
+				<div class="pro-price hd-h3">
+					<span class="price-org">￥<em id="prom_price">{$goods['prom_price']}</em></span>
+					{if $goods[prom_type] == 'time' && $goods[prom_id] > 0 && $goods['prom_time'] > 0}
+					<span class="price-promotion">限时促销</span>
+					<p class="price-origin">￥{$goods['shop_price']}</p>
+					<p class="count-down timer" data-time="{$goods['prom_time']}">还剩<em class="text-org t-d">00</em>天<em class="text-org t-h">00</em>小时<em class="text-org t-m">00</em>分<em class="text-org t-s">00</em>秒结束</p>
+					{/if}
+				</div>
+			</div>
+			{if $goods[prom_type] == 'goods' && $goods[prom_id] > 0}
+			<div class="border-bottom margin-top bg-white">
+				{loop $goods_proms[rules] $rule}
+				<div class="padding hd-h4 border-top">
+					<span class="mui-pull-left"><em class="text-org">促&nbsp;&nbsp;&nbsp;&nbsp;销</em>：</span>
+					<span class="margin-large-left padding-large-left mui-block">{$rule[title]}</span>
+				</div>
+				{/loop}
+			</div>
+			{/if}
+			{hook/wap_goods_detail_extra}
+			<div class="list-col-10 guess-like">
+				<span class="title">猜您喜欢</span>
+				<div class="mui-slider margin-small-top">
+					{hd:goods tagfile="goods" method="lists" num="16" order="rand()"}
+					<div class="mui-slider-group">
+						<div class="mui-slider-item">
+							<ul class="hd-grid">
+								{loop $data $n $r}
+								<?php ++$n; ?>
+								<li class="hd-col-xs-e4">
+									<a class="square-item" href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}"><img src="{SKIN_PATH}statics/images/loading.gif" class="guess-like-lazy" data-src="{thumb($r['thumb'])}" /></a>
+									<div class="name">
+										<a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}">{$r['name']}</a>
+									</div>
+									<p class="price">￥{$r['prom_price']}</p>
+								</li>
+								{if ($n % 4 == 0 && $n != 16)}
+							</ul>
+						</div>
+						<div class="mui-slider-item">
+							<ul class="hd-grid">
+								{/if}
+								{/loop}
+							</ul>
+						</div>
+					</div>
+					{/hd}
+				</div>
+			</div>
+		</div>
+		<div class="detail-tips">
+			<span class="fixed" id="pull-text">继续拖动，查看详情</span>
+			<div class="bd"></div>
+		</div>
+		<div class="hd-scroller" style="display: none;">
+			<div id="detail" class="mui-control-content goods-detail mui-active">
+				<?php echo $str = str_replace(' src', ' src="template/wap/statics/images/loading.gif" class="de-lazy" data-original', $goods['content']);?>
+			</div>
+			<div id="comment" class="mui-control-content goods-evaluate">
+				<div class="top mui-clearfix">
+					<span class="mui-pull-left">只有购买过该商品的用户才能评论</span>
+					<span class="mui-btn mui-btn-primary mui-pull-right comment_btn" data-url="{urlencode($_SERVER['REQUEST_URI'])}">我要评论</span>
+				</div>
+				<ul class="comment-lists margin-none padding-lr list-col-10 mui-clearfix"></ul>
+				<a class="top mui-block border-bottom mui-text-center text-black more" href="javascript:;" data-mark="comment">点击查看更多</a>
+			</div>
+			<div id="consult" class="mui-control-content goods-consult">
+				<div class="top mui-clearfix">
+					<span class="mui-pull-left">对商品有任何疑问可在线咨询</span>
+					<a class="mui-btn mui-btn-primary mui-pull-right" href="<?php echo url('goods/consult/add',array('sku_id'=>$_GET['sku_id']))?>">我要咨询</a>
+				</div>
+				<ul class="comment-lists margin-none padding-lr list-col-10 mui-clearfix"></ul>
+				<a class="top mui-block border-bottom mui-text-center text-black more" href="javascript:;" data-mark="consult">点击查看更多</a>
+				<!--<div class="user-list-none mui-text-center">
+                    <img src="{SKIN_PATH}statics/images/ico_34.png" />
+                    <p class="text-black hd-h4 margin-top">没有查询到记录</p>
+                </div>-->
+			</div>
+		</div>
+	</div>
+</div>
+
+<nav class="mui-bar mui-bar-tab mui-row foot-bar">
+	<div class="mui-col-xs-4 mui-row bar-icon">
+		<a class="mui-col-xs-6 collect-btn {if $favorite}cancel_favorite{/if}" href="javascript:;">
+			<span class="mui-icon" {if !$favorite}data-skuid="{$goods['sku_id']}" data-url="{urlencode($_SERVER['REQUEST_URI'])}" data-price="{$goods['shop_price']}"{/if}><img src="{SKIN_PATH}statics/images/ico_35{if $favorite}a{/if}.png" /></span>
+			<span class="mui-tab-label text-gray collect_text">{if $favorite}取消{/if}收藏</span>
+		</a>
+		<a class="mui-col-xs-6" href="{url("order/cart/index")}">
+			<span class="mui-icon"><img src="{SKIN_PATH}statics/images/ico_13.png" /><em class="nums">0</em></span>
+			<span class="mui-tab-label text-gray">购物车</span>
+		</a>
+	</div>
+	<a id="join-cart" class="mui-col-xs-4 item btn mui-btn-primary">加入购物车</a>
+	<a id="buy" class="mui-col-xs-4 item btn mui-btn-danger" data-event="buy_now" data-skuids="{$goods['sku_id']}" href="javascript:;">立即购买</a>
+</nav>
+<div id="spec" class="hd-cover">
+	<div class="body">
+		{loop $goods['specs'] $specs}
+		{if !is_null($specs['id'])}
+		<dl class="goods-spec-item">
+			<dt>{$specs['name']}：</dt>
+			<dd>
+				{loop $specs['value'] $k $spec}
+				<label data-id="{$specs['id']}" data-name="{$specs['name']}" data-value="{$spec}">{$spec}</label>
+				{/loop}
+			</dd>
+		</dl>
+		{/if}
+		{/loop}
+		<div class="padding-left-15 padding-right-15 padding-big-bottom">
+			<h2 class="border-top padding-tb">数量</h2>
+			<div class="number mui-clearfix">
+				<button class="num-btn num-decrease disabled">-</button>
+				<input class="num-input" type="number" data-max="<?php echo $goods['number'] ? $goods['number'] : 1?>" value="1" />
+				<button class="num-btn num-increase">+</button>
+			</div>
+		</div>
+	</div>
+	<div class="summary">
+		<div class="img">
+			<img src="{$goods[thumb]}" />
+		</div>
+		<div class="main">
+			<span class="text-org mui-h4">￥<em>{$goods['prom_price']}</em></span>
+			<div class="hd-h5 margin-small-top"><span class="stock">库存 <em>{$goods['number']}</em>件</span></div>
+		</div>
+		<a class="close mui-icon mui-icon-plus"></a>
+	</div>
+	<div class="option">
+		{if $goods[number] > 0 && $goods[status] == 1}
+		<button class="mui-btn mui-btn-primary full hd-h4 radius-none">确定</button>
+		{elseif $goods[status] != 1}
+		<button class="mui-btn mui-btn-primary full hd-h4 radius-none disabled">商品已下架</button>
+		{else}
+		<button class="mui-btn mui-btn-primary full hd-h4 radius-none disabled">商品已售罄</button>
+		{/if}
+	</div>
+</div>
+<div class="cover-decision"></div>
+<div class="comment-slider hide">
+	<div class="mui-slider">
+		<div class="mui-slider-group"></div>
+	</div>
+</div>
+<script type="text/javascript" src="{SKIN_PATH}statics/js/detail.js"></script>
+{hook/wap_goods_detail_footer}
+</body>
+</html>
+
+<script type="text/javascript">
+	var product_json = <?php echo json_encode($goods['sku_arr'])?>;
+	var sku_obj = <?php echo $goods['spec'] ? $goods['spec'] : "[]";?>;
+	var sku_json = "<?php echo $goods['spec_str']?>";
+	var sku_id = "<?php echo $goods['sku_id']?>";
+
+	//倒计时插件，使用时间戳
+	$(".timer").each(function(){
+		var $this = $(this);
+		window.setInterval(function(){
+			$this.each(function(){
+				var timer = $(this).data("time");//总时间
+				if(timer<=0) return false;
+				timer--;
+				var d = parseInt(timer/3600/24);
+			    var h = parseInt(timer/3600%24);
+			    var m = parseInt(timer%3600/60);
+			    var s = timer%60;
+			    $(this).children(".t-d").text((d>9?d:"0"+d));
+			    $(this).children(".t-h").text((h>9?h:"0"+h));
+			    $(this).children(".t-m").text((m>9?m:"0"+m));
+			    $(this).children(".t-s").text((s>9?s:"0"+s));
+				$(this).data("time",timer)
+			});
+		},1000);
+	});
+	//加入收藏
+	mui("body").on('tap','.collect-btn',function(){
+		var $_this = $(this);
+		var _this = $(this).find('.mui-icon');
+		if($_this.hasClass('cancel_favorite')){
+			$.post("<?php echo url('member/favorite/delete')?>",{sku_id:sku_id},function(ret){
+				if(ret.status == 1){
+					$('.collect-btn img').attr('src','{SKIN_PATH}statics/images/ico_35.png');
+					$('.collect_text').text('收藏');
+					$_this.removeClass('cancel_favorite');
+				}else{
+					return false;
+				}
+			},'json');
+		}else{
+			var url = "<?php echo url('member/favorite/add')?>";
+			var sku_price = _this.attr('data-price');
+			var url_forward =  _this.data('url');
+			$.post(url,{sku_id:sku_id,sku_price:sku_price,url_forward:url_forward},function(data){
+				if(data.status == 1){
+					$('.collect-btn img').attr('src','{SKIN_PATH}statics/images/ico_35a.png');
+					$('.collect_text').text('取消收藏');
+					$_this.addClass('cancel_favorite');
+				}else{
+					$.tips({
+						content:data.message,
+						callback:function() {
+							if(data.message == '请登录后操作'){
+								window.location.href = data.referer;
+							}
+						}
+					});
+				}
+			},'json');
+		}
+	});
+
+	//评价商品
+	mui("#comment").on('tap','.comment_btn',function(){
+		var url_forward = $(this).data('url');
+		var comment = "<?php echo url('comment/index/ajax_comment_index')?>";
+		$.get(comment,{url_forward:url_forward},function(ret){
+			if(ret.status == 0) {
+				$.tips({
+					content:ret.message,
+					callback:function() {
+						window.location.href = ret.referer;
+					}
+				});
+			}else{
+				window.location.href = ret.referer;
+			}
+		},'json')
+	})
+	$(window).load(function(){
+		hdTouch.init({
+			outer: document.getElementById("hd_detail"),
+			pull: document.getElementById("pull-text"),
+			toper: document.getElementsByClassName("header")[0].clientHeight,
+			footer: document.getElementsByClassName("foot-bar")[0].clientHeight,
+			pullHeight: document.getElementsByClassName("detail-tips")[0].clientHeight
+		})
+	})
+	$(function(){
+		$.get("<?php echo url('ajax_get_favorite')?>",{sku_id:'<?php echo $_GET["sku_id"]?>'},function(ret){
+			if(ret.status == 1){
+				$('.collect-btn img').attr('src','{SKIN_PATH}statics/images/ico_35a.png');
+				$('.collect_text').text('取消收藏');
+				$('.collect-btn').addClass('cancel_favorite');
+			}else{
+				$('.collect-btn img').attr('src','{SKIN_PATH}statics/images/ico_35.png');
+				$('.collect_text').text('收藏');
+				$('.collect-btn').removeClass('cancel_favorite');
+			}
+		},'json');
+		//商品详情页面加载完后加载图片
+		$(".de-lazy").each(function(){
+			var $this = $(this);
+			$this.attr("src", $this.data("original"));
+		});
+
+		//猜你喜欢页面加载完后加载图片
+		$(".guess-like-lazy").each(function(){
+			var $this = $(this);
+			$this.attr("src", $this.data("src"));
+			/*//通过ajax校验图片是否有效，有效则替换图片
+			$.ajax({
+				url: $this.data("src"),
+				type:"GET",
+				async:false,
+				success:function(){
+					$this.attr("src", $this.data("src"));
+				},
+				error: function(){
+					$this.attr("src", '{__ROOT__}statics/images/no_pic.png');
+				}
+			});*/
+		});
+
+		var page = {
+			comment : 1,
+			consult : 1
+		};
+
+		var cart_nums = 0;
+
+		goods_detail.init();
+
+		$('.mui-control-item').on('tap','a',function(){
+			var obj = $(this).data('id');
+			$(".goods-intro .mui-control-content").removeClass("mui-active");
+			$("#"+obj).addClass("mui-active");
+		})
+
+		mui('.option').on('tap','.mui-btn',function(){
+			if(!$(this).hasClass('disabled')){
+				var url = window.location.href;
+				var strCart = new RegExp('#cart'),
+						strBuy = new RegExp('#buy');
+				if(strCart.test(url)){
+					goods_detail.cart_add();
+				}else if(strBuy.test(url)){
+					goods_detail.buy_now($('#buy'));
+				}
+			}
+		});
+
+		mui("#detail-nav").on('tap','span',function(e){
+			var $cid = $(this).children("a").data("id");
+			$(this).addClass("active").siblings().removeClass("active");
+			$("#hd_detail .mui-control-content").removeClass("mui-active");
+			$('#'+$cid).addClass("mui-active");
+			hdTouch.resetHeight($('#'+$cid).height() + hdTouch.opts.footer + hdTouch.opts.pullHeight);
+		});
+
+		mui(".mui-control-content").on('tap','.more',function(){
+			var mark = $(this).data("mark");
+			loadLists(mark);
+		})
+
+		function loadLists(mark){
+			if(mark==''||mark==undefined||!mark) return false;
+			if(mark=="comment"){
+				$.getJSON('?m=comment&c=index&a=ajax_comment', {
+					spu_id : goods.spu_id,
+					page : page.comment,
+					limit : 5,
+				}, function(ret) {
+					if(ret.lists && ret.lists!=undefined) {
+						$.each(ret.lists,function(i,item){
+							//item.imgs图片名称
+							var reply_content = ''
+							if(this.reply_content){
+								reply_content = '<div class="admin-text">'
+										+'		<p><span class="text-blue">商家回复：</span>'
+										+ 		this.reply_content
+										+'		</p>'
+										+'	 </div>'
+							}
+							var imgs_html = '';
+							if(item.imgs.length>0){
+								var imgs = '';
+								$.each(item.imgs, function() {
+									imgs += '<span><img src="'+this+'"/></span>';
+								});
+								imgs_html += '<div class="comment-imgs mui-clearfix drag-box">'+imgs+'</div>';
+							}
+							var content = '<li data-id="'+this.id+'">'
+									+'	<div class="full">'
+									+'		<span class="head"><img src="'+this.avatar+'" /></span>'
+									+'		<span class="mui-pull-left">'+this.username+'</span>'
+									+'	</div>'
+									+'	<div class="user-text">'
+									+'		<p>'+this.content+'</p>'
+									+'	</div>'
+									+	imgs_html
+									+	reply_content
+									+'	<p class="hd-h6 text-gray">'+this._datetime+'</p>'
+									+'</li>';
+							$('#comment .comment-lists').append(content);
+						})
+						if(page.comment > 1) hdTouch.resetHeight($('#comment').height());
+					}
+					if(ret.lists&&ret.lists.length>=5){
+						page.comment++;
+					}else{
+						$("#"+mark).find(".more").html("没有更多了");
+						$("#"+mark).find(".more").data("mark","");
+					}
+				});
+			}
+			if(mark=="consult"){
+				$.getJSON('?m=goods&c=index&a=get_consult', {
+					spu_id : goods.spu_id,
+					page : page.consult,
+					limit : 5,
+				}, function(ret) {
+					if(ret.lists && ret.lists!=undefined) {
+						$.each(ret.lists,function(i,item){
+							var reply_content = '';
+							if(this.reply_content){
+								reply_content ='	<div class="admin-text">'
+										+'		<p><span class="text-blue">商家回复：</span>'+ this.reply_content +'</p>'
+										+'	 	</div>'
+							}
+							var username = this.username ? this.username : '游客';
+							var content = '<li data-id="'+this.id+'">'
+									+'	<div class="full">'
+									+'		<span class="head"><img src="'+this.avatar+'" /></span>'
+									+'		<span>'+username+'</span>'
+									+'	</div>'
+									+'	<div class="user-text">'
+									+'		<p>'+this.question+'</p>'
+									+'	</div>'
+									+ 	reply_content
+									+'	<p class="hd-h6 text-gray">'+this._datetime+'</p>'
+									+'</li>';
+							$('#consult .comment-lists').append(content);
+						})
+						if(page.consult > 1) hdTouch.resetHeight($('#consult').height());
+					}
+					if(ret.lists&&ret.lists.length>=5){
+						page.consult++;
+					}else{
+						$("#"+mark).find(".more").html("没有更多了");
+						$("#"+mark).find(".more").data("mark","");
+					}
+				});
+			}
+		}
+
+		loadLists("comment");
+		loadLists("consult");
+
+	});
+
+	$(".number").numberSet();
+
+	mui("#comment").on('tap','.comment-imgs span',function(){
+		var imgs =  $(this).parent(".comment-imgs").find("img");
+		var lists = '';
+		var index = $(this).index();
+		$.each(imgs, function() {
+			lists += '<div class="mui-slider-item"><img src="'+$(this).attr("src")+'" /></div>'
+		});
+		$(".comment-slider").removeClass("hide").find(".mui-slider-group").html(lists);
+		mui('.comment-slider').slider().gotoItem(index);
+	});
+
+	mui(".comment-slider").on('tap','.mui-slider-item',function(){
+		$(".comment-slider").addClass("hide");
+	});
+
+
+</script>

@@ -1,0 +1,127 @@
+<?php include template('toper','common');?>
+<?php include template('header','common');?>
+	<link rel="stylesheet" href="{SKIN_PATH}statics/css/Back.css?v={HD_VERSION}" />
+		<link rel="stylesheet" href="{SKIN_PATH}statics/css/haidao.css?v={HD_VERSION}" />
+		<div class="container back">
+			<i class="back-line"></i>
+			<span>找回密码</span>
+		</div>
+		<div class="container back-box" >
+			<!--密码-->
+			<div class="pwd-box">
+			    <div class="back-cn text-default">
+			       <div class="w10 text-right">新密码：</div>
+			       <div class="back-input">
+						<input type="password" name="pwd" placeholder="请输入您的新密码" class="input" />
+					</div>
+					<div class="prompt text-dot"></div>
+			    </div>
+			    <div class="back-cn text-default margin-big-top">
+			    	<div class="w10 text-right">确认密码：</div>
+			    	<div class="back-input">
+						<input type="password" name="repwd" placeholder="请再次输入您的新密码" class="input"/>
+					</div>
+					<div class="prompt text-dot"></div>
+			    </div>
+			    <div class="re-btn text-center text-white bg-main">确认修改</div>
+			</div>
+		</div>
+       <?php include template('toolbar','common');?>
+		<?php include template('footer','common');?>
+        
+	
+	<script>
+		$(function(){
+			var status_identify=false;
+			$("input[type='password']").focus(function(){
+				$(this).parent().siblings(".prompt").html("");
+				$(".re-btn").attr("data-repwd","");
+			});
+			$("input[type='password']").blur(function(){
+				verify_pwd();
+			});
+
+			function verify_pwd(){
+				var $pwd_=$("input[name='pwd']");
+				var $repwd_=$("input[name='repwd']");
+				var $pwd=$("input[name='pwd']").val();
+				var $repwd=$("input[name='repwd']").val();
+				if(!status_identify){
+					if($pwd==""){
+						$pwd_.parent().siblings(".prompt").html("请输入密码");
+						status_identify=false;
+						return false;
+					}else if($pwd.length<6){
+						$pwd_.parent().siblings(".prompt").html("密码至少6位数");
+						status_identify=false;
+						return false;
+					}else if($repwd==""){
+						$repwd_.parent().siblings(".prompt").html("请输入密码");
+						status_identify=false;
+						return false;
+					}else if($pwd!=$repwd){
+						$repwd_.parent().siblings(".prompt").html("两次输入的密码不一致");
+						status_identify=false;
+						return false;
+					}else{
+						status_identify=true;
+					}
+				}
+			}
+			
+			$(".re-btn").click(function(){
+				var $pwd_=$("input[name='pwd']");
+				var $repwd_=$("input[name='repwd']");
+				var $pwd=$("input[name='pwd']").val();
+				var $repwd=$("input[name='repwd']").val();
+				verify_pwd();
+				if(status_identify){
+					var data={pwd:$pwd,repwd:$repwd,mid:'{$_GET["mid"]}',key:'{$_GET["key"]}'};
+					ajax_repwd(data);
+				}
+			});
+			
+			function ajax_repwd(data){
+				$.ajax({
+					type:"post",
+                    dataType:'json',
+					url:'{url("member/public/reset_password")}',
+					async:true,
+					data:data,
+					success:function(result){
+						top.dialog({
+							title: '消息提示',
+							width: 300,
+							content: '<div class="padding-large text-center">'+result.message+'</div>',
+							okValue: '确定',
+							ok: function(){
+							},
+							onclose: function () {
+								if(result.status==1){
+									gou(1,result.referer);
+								}
+							}
+						})
+						.showModal();
+					}
+				});
+			}
+
+            /**
+             * 页面延时跳转
+             * @param secs
+             * @param surl
+             */
+            function gou(secs, surl) {
+                if (--secs > 0) {
+                    settimeout("gou(" + secs + ",'" + surl + "')", 1000);
+                }
+                else {
+                    location.href = surl;
+                }
+            }
+		});
+		
+	</script>
+
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="name"><![CDATA[默认模板]]></item>
+	<item id="version"><![CDATA[v1.0.0]]></item>
+	<item id="time"><![CDATA[2014-08-25 17:22]]></item>
+	<item id="author"><![CDATA[开发团队]]></item>
+	<item id="copyright"><![CDATA[团队]]></item>
+	<item id="template">
+		<item id="common">
+			<item id="header"><![CDATA[全站头部]]></item>
+			<item id="footer"><![CDATA[全站底部]]></item>
+		</item>
+	</item>
+</root>

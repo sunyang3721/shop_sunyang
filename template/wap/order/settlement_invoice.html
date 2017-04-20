@@ -1,0 +1,45 @@
+{template header common}
+
+	<div class="mui-content">
+    	<div class="padding-lr-15 bg-white hd-h5">
+    		<div class="order-lh-40">发票抬头</div>
+    		<div class="order-note">
+    			<input type="text" data-id="invoice_title" placeholder="请填写发票抬头" />
+    		</div>
+    	</div>
+    	<div class="margin-top-15 padding-lr-15 bg-white hd-h5">
+    		<div class="order-lh-40 border-bottom">发票信息</div>
+    		<div class="padding-top" data-id="invoice_box">
+    			<p class="padding-bottom">数据正在努力加载中...</p>
+    		</div>
+    	</div>
+    	<div class="padding-15" data-id="invoice">
+    		<a href="javascript:;" class="mui-btn mui-btn-primary full hd-h4">确定发票信息</a>
+    	</div>
+	</div>
+	{template footer common}
+</body>
+</html>
+<script type="text/javascript" src="{SKIN_PATH}statics/js/order.js?v={HD_VERSION}"></script>
+<script type="text/javascript">
+	
+	// 确定发票信息
+	$("[data-id='invoice']").on("tap",function() {
+		var isinvoice = parseInt($("[data-id='invoice_box']").find("input[type=radio]:checked").data("isinvoice"));
+		// 读取localStorage已有数据
+		var hd_key = window.localStorage.getItem('hdkey');
+		var hd_datas = JSON.parse(window.localStorage.getItem('hddatas'));
+		hd_datas[hd_key].isinvoice = isinvoice;
+		hd_datas[hd_key].invoiceTitle = $("[data-id='invoice_title']").val();
+		if (!hd_datas[hd_key].invoiceTitle && isinvoice == 1) {
+			$.tips({content:'请填写发票抬头'});
+			return false;
+		}
+		hd_datas[hd_key].invoiceCon = $("[data-id='invoice_box']").find("input[type=radio]:checked").prev().html();
+		window.localStorage.setItem('hddatas', JSON.stringify(hd_datas));
+		window.location.href = document.referrer;
+	});
+	
+	hd_order.invoice();
+	
+</script>

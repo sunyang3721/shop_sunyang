@@ -1,0 +1,64 @@
+<?php include template('toper','common'); ?>
+
+	<!-- 头部 -->
+	<div class="header container">
+		<div class="logo fl">
+			<span><a href="<?php echo __APP__ ?>"><img src="template/default/statics/images/logo.png" /></a></span>
+		</div>
+		<div class="step fr">
+			<div class="item-step">
+				<div class="step-bar margin-bottom">
+					<div class="bar bg-sub w50 fl"></div>
+					<div class="bar bg-sub w50 fr"></div>
+					<i class="current"></i>
+				</div>
+				<span>我的购物车</span>
+			</div>
+			<div class="item-step">
+				<div class="step-bar margin-bottom">
+					<div class="bar bg-sub w50 fl"></div>
+					<div class="bar bg-sub w50 fr"></div>
+					<i class="current"></i>
+				</div>
+				<span>核对订单信息</span>
+			</div>
+			<div class="item-step">
+				<div class="step-bar margin-bottom">
+					<div class="bar bg-sub w50 fl"></div>
+					<div class="bar bg-gray w50 fr"></div>
+					<i class="current"></i>
+				</div>
+				<span class="text-sub">成功提交订单</span>
+			</div>
+		</div>
+	</div>
+	<!--坐标位置-->
+	<div class="layout border-top cart-btn-wrap">
+		<div class="container clearfix">
+			<div class="fl padding-left border-left border-middle border-sub cart-address">成功提交订单</div>
+		</div>
+		<div class="container order border border-gray-white text-default">
+			<div class="order-info bg-gray-white padding-small-top padding-small-bottom padding-large-left padding-large-right border-bottom">
+				<p>订单提交成功，我们会尽快为您发货！ <span class="text-sub">订单号：{$sn}</span></p>
+				<p>应付订单总额：<span class="text-mix">￥{$order['real_amount']}</span></p>
+				<p class="text-sub">您选择了货到付款，请在收货后进行付款</p>
+			</div>
+			<div class="padding-small order-container">
+				<div class="tip-title margin-large-left margin-large-right">
+					<span class="padding-large-left">温馨提示</span>
+					<div class="border border-mix"></div>
+				</div>
+				<div class="order-ok-wrap padding-top padding-big-bottom padding-large-left padding-large-right">
+					<p>您的订单我们已经收到，会尽快确认订单并配送发货！</p>
+					<div class="text-center order-tip">
+						<p class="text-sub">>> 您的包裹会在第一时间送达 >></p>
+						<a class="view-order cart-btn" href="">查看订单</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--底部-->
+<?php include template('toolbar','common');?>
+<?php include template('footer','common'); ?>

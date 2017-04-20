@@ -1,0 +1,32 @@
+{template header common}
+	<div class="mui-content">
+	    <ul class="mui-table-view layout-list-common comment-form margin-none">
+	    	<li class="padding border-bottom mui-text-center">
+	    		<span class="service-apply-ok"></span>
+	    		{if $servers['status'] == 2}
+	    		<h2 class="hd-h3 margin-tb strong">退款成功！</h2>
+	    		{elseif $servers['status'] == -2}
+	    		<h2 class="hd-h3 margin-tb strong"><b class="text-default">您的退款申请已失败，请联系人工处理！</b></h2>
+	    		{else}
+	    		<h2 class="hd-h3 margin-tb strong">等待卖家确认收货并退款</h2>
+	    		{/if}
+	    	</li>
+	    	<li class="padding">
+	    		<div class="lh-20">
+	    		{if !$track}
+					<p>暂无物流信息！</p>
+				{else}
+	    			<p>·物流状态：{$track['message']}</p>
+					<p>·物流公司：{$deliverys[$track['com']]}</p>
+					<p>·物流单号：{$track['nu']}</p>
+				{/if}
+	    		</div>
+	    	</li>
+	    </ul>
+	    <div class="padding">
+	    	<a href="{url('delivery_detail',array('delivery_name' => $server['delivery_name'],'delivery_sn' => $server['delivery_sn']))}" class="mui-btn full mui-btn-primary hd-h4">查看快递信息</a>
+	    </div>
+	</div>
+	{template footer common}
+</body>
+</html>

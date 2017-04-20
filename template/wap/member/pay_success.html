@@ -1,0 +1,18 @@
+{template header common}
+	<div class="mui-content">
+	    <ul class="mui-table-view layout-list-common comment-form margin-none">
+	    	<li class="padding border-bottom mui-text-center">
+	    		<span class="service-apply-ok"></span>
+	    		<h2 class="hd-h3 margin-tb strong">余额充值成功</h2>
+	    	</li>
+	    	<li class="padding">
+	    		<span class="hd-h5">充值金额：<em class="text-org">{$order[money]}</em></span>
+	    	</li>
+	    </ul>
+	    <div class="padding">
+	    	<a href="{url('member/money/log')}" class="mui-btn full mui-btn-primary hd-h4">查看账户余额</a>
+	    </div>
+	</div>
+	{template footer common}
+</body>
+</html>

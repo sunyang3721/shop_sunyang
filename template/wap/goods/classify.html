@@ -1,0 +1,35 @@
+{template header common}
+	<div class="mui-content">
+	    <div class="all-classify">
+	    {hd:goods tagfile="category" order="sort asc" method="lists" catid="0"}
+	    {loop $data $r}
+	    	<h3><span>{$r[name]}</span></h3>
+	    	<ul class="mui-row bg-white">
+	    	<li class="mui-col-xs-3">
+	    		<a href="{url('goods/index/lists',array('id'=>$r[id]))}">全部</a>
+	    	</li>
+	    	{hd:goods tagfile="category" order="sort asc" method="lists" catid="$r[id]"}
+	    	{loop $data $r}
+	    		<li class="mui-col-xs-3">
+	    			<a href="{url('goods/index/lists',array('id'=>$r[id]))}">
+	    				<span>{$r[name]}</span>
+	    			</a>
+	    		</li>
+	    	{/loop}
+	    	<?php $count = count($data)+1;
+			      $fortimes = 4 - ($count%4)?>
+				  {if ($fortimes > 0)}
+				  <?php for($i=0;$i<$fortimes;$i++){ ?>
+					<li class="mui-col-xs-3">
+	    				<a href="jvascript:;">&nbsp;</a>
+	    			</li>
+	    		  <?php }?>
+				  {/if}
+	    	{/hd}	
+	    	</ul>
+	    {/loop}
+	    {/hd}	
+	    </div>
+	</div>
+</body>
+</html>

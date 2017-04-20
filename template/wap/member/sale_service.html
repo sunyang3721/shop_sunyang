@@ -1,0 +1,111 @@
+{template header common}
+	<script type="text/javascript">
+      	mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+	    var page = "<?php echo $_GET['page']?>";
+		var status = "<?php echo $_GET['status'] ? $_GET['status'] : 0?>";
+		var url = "<?php echo url('member/service/ajax_service')?>";
+	    function add_more(){
+	    	var param = {
+    			status : status,
+    			page : page
+    		};
+			pull_get_lists(param,url,'up');
+    	}
+	    
+	    function refresh_page(){
+			var param = {
+				status : status,
+				page : 1
+			};
+			pull_get_lists(param,url,'down');
+	    }
+		function pull_get_lists(param,url,type){
+			$.get(url,param,function(ret){
+    			if(ret.lists && ret.lists.length > 0){
+    				var html = '';
+    				$.each(ret.lists,function(i,item){
+    					var url = '',
+    					service_detail = '{url("member/service/return_refund")}',
+    					url = '<a href="'+ service_detail +'&id=' + item._server.logs[0].o_sku_id + '" class="mui-btn hd-btn-blue mui-pull-right">售后详情</a>';
+    					html += '<li class="goods-item-list padding-none">'
+							 +		'<div class="list-item">'
+							 + 		 	'<div class="list-item-pic">'
+							 +				'<a href="'+ item._skus[0]._sku_url +'"><img src="'+ item._skus[0].sku_thumb +'" /></a>'
+							 +			'</div>'
+							 +		'<div class="list-item-bottom">'
+							 +			'<div class="list-item-title">'
+							 +				'<a href="'+ item._skus[0]._sku_url +'">'+ item._skus[0].sku_name +'</a>'
+							 +			'</div>'
+							 +			'<div class="list-item-text text-ellipsis comment-list-text">'
+							 +				'<span class="text-gray hd-h6">'+ item._skus[0]._sku_spec +'</span>'
+							 +				 url
+							 +			'</div>'
+							 +		'</div>'
+							 +	'</div>'
+							 +	'</li>';
+					})
+					if(type == 'up'){
+						$('.custom-goods-row').append(html);
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$('.custom-goods-row').html(html);
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+    			}else{
+    				if(page == 1){
+    					var html = '<li class="user-list-none mui-text-center">'
+						+	'<img src="{SKIN_PATH}statics/images/bg_7.png" />'
+						+	'<p class="text-black hd-h4">'+(status == 1 ? '没有已完成的订单':'没有处理中的订单')+'</p>'
+						+	'</li>';
+						$('.custom-goods-row').html(html);
+    				}
+					if(type == 'up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					}	
+    			}
+    		},'json')		
+		}
+	</script>
+	<div class="filter-items bg-white full mui-text-left mui-clearfix">
+		<div class="inline padding-lr-15">
+			<a href="{url('member/service/index',array('status' => 0))}" class="filter-item {if $_GET['status'] == 0}current{/if}">处理中</a>
+		</div>
+		<div class="inline padding-lr-15">
+			<a href="{url('member/service/index',array('status' => 1))}" class="filter-item {if $_GET['status'] == 1}current{/if}">已完成</a>
+		</div>
+	</div>
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+	<div class="mui-content">
+	   	<div class="has-scorll-top"></div>
+		<ul class="margin-top custom-goods-items custom-goods-row custom-list-goods border-top mui-clearfix">
+		</ul>
+	</div>
+	</div>
+	{template footer common}
+</body>
+</html>
+<script type="text/javascript">
+	$(function(){
+		add_more();
+	})
+</script>

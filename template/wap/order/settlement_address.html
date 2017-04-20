@@ -1,0 +1,39 @@
+{template header common}
+
+	<div class="mui-content">
+    	<ul class="address-lists bg-white mui-clearfix" data-id="address_box">
+    		<p class="padding mui-text-center">数据正在努力加载中...</p>
+	    </ul>
+    	<div class="padding-lr margin-top">
+    		<a id="address_add" href="#" class="mui-btn mui-btn-primary full hd-h4">添加新收货地址</a>
+    	</div>
+	</div>
+	{template footer common}
+</body>
+</html>
+<script type="text/javascript" src="{SKIN_PATH}statics/js/order.js?v={HD_VERSION}"></script>
+<script>
+	
+	/* 添加新收货地址 */
+	mui("body").on("tap", '#address_add', function() {
+		window.location.href = '{url("member/address/add" ,array("referer" => urlencode($_SERVER["REQUEST_URI"])))}';
+	})
+	
+	/* 选择收货地址 */
+	mui(document).on("tap", ".address-text", function(){
+		// 读取localStorage已有数据
+		var hd_key = window.localStorage.getItem('hdkey');
+		var hd_datas = window.localStorage.getItem('hddatas');
+			hd_datas = $.parseJSON(hd_datas);
+			hd_datas[hd_key].addrId = $(this).data('addressid');
+			hd_datas[hd_key].district = $(this).data('district');
+			window.localStorage.setItem('hddatas', JSON.stringify(hd_datas));
+		// 重新获取收货地址的物流
+		var deli_url = '<?php echo url("order/order/get_deliverys",array("skuids" => $_GET[skuids])) ?>';
+		hd_order.getDeliverys(deli_url, $(this).data('district'));
+		//window.location.href = hd_datas[hd_key].referer;
+	});
+	
+	hd_order.setAddress(); //order.js的调用放在后，避免js出错后导致在此js引用的后面的js无法使用
+	
+</script>

@@ -1,0 +1,61 @@
+{template header member}
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'];?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					<dl class="margin-big-top member-memu clearfix">
+						{template menu_account member}
+					</dl>
+				</div>
+				<div class="right padding-big-left padding-big-right">
+					<div class="margin-big-top pd-15 border border-gray-white bg-gray-white">
+						<span class="margin-big-right text-default">账户余额：<span class="text-mix">{$member['money']}</span></span>
+						<?php if($_config['balance_pay'] == 1):?>
+						<a class="margin-large-left margin-large-right obtn obtn1" href="{url('member/money/pay')}">立即充值</a>
+						<span class="margin-big-left text-gray">冻结余额：{$member['frozen_money']}</span>
+						<?php endif;?>
+					</div>
+					<div class="margin-top table border-td text-center border border-gray-white text-lh-40">
+						<div class="tr">
+							<div class="th w20">时间</div>
+							<div class="th w15">收入/支出</div>
+							<div class="th w15">当前余额</div>
+							<div class="th w60">详细说明</div>
+						</div>
+						{loop $log $r}
+						<div class="tr">
+							<div class="td w20">{$r['dateline_text']}</div>
+							<div class="td w15">{$r['value']}</div>
+							<div class="td w15">￥{sprintf('%.2f' ,$r[money_detail][$r[type]])}</div>
+							<div class="td w60 text-left padding-big-left">{$r['msg']}</div>
+						</div>
+						{/loop}
+					</div>
+					<div class="paging margin-top padding-tb clearfix" data-id="{$_GET[id]}" data-page="{$_GET[page]}">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+		{template footer common}
+
+		<script>
+			$(function(){
+				//点击到指定页
+				$(".paging .button").click(function(){
+					jump_to_page(this);
+				});
+				//回车到指定页
+				$(".paging input[name=page]").live('keyup',function(e){
+					if(e.keyCode == 13){
+						jump_to_page(this);
+					}
+				});
+			})
+		</script>
+
+

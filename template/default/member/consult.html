@@ -1,0 +1,123 @@
+{template header member}
+		<!-- 顶部工具条 -->
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'];?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					{template menu_index member}
+				</div>
+				<div class="right padding-big-left padding-big-right">
+					<div class="member-order-top margin-big-top margin-big-bottom small-search clearfix">
+						<span>发布咨询后请耐心等待工作人员回复，可在会员中心随时查看您的所有咨询。</span>
+					</div>
+					
+					<div id="return-record" class="margin-big-bottom border border-gray-white table1 clearfix">
+						<div class="th">
+							<div class="td w50 text-left">商品信息</div>
+							<div class="td w15">当前售价</div>
+							<div class="td w15">状态</div>
+							<div class="td w20">操作</div>
+						</div>
+						<?php foreach($userinfo as $k => $v){?>
+						<div class="tr">
+							<div class="layout intro">
+								<div class="td w50 goods-info">
+									<div class="goods-pic pic-center">
+										<a href="{url('goods/index/detail',array('sku_id'=>$v[sku_id]))}"><img src="{$v[goods_detail][thumb]}" /></a>
+									</div>
+									<div class="goods-text">
+										<p class="title"><a href="{url('goods/index/detail',array('sku_id'=>$v[sku_id]))}">{$v[goods_detail][sku_name]}</a></p>
+										<p>
+										<?php foreach($v['goods_detail']['spec'] as $key => $value){?>
+											<em><?php echo $value['name']?>：</em><?php echo $value['value']?>&nbsp;
+										<?php }?>
+										</p>
+									</div>
+								</div>
+								<div class="td w15 border-none">
+									<span>{$v[goods_detail][shop_price]}</span>
+								</div>
+								<div class="td w15 border-none">
+								{if $v[status] == 1}
+								<span>已回复</span>
+								{else}
+								<span>未回复</span>
+								{/if}
+								</div>
+								<div class="td w20">
+									<a class="default-btn" href="javascript:;" data-id="{$v[id]}">查看咨询</a>
+								</div>
+							</div>
+							<div class="detail padding-big-left padding-big-right padding-top padding-bottom border border-sub bg-blue-gray">
+								<p class="text-lh-30">咨询时间：{date('Y-m-d H-s-i',$v[dateline])}</p>
+								<p class="text-lh-30">咨询内容： <span class="text-sub">{$v[question]}</span></p>
+								{if $v[status] == 1}
+								<p class="text-lh-30">卖家回复： <span class="text-mix">{$v[reply_content]}</span></p>
+								{/if}
+							</div>
+						</div>
+						<?php }?>
+					</div>
+					<div class="paging margin-bottom padding-tb clearfix">
+						<?php echo $pages?>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--底部-->
+		{template footer common}
+		<div class="hd-toolbar-footer">
+			<div class="hd-toolbar-tab hd-tbar-tab-top margin-bottom">
+				<a href="#"><i class="tab-ico"></i></a>
+			</div>
+			<div class="hd-toolbar-tab hd-tbar-tab-backlist">
+				<a href="#"><i class="tab-ico"></i></a>
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+	$(function(){
+		
+		$("#return-record .default-btn").click(function(){
+			var box = $(this).parents(".intro").next(".detail");
+			if(box.hasClass("show")){
+				box.slideUp(300).removeClass("show");
+			}else{
+				box.slideDown(300).addClass("show");
+			}
+			var id = $(this).attr("data-id");
+			var url = '<?php echo url('goods/consult/see')?>';
+			$.post(url,{"id":id},function(data){
+				if(data.status == 1){
+					return true;
+				}else{
+					return false;
+				}
+			})
+			return false;
+		});
+		
+	})
+	$(".button").live('click',function(){
+		if($(this).prev().val() === ''){
+			top.dialog({
+				title: '消息提示',
+				width: 300,
+				content: '<div class="padding-large text-center">请填写页码</div>',
+				okValue: '确定',
+				ok: function(){
+				},
+			})
+			.showModal();
+			return false;
+		}
+		var url = "{url('member/consult/index')}&page=" + $(this).prev().val();
+		location.href = url;
+	})
+</script>

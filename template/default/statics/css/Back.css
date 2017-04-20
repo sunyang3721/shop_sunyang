@@ -1,0 +1,205 @@
+.back {
+	height: 43px;
+	line-height: 43px;
+}
+
+.back-line {
+	border-left: 4px solid #2a95de;
+	height: 12px;
+	margin-top: 15px;
+	padding-right: 10px;
+}
+
+.back-box {
+	border: 1px solid #e1e1e1;
+	height: 570px;
+}
+
+.back-cn {
+	margin-left: 32px;
+	margin-top: 40px;
+}
+
+.back-cn>div {
+	display: inline-block;
+}
+#btn_sub{
+	display: block;
+	margin-left: 130px;
+}
+.back-input {
+	width: 250px;
+	height: 32px;
+	line-height: 30px;
+	margin-left: 4px;
+}
+.password-find .left{line-height: 28px;}
+
+.password-find{
+	display: none;
+}
+.choose-way{
+	width: 100%;
+	
+}
+.choose-way label{
+	display: block;
+	width: 15%;
+	height: 30px;
+	line-height: 30px;
+	float: left;
+}
+.choose-way label input{
+	margin-top: 10px;
+}
+.choose-way .way-content{
+	display: block;
+	width: 100%;
+	margin-left: 150px;
+}
+
+
+
+.back-input input {
+	line-height: 28px;
+	width:100%;
+}
+
+
+.inputBg {
+	border-color: #79afd3;
+	background: #f5f8fd;
+}
+
+.back-btn {
+	margin-left: 158px;
+	width: 100px;
+	height: 32px;
+	background: #1380cb;
+	line-height: 32px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.back-btn:hover {
+	background: #2ca0f0;
+}
+.prompt{line-height: 32px;margin-left: 20px;}
+
+.promptBg {
+	background: url(../../statics/images/icon-1.png) no-repeat;
+	width: 24px;
+	height: 16px;
+	margin-left: 8px;
+}
+
+.popup {
+	width: 397px;
+	height: 188px;
+	border: 1px solid #eee;
+	background-color: #FFFFFF;
+	box-shadow: 0 0 22px 3px #eeeeee;
+	margin: 0 auto;
+	position: relative;
+}
+
+.popup-top {
+	background: #f2f2f2;
+	height: 40px;
+	padding-left: 8px;
+}
+
+.popup-top p{line-height: 25px;}
+
+.popup-cn {
+	margin-top: 45px;
+	margin-bottom: 42px;
+}
+
+.closeIcon {
+	background: url(../../statics/images/icon-2.png) no-repeat;
+	width: 12px;
+	height: 12px;
+	margin-top: 16px;
+	margin-right: 17px;
+	cursor: pointer;
+}
+
+.popup-btn {
+	width: 89px;
+	height: 34px;
+	line-height: 34px;
+	border-radius: 4px;
+	margin-right: 17px;
+	cursor: pointer;
+}
+
+
+/*密码*/
+
+.affirm {
+	margin-left: 66px;
+	margin-top: 20px;
+}
+
+.affirm>div {
+	display: inline-block;
+}
+
+.re-btn,.consure {
+	width: 89px;
+	height: 34px;
+	line-height: 34px;
+	margin-top: 16px;
+	margin-left: 155px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.margin-left-none{margin-left: 0 !important;}
+.w12-5{width: 12.5%;}
+
+/*手机找回密码*/
+
+.code-box {
+	margin-left: 32px;
+	margin-top: 20px;
+	line-height: 32px;
+}
+
+.code-box>div {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.code-input {
+	width: 120px;
+	height: 31px;
+}
+
+.code-input input {
+	width: 118px;
+	background: #eee;
+	height: 100%;
+	text-align: center;
+}
+
+.send {
+	width: 120px;
+	height: 32px;
+	line-height: 32px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.code-btn{
+	margin-left: 155px;
+	width: 100px;
+	height: 32px;
+	background: #1380cb;
+	line-height: 32px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.code-btn:hover {
+	background: #2ca0f0;
+}
+

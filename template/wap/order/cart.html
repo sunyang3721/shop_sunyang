@@ -1,0 +1,69 @@
+{template header common}
+
+{if ($carts[sku_counts] == 0)}
+	<div class="mui-content">
+		<ul class="user-lists mui-clearfix">
+	    	<li class="user-list-none order-lh-40 mui-text-center">
+				<img src="{SKIN_PATH}statics/images/bg_5.png" />
+				<p class="text-black hd-h4">您的购物车还是空的</p>
+				<a href="{__APP__}" class="mui-btn mui-btn-primary mui-btn-outlined border-small">先去逛逛</a>
+			</li>
+		</ul>
+	</div>
+	{template footer common}
+{else}
+	<div class="mui-content has-footer-bar mui-clearfix">
+		{loop $carts[skus] $cart}
+		    <dl class="cart-lists margin-none mui-clearfix">
+		    	<dt><h3 class="shop-title">商家自营</h3></dt>
+				{loop $cart[sku_list] $v}
+			    	<dd class="cart-list-item" data-skuid="{$v[_sku_][sku_id]}">
+			    		<div class="hd-checkbox item-checkbox">
+		    				<input name="check_sku" type="checkbox" {if ($v[_sku_][number] > 0 && $v[_sku_][status] == 1)}checked="checked"{else}disabled="disabled"{/if}/>
+		    			</div>
+		    			<div class="item-pic"><img src="{$v[_sku_][thumb]}" /></div>
+		    			<div class="item-text">
+		    				<p class="mui-clearfix goods-shelves">
+		    					<a href="{url("goods/index/detail",array("sku_id" => $v[_sku_][sku_id]))}">{$v[_sku_][name]}</a>
+		    					{if ($v[_sku_][status] == 0)}<span class="shelves"><i class="icon-shelves"></i>已下架</span>{/if}
+		    				</p>
+		    				<span class="text-org price">￥<em>{$v[_sku_][prom_price]}</em></span>
+		    				<div class="number full mui-clearfix">
+			    				<button class="num-btn num-decrease {if ($v[number] == 1)}disabled{/if}" data-event="number">-</button>
+			    				<input class="num-input" type="number" data-max="{$v[_sku_][number]}" value="{$v[number]}" data-id="buy-num"/>
+			    				<button class="num-btn num-increase {if ($v[number] >= $v[_sku_][number])}disabled{/if}" data-event="number">+</button>
+			    				<em class="delelte mui-pull-right" data-id="del-sku"><img src="{SKIN_PATH}statics/images/ico_27.png"></em>
+			    			</div>
+		    			</div>
+			    	</dd>
+		    	{/loop}
+		    </dl>
+		{/loop}
+	</div>
+	<nav class="cart-footer-bar">
+		<div class="cart-footer-box full">
+			<div class="hd-checkbox">
+				<label>全选</label>
+				<input name="check_all" type="checkbox" data-id="chekced-all" checked="true" />
+			</div>
+		    <p class="mui-pull-right cart-total mui-text-right">
+				<span class="text-org">合计：￥<em class="normal" data-id="totle">{$carts[all_prices]}</em></span><br/>
+				结算商品数量：<em class="normal" data-id="sku-numbers">{$carts[sku_numbers]}</em> 件
+			</p>
+		</div>
+		<a href="javascript:;" data-id="sub-btn" class="cart-footer-btn mui-text-center">结算</a>
+	</nav>
+{/if}
+</body>
+</html>
+
+<script type="text/javascript" src="{SKIN_PATH}statics/js/cart.js?v={HD_VERSION}"></script>
+<script>
+	$.numbers();
+	$.checkedAll({
+		master: $("[data-id='chekced-all']"),
+		child: $(".cart-lists .cart-list-item .hd-checkbox")
+	});
+	update_total();
+</script>
+{hook/wap_cart_settlement_footer}

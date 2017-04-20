@@ -1,0 +1,147 @@
+<?php include template('toper','common');?>
+<?php include template('header','common');?>
+<link type="text/css" rel="stylesheet" href="{__ROOT__}statics/js/dialog/ui-dialog.css?v={HD_VERSION}" />
+<script type="text/javascript" src="{__ROOT__}statics/js/dialog/dialog-plus-min.js?v={HD_VERSION}"></script>
+		<!--面包屑-->
+		<div class="container crumbs clearfix">
+			<p class="fl layout">
+				<i class="icon-crumbs"></i>
+				{catpos($_GET[catid])}<em>></em><a href="{url('goods/index/detail',array('sku_id'=>$_GET['sku_id']))}">{$sku_name}</a>
+				<em>></em>
+				商品咨询
+			</p>
+		</div>
+		<!--list-->
+		<div class="item-two-column container clearfix" id="adjust">
+			<div id="consult-left" class="left fl">
+				<div class="layout border border-gray-white consult-goods-info clearfix">
+					<div class="item-title">商品信息</div>
+					<div class="layout padding">
+						<a class="show" href="{url('goods/index/detail',array('sku_id'=>$sku_id))}"><img src="<?php echo thumb($thumb)?>" width="189" /></a>
+						<p class="margin-small-top text-lh" href="">商品名称：<a class="text-sub" href="{url('goods/index/detail',array('sku_id'=>$sku_id))}">{$sku_name}</a></p>
+						<p class="margin-small-bottom">价格：<span class="text-mix">￥{$prom_price}</span></p>
+						<div id="adjust">
+							<div class="adjust-wrap"><input value="1" type="hidden"></div>
+						</div>
+							<a class="cart-btn" data-event="cart_add" data-skuids="{$sku_id}">加入购物车</a>
+					</div>
+				</div>
+			</div>
+			{hook/consult_top}
+			<div class="fr right goods-consult">
+				<!--咨询框-->
+				<div class="layout border item-blue-top clearfix">
+					<div class="item-title padding-left"><span>发表咨询</span></div>
+					<div class="layout padding consult-box">
+						<p class="text-lh-small">声明：您可在购买前对产品包装、颜色、运输、库存等方面进行咨询，我们有专人进行回复！因厂家随时会更改一些产品的包装、颜色、产地等参数，所以该回复仅在当时对提问者有效，其他网友仅供参考！发布咨询后请耐心等待工作人员回复，可在会员中心随时查看您的所有咨询。</p>
+						<textarea class="margin-top padding layout textarea border text-lh" placeholder="发表您的商品咨询，我们将第一时间给予解答" name="question"></textarea>
+						<input class="margin-top button" id="consult" type="submit" value="发表咨询" />
+					</div>
+				</div>
+				<!--咨询回复内容-->
+				<div class="layout consult-lists">
+					{hd:goods method="lists"  tagfile="consult" spu_id="$spu_id" num="10" page="$_GET[page]" }
+					{loop $data $r}
+					<div class="list">
+						{if $r[username]}
+						<p><span class="user-name">网友：{$r[username]}</span><span>{date('Y-m-d H:i:s',$r[dateline])}</span></p>
+						{else}
+						<p><span class="user-name">游客</span><span>{date('Y-m-d H:i:s',$r[dateline])}</span></p>
+						{/if}
+						<p>咨询内容：<span class="text-sub">{$r[question]}</span></p>
+						{if $r[status] == 1}
+						<p>卖家回复： <span class="text-mix">{$r[reply_content]}</span></p>
+						{/if}
+					</div>
+					{/loop}
+					{/hd}
+				</div>
+				<!--分页-->
+				<div class="fl layout paging margin-top padding-tb clearfix" data-id="{$_GET[id]}" data-page="{$_GET[page]}">
+					<?php echo $pages;?>
+				</div>
+			</div>
+		</div>
+		<?php include template('toolbar','common');?>
+		<?php include template('footer','common');?>
+		<script>
+		var cart_jump = "<?php echo $cart_jump?>";
+		var success_url = "<?php echo url('order/cart/success')?>";
+		var cart_url = "<?php echo url('order/cart/index')?>";
+			$(function(){
+
+				//筛选条
+				scrollBar();
+			})
+			//筛选条
+			function scrollBar(){
+				$(window).scroll(function(){
+					var doctop = $(document).scrollTop();
+					var _head = $("#consult-left").offset().top;
+					if(doctop <= _head){
+						$('#consult-left').removeClass('scroll-bar');
+					}
+					if(doctop > _head){
+						$('#consult-left').addClass('scroll-bar');
+					}
+				});
+			}
+		$("input[type=button]").live('click',function(){
+			var sku_id = '<?php echo $_GET['sku_id']?>';
+			if($(this).prev().val() === ''){
+				top.dialog({
+					title: '消息提示',
+					width: 300,
+					content: '<div class="padding-large text-center">请填写页码</div>',
+					okValue: '确定',
+					ok: function(){
+					},
+				})
+				.showModal();
+				return false;
+			}
+			var url = "{url('goods/index/add')}&sku_id="+sku_id+"&page=" + $(this).prev().val();
+			location.href = url;
+		})
+
+		$("#consult").click(function(){
+			var url = '<?php echo url('goods/consult/add')?>';
+			var sku_id = '<?php echo $_GET['sku_id']?>';
+			var spu_id = '<?php echo $spu_id?>';
+			var question = $("textarea[name=question]").val();
+			$.post(url,{'sku_id':sku_id,'spu_id':spu_id,'question':question},function(ret){
+				top.dialog({
+					title: '消息提示',
+					width: 300,
+					content: '<div class="padding-large text-center">'+ret.message+'</div>',
+					okValue: '确定',
+					ok: function(){
+					},
+					onclose: function () {
+						if(ret.status == 1){
+							window.location.reload();
+						}
+					}
+				})
+				.showModal();
+			},'json');
+		})
+		$(".last .button").live('click',function(){
+		if($(this).prev().val() === ''){
+				top.dialog({
+					title: '消息提示',
+					width: 300,
+					content: '<div class="padding-large text-center">请填写页码</div>',
+					okValue: '确定',
+					ok: function(){
+					},
+				})
+				.showModal();
+				return false;
+			}
+			var url = "{url('goods/consult/add')}&sku_id="+<?php echo $sku_id?>+"&page=" + $(this).prev().val();
+			location.href = url;
+	})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,370 @@
+{template header member}
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'];?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					{template menu_index member}
+				</div>
+				<div class="right padding-big-left padding-big-right">
+					<div class="member-order-top margin-top margin-bottom small-search clearfix">
+						<div class="fl padding-small-top">
+							<ul class="order-menu">
+								<li><a {if $_GET['iscomment'] == 0}class="current"{/if} href="{url('index',array('iscomment' => 0))}">待评价({$nocomment})</a></li>
+								<li><a {if $_GET['iscomment'] == 1}class="current"{/if} href="{url('index',array('iscomment' => 1))}">已评价({$iscomment})</a></li>
+								<div class="mat"></div>
+							</ul>
+						</div>
+					</div>
+
+					<div id="return-record" class="margin-big-bottom border border-gray-white table1 clearfix">
+						<div class="th">
+							<div class="td layout text-left">商品信息</div>
+						</div>
+						{if count($lists) > 0}
+						{loop $lists $r}
+						<div class="tr" data-id='{$r[id]}'>
+							<div class="layout intro">
+								<div class="td w60 goods-info">
+									<div class="goods-pic pic-center pic-table">
+										<a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}"><img src="{$r['sku_thumb']}" /></a>
+									</div>
+									<div class="goods-text">
+										<p class="title"><a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}">{$r[sku_name]}</a></p>
+										<p>{$r[_sku_spec]}</p>
+									</div>
+								</div>
+								<div class="td w25">
+									<span>下单时间：{date('Y-m-d H:i:s', $r[dateline])}</span>
+									<br />
+									<span>订单号：{$r[order_sn]}</span>
+								</div>
+								<div class="td w15">
+									<a class="{if $_GET['iscomment']==1}ajax_content default-btn{else}eval-immed default-btn{/if}" href="" data-id="{$r['sku_id']}" data-sn="_{$r['order_sn']}">{if $_GET['iscomment'] == 1}查看评价{else}立即评价{/if}</a>
+								</div>
+							</div>
+							{if $_GET[iscomment] == 0}
+							<div class="detail border border-sub bg-blue-gray">
+								<ul class="double-line padding-big-right padding-small-bottom padding-top clearfix">
+									<li class="list">
+										<span class="label">评价：</span>
+										<div class="content item-checked">
+											<div class="item selected" data-name="mood" data-value="positive">
+												<i></i>
+												<a class="text-default" href="javascript:;">好评</a>
+											</div>
+											<div class="item" data-name="mood" data-value="neutral">
+												<i></i>
+												<a class="text-default" href="javascript:;">中评</a>
+											</div>
+											<div class="item" data-name="mood" data-value="negative">
+												<i></i>
+												<a class="text-default" href="javascript:;">差评</a>
+											</div>
+										</div>
+									</li>
+									<li class="list margin-top">
+										<span class="label">商品晒单：</span>
+										<div class="content">
+											<ul class="pic-rank-1">
+<!-- 												<li><a class="pic-center" href=""><img src="../images/test1.jpg"></a></li>
+												<li><a class="pic-center" href=""><img src="../images/test2.jpg"></a></li>
+												<li><a class="pic-center" href=""><img src="../images/test3.jpg"></a></li>
+												<li><a class="pic-center" href=""><img src="../images/test4.jpg"></a></li> -->
+												<li class="add">
+													<label class="file show" id="file_{$r[id]}"></label>
+												</li>
+											</ul>
+										</div>
+									</li>
+									<li class="list">
+										<span class="label">商品晒单：</span>
+										<div class="content">
+											<textarea class="textarea layout" name="content" placeholder="发表您的商品评价，与给多人一同分享"></textarea>
+										</div>
+									</li>
+									<li class="list margin-top">
+										<span class="label"></span>
+										<div class="content">
+											<input class="fl button bg-sub" type="button" name="dosubmit" value="发表评价" />
+										</div>
+									</li>
+								</ul>
+							</div>
+							{else}
+							<div class="has-comment padding-large detail border border-sub bg-blue-gray clearfix"></div>
+							{/if}
+						</div>
+						{/loop}
+					</div>
+					<div class="paging margin-bottom padding-tb clearfix" data-page="{$_GET[page]}">
+						<ul class="fr">{$pages}</ul>
+					</div>
+					{else}
+					<p class="text-center padding-large">尚未购买任何商品！</p>
+					{/if}
+				</div>
+			</div>
+		</div>
+
+<link type="text/css" rel="stylesheet" href="{__ROOT__}statics/js/upload/uploader.css?v={HD_VERSION}" />
+<script type="text/javascript" src="{__ROOT__}statics/js/upload/uploader.js?v={HD_VERSION}"></script>
+<script type="text/javascript">
+	$(function(){
+		//点击到指定页
+		$(".paging .button").click(function(){
+			jump_to_page(this);
+		});
+		//回车到指定页
+		$(".paging input[name=page]").live('keyup',function(e){
+			if(e.keyCode == 13){
+				jump_to_page(this);
+			} 
+		});
+		
+		$(".order-menu li a").bind('mouseover',function(){
+			var _left = $(this).offset().left-$(".order-menu").offset().left;
+			$(".mat").stop().animate({left:_left+"px",width:$(this).width()},300);
+		});
+		$(".order-menu").bind('mouseleave',function(){
+			orderMenuAutoSlide(300);
+		});
+		var ajax_url = "<?php echo url('ajax_content')?>";
+		$('.ajax_content').bind('click',function(){
+			var $this = $(this);
+			var sku_id = $(this).data('id');
+			var order_sn = $(this).data('sn').replace('_','');
+			var $box = $this.parents(".intro").next(".detail");
+			
+			if($this.data("load") != true){
+				$.post(ajax_url,{sku_id:sku_id,order_sn:order_sn},function(ret){
+					var img_html = '';
+					if(ret==null) return;
+					if(ret[0].imgs != ''){
+						var $img = eval(ret[0].imgs);
+						var imgs = '';
+						$.each($img, function(i) {
+							imgs += '<li><a class="pic-center" href="#"><img src="'+$img[i]+'"></a></li>';
+						});
+						img_html = '<div class="comment-pic-view">'
+									+'	<div class="widget-carousel-content">'
+									+'		<ul class="widget-carousel-lists">'+imgs+'</ul>'
+									+'	</div>'
+									+'	<div class="widget-carousel-box pic-center">'
+									+'		<a class="widget-carousel-link prev" href="#"></a>'
+									+'		<a class="widget-carousel-link next" href="#"></a>'
+									+'	</div>'
+									+'</div>';
+					}
+					var mood = '';
+					if(ret[0].mood == 'negative'){
+						mood = '差评';
+					}else if(ret[0].mood == 'neutral'){
+						mood = '中评';
+					}else{
+						mood = '好评';
+					}
+					var $html = '';
+					$html += '<div class="time-area">'
+							+'	<span>评价时间：'+ret[0]._datetime+'</span>'
+							+'</div>'
+							+'<div class="comment-text">'
+							+'	<p><span class="text-gray">评&emsp;&emsp;价：'+mood+'</span></p>'	
+							+'	<p><span class="text-gray">商品评价：</span>'+ret[0].content+'</p>'
+							+'</div>';
+					$html += (img_html!=''?img_html:'');
+							
+					if(ret[0].reply_content != ''){
+						$html += '<div class="m-t-15 comment-text text-mix"><p>商家回复：'+ret[0].reply_content+'</p></div>';
+					}
+								
+					$box.html('<div class="comment-view-wrapper">'+$html+'</div>');
+					$this.data("load",true);
+					$box.stop(true,true).slideDown(300).addClass("show");
+				},'json');
+			}else{
+				if(!$box.hasClass("show")){
+					$box.stop(true,true).slideDown(300).addClass("show");
+				}else{
+					$box.stop(true,true).slideUp(300).removeClass("show");
+				}
+			}
+			
+			return false;
+		})
+		function orderMenuAutoSlide(timer){
+			var num = 0;
+			var width = 0;
+			$(".order-menu li").each(function(){
+				if($(this).children("a").hasClass("current")){
+					num = $(this).children("a").offset().left;
+					width = $(this).children("a").width();
+				}
+			});
+			$(".mat").stop().animate({left:num-$(".order-menu").offset().left+"px",width:width},timer).show();
+		}
+		orderMenuAutoSlide(0);
+
+		$("#return-record .eval-immed").click(function(){
+			var box = $(this).parents(".intro").next(".detail");
+			if(box.hasClass("show")){
+				box.slideUp(300).removeClass("show");
+			}else{
+				box.slideDown(300).addClass("show");
+			}
+			return false;
+		});
+
+
+		$("[type=button][name=dosubmit]").click(function() {
+			var $this = $(this).parents('div.tr');
+			var tid = $this.data('id');
+
+			var imgs = [];
+			$this.find('ul.pic-rank-1 img').each(function(){
+				imgs.push($(this).attr('src'));
+			})
+
+			var params = {
+				tid:tid,
+				mood:$this.find(".selected[data-name=mood]").data('value'),
+				imgs:imgs,
+				content:$this.find("textarea[name=content]").val()
+			}
+			$.post("{url('comment/index/add')}", params, function(ret) {
+				if(ret.status == 0) {
+					top.dialog({
+						title: '消息提示',
+						width: 300,
+						content: '<div class="padding-large text-center">'+ret.message+'</div>',
+						okValue: '确定',
+						ok: function(){
+						},
+					})
+					.showModal();
+					return false;
+				} else {
+					window.location.reload();
+				}
+			}, 'json')
+		})
+
+		$('div.tr[data-id]').each(function(){
+			var $this = $(this),
+				tid = $this.data("id"),
+				$wrap = $('ul.pic-rank-1', $this);
+			var uploader = WebUploader.create({
+		        auto:true,
+		        fileNumLimit:10,
+		        fileVal:'upfile',
+		        // swf文件路径
+		        swf: '<?php echo __ROOT__;?>statics/js/upload/uploader.swf',
+		        // 文件接收服务端。
+		        server: "<?php echo url('attachment/index/upload')?>",
+		        // 选择文件的按钮。可选
+		        formData:{
+		            file : 'upfile',
+		            upload_init : '<?php echo $attachment_init ?>'
+		        },
+		        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+		        pick: {
+		            id: '#file_' + tid,
+		            multiple:true
+		        },
+		        // 压缩图片大小
+		        compress:false,
+		        accept:{
+		            title: '图片文件',
+		            extensions: 'gif,jpg,jpeg,bmp,png',
+		            mimeTypes: 'image/*'
+		        },
+		        chunked: false,
+		        chunkSize:1000000,
+		        resize: false
+		    })
+
+		    uploader.onUploadSuccess = function(file, response) {
+		    	if(response.status == 1) {
+		    		$wrap.prepend('<li><a class="pic-center" href="'+ response.result.url +'" target="_blank"><img src="'+response.result.url+'"></a><i class="pic-close text-center text-white">×</i></li>');
+		    	} else {
+		    		top.dialog({
+						title: '消息提示',
+						width: 300,
+						content: '<div class="padding-large text-center">'+response.message+'</div>',
+						okValue: '确定',
+						ok: function(){
+						},
+					})
+					.showModal();
+		    		return false;
+		    	}
+			    	$("li").hover(function(){
+						$(".pic-close").eq($(this).index()).show();
+					},function(){
+						$(".pic-close").eq($(this).index()).hide();
+					});
+					$(".pic-close").click(function(){
+						$(this).closest("li").remove();
+					});
+		    }
+		})
+		
+		widgetCarousel();
+		
+	})
+
+	function widgetCarousel(){
+
+		$(".widget-carousel-content ul li").live('click',function(){
+			var _parent = $(this).parents(".widget-carousel-content");
+			var _next = _parent.next(".widget-carousel-box");
+			if(_next.find("img").length<=0){
+				_parent.find("img").each(function(i){
+					_next.append('<img data-ind="'+i+'" src="'+$(this).attr("src")+'" />');
+				});
+			}
+			_next.find("img").eq($(this).index()).show().siblings("img").hide();
+			if(!$(this).hasClass("current")){
+				$(this).addClass("current").siblings("li").removeClass("current");
+				_next.slideDown(300);
+			}else{
+				$(this).removeClass("current");
+				_next.slideUp(300);
+			}
+			return false;
+		});
+		
+		$(".widget-carousel-box .prev").live('click',function(){
+			var ind = 0;
+			var _img = $(this).parent().find("img");
+			var _len = _img.length;
+			_img.each(function(i){
+				if($(this).css("display")!='none') ind = i;
+			});
+			ind--;
+			if(ind<0) ind = _len-1;
+			_img.eq(ind).show().siblings("img").hide();
+			$(this).parent().prev().find("li").eq(ind).addClass("current").siblings("li").removeClass("current");
+			return false;
+		});
+		
+		$(".widget-carousel-box .next").live('click',function(){
+			var ind = 0;
+			var _img = $(this).parent().find("img");
+			var _len = _img.length;
+			_img.each(function(i){
+				if($(this).css("display")!='none') ind = i;
+			});
+			ind++;
+			if(ind>_len-1) ind = 0;
+			_img.eq(ind).show().siblings("img").hide();
+			$(this).parent().prev().find("li").eq(ind).addClass("current").siblings("li").removeClass("current");
+			return false;
+		});
+		
+	}
+</script>
+{template footer common}

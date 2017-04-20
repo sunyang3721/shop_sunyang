@@ -1,0 +1,102 @@
+{template header common}
+	<script>
+		mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+		var page = '<?php echo $_GET['page']?>';
+		var url = '<?php echo url('member/money/get_log')?>';
+		function add_more(){
+			var param = {
+				"limit" : 4,
+				"page" : page
+			}
+			pull_get_lists(param,url,'up');
+		}
+		function refresh_page(){
+			var param = {
+				"limit" : 4,
+				"page" : 1
+			}
+			pull_get_lists(param,url,'down');
+		}
+		function pull_get_lists(param,url,type){
+			$.post(url,param,function(ret){
+				var html = '';
+				var goods_detail = '<?php echo url('goods/index/detail')?>';
+				if(ret && ret.length > 0){
+					$.each(ret,function(i,v){
+						html += '<li class="balance-list margin-left padding-tb mui-clearfix">'
+							 +'<span class="mui-pull-left mui-col-xs-8">'
+							 +'<span>'+v.msg+'</span>'
+							 +'<span class="text-gray">'+v.dateline_text+'</span>'
+							 +'</span>'
+							 +'<span class="mui-pull-right mui-col-xs-4 padding-right text-pink hd-h2 text-ellipsis mui-text-right">'+v.value+'</span>'
+							 +'</li>'
+					});
+					if(type == 'up'){
+						$(".log-lists").append(html);
+						$(".order-lists").hide();
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$('.log-lists').html(html);
+						$(".order-lists").hide();
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+				}else{
+					if(page == 1){
+						$(".log-lists").hide();
+						$(".order-lists").show();
+					}
+					if(type == 'up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);						
+					}
+				}
+			},'json');
+		}
+		$(function(){
+			add_more();
+		})
+	</script>
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+	<div class="mui-content">
+	   	<div class="account-balance text-white">
+	   		<span class="mui-block mui-text-right margin-bottom">冻结余额：{$member['frozen_money']}</span>
+	   		<div class="balance-atten">
+	   			<h2>{$member['money']}</h2>
+	   			<span>手机账户余额购买商品时只支持最大金额使用<br />请谨慎使用</span>
+	   		</div>
+	  	</div>
+	   	<a href="{url('member/money/pay')}" class="balance-charge text-white mui-text-center mui-block hd-h3">我要充值</a>
+	   	<ul class="border-top balance-lists list-col-10 mui-row mui-clearfix log-lists">
+   			<li class="padding bg-white border-bottom clearfix"><span>收支明细</span></li>
+		</ul>
+		<ul class="order-lists margin-top border-top mui-clearfix">
+			<li class="padding bg-white border-bottom"><span>收支明细</span></li>
+			<li class="user-list-none balance-none-tip mui-text-center">
+				<img src="{SKIN_PATH}statics/images/bg_1.png" />
+				<p class="margin-top text-black hd-h5">您还没有相关的订单</p>
+			</li>
+		</ul>
+	</div>
+	</div>
+	{template footer common}
+</body>
+</html>

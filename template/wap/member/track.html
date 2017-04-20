@@ -1,0 +1,29 @@
+{template header common}
+	<div class="mui-content">
+	    <div class="logistics-company padding">
+	    	<div class="mui-pull-left margin-right">
+	    		<img src="{if ($info[delivery][logo])}$info[delivery][logo]{else}./statics/images/deliverys/{$info['delivery']['identif']}.png{/if}" onerror="javascript:this.src='./statics/images/default_no_upload.png';"/>
+	    	</div>
+	    	<div class="text-white">
+	    		<h4 class="hd-h5">{$order_delivery[delivery_name]}</h4>
+	    		<h4>运单号：{if ($order_delivery[delivery_sn])}{$order_delivery[delivery_sn]}{else} - {/if}</h4>
+	    	</div>
+	    </div>
+	    <div class="list-col-10 padding-lr">
+	    	<div class="padding-tb border-bottom">
+	    		<span class="hd-h5">物流跟踪</span>
+	    	</div>
+	    	<ul class="logistics-info padding-left-15">
+	    		{loop $info['tracks'] $k $track}
+		    		<li class="tracking-list {if $k == 0}new{/if}">
+		    			<div class="box">
+		    				<p>{$track['msg']}</p>
+		    				<p>{date('Y-m-d H:i:s',$track['time'])}</p>
+		    			</div>
+		    		</li>
+				{/loop}
+	    	</ul>
+	    </div>
+	</div>
+</body>
+</html>

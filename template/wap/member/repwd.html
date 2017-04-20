@@ -1,0 +1,101 @@
+{template header common}
+<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+<script type="text/javascript" src="template/default/statics/js/jquery.cookie.js?v={HD_VERSION}"></script>
+<?php
+	$setting = model('admin/setting','service')->get();
+?>
+<div class="mui-content">
+	<div class="padding bg-white password-find">
+		<div class="list">
+        	<input  type="password" class="input" name="pwd"  placeholder="请输入您的密码" />
+        	<span class="validform_checktip"></span>
+        </div>
+    	<div class="list">
+        	<input type="password" class="input" name="repwd" placeholder="请再次输入您的密码" />
+        	<span class="validform_checktip"></span>
+        </div>
+         <input type="hidden" value="" id="mid">
+         <div id="reset_btn" class="re-btn mui-btn full mui-btn-blue">确认修改</div>
+	</div>
+</div>
+
+{template footer common}
+
+
+	<script>
+		$(function(){
+			$(".password-find").show();
+
+
+			$("input[name='pwd']").blur(function(){
+				if($(this).val()==""){
+					$(this).siblings('.validform_checktip').html("请输入密码");
+					return false;
+				}else if($(this).val().length<6){
+					$(this).siblings('.validform_checktip').html("密码至少6位数");
+				}else{
+					$(this).siblings('.validform_checktip').html("")
+				}
+			});
+
+			$("input[name='repwd']").blur(function(){
+				var $pwd=$("input[name='pwd']").val();
+				if($(this).val()==""){
+					$(this).siblings('.validform_checktip').html("请再次输入密码");
+					return false;
+				}else if($pwd != $(this).val()){
+					$(this).siblings('.validform_checktip').html("两次输入的密码不一致")
+				}else{
+					$(this).siblings('.validform_checktip').html("")
+				}
+			});
+
+
+			$(".re-btn").on('tap',function(){
+				var $pwd_=$("input[name='pwd']");
+				var $repwd_=$("input[name='repwd']");
+				var $pwd=$pwd_.val();
+				var $repwd=$repwd_.val();
+				if(!$(".re-btn").data("repwd")){
+					if($pwd==""){
+						$pwd_.siblings(".validform_checktip").html("请输入密码");
+						return false;
+					}else if($pwd.length<6){
+						$pwd_.siblings(".validform_checktip").html("密码至少6位数");
+						return false;
+					}else if($repwd==""){
+						$repwd_.siblings(".validform_checktip").html("请输入密码");
+						return false;
+					}else if($pwd!=$repwd){
+						$repwd_.siblings(".validform_checktip").html("两次输入的密码不一致");
+						return false;
+					}
+				}
+				var data={pwd:$pwd,repwd:$repwd,mid:'{$_GET["mid"]}',key:'{$_GET["key"]}'};
+				ajax_repwd(data);
+			});
+
+			function ajax_repwd(data){
+				$.ajax({
+					type:"post",
+                    dataType:'json',
+					url:'{url("member/public/reset_password")}',
+					async:true,
+					data:data,
+					success:function(result){
+						if(result.status==1){
+							setTimeout(function(){
+								location.href = '{url("member/public/login")}';
+							},2000);
+						}
+						$.tips({content:result.message});
+					}
+				});
+			}
+
+
+		});
+
+	</script>
+
+</html>

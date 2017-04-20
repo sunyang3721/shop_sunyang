@@ -1,0 +1,86 @@
+ <?php include template('toper','common');?>
+ <?php include template('header','common');?>
+		<!--面包屑-->
+		<div class="container crumbs clearfix">
+			<p class="fl layout">
+				<i class="icon-crumbs"></i>
+				<a href="{__APP__}">首页</a>
+				{if $_GET[category_id] > 0}
+				<em>></em>
+				<a href="">{crumbs($_GET[category_id],true)}</a>
+				{/if}
+			</p>
+		</div>
+		<div class="container article item-two-column clearfix">
+			<div class="fl right">
+				<div class="border border-gray-white item-blue-top">
+					<ul class="m-l-15 m-r-15 article-item-lists">
+						{hd:misc method="lists" num="10" tagfile="article" page="$_GET[page]" category_id="$_GET[category_id]"}
+							{loop $data $s}
+							<li class="list">
+								<div class="pic"><img src="{$s[thumb]}" height="115"/></div>
+								<div class="text">
+									<h3 class="text-ellipsis"><a href="{url('misc/index/article_detail',array('id'=>$s['id']))}">{$s[title]}</a></h3>
+									<p>{mb_substr(strip_tags($s[content]),0,54,'utf-8')}..</p>
+									<div class="other">
+										<span class="margin-right">{date('Y-m-d H:i:s',$s[dataline])}</span>
+										<span class="margin-big-right">所属分类：<a href="{url('misc/index/article_lists',array('category_id' => $s['category_id']))}">{$s[category]}</a></span>
+										<span>关键词：{$s[keywords]}</span>
+									</div>
+								</div>
+							</li>
+							{/loop}
+						{/hd}
+					</ul>
+				</div>
+				<div class="paging margin-top padding-tb clearfix" data-id="{$_GET[id]}">
+					<?php echo $pages;?>
+				</div>
+			</div>
+			<div class="left fr">
+				<div class="padding-lr border border-gray-white item-blue-top">
+					<h5 class="padding-small-top padding-small-bottom border-bottom border-gray-white strong">热门文章</h5>
+					<ul class="article-list">
+						{hd:misc method="lists" where="recommend=1" tagfile="article" num="10" order="sort DESC"}
+						{loop $data $r}
+						<li><a href="{url('misc/index/article_detail',array('id'=>$r['id']))}">{$r[title]}</a></li>
+						{/loop}
+						{/hd}
+					</ul>
+				</div>
+				<div class="padding-lr border border-gray-white item-blue-top margin-top">
+					<h5 class="padding-small-top padding-small-bottom border-bottom border-gray-white strong">文章分类</h5>
+					<ul class="article-list">
+						{hd:misc method="lists" where="parent_id=0" tagfile="categorys"  order="sort DESC"}
+						{loop $data $r}
+						<li><a href="{url('misc/index/article_lists',array('category_id'=>$r['id']))}">{$r[name]}</a></li>
+						{/loop}
+						{/hd}
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+	<!--底部-->
+<?php include template('toolbar','common');?>
+<?php include template('footer','common');?>
+	<script>
+	
+	
+		$(".button").live('click',function(){
+			if($(this).prev().val() === ''){
+				top.dialog({
+					title: '消息提示',
+					width: 300,
+					content: '<div class="padding-large text-center">请填写页码</div>',
+					okValue: '确定',
+					ok: function(){
+					},
+				})
+				.showModal();
+				return false;
+			}
+			var url = "{url('misc/index/article_lists')}&page=" + $(this).prev().val();
+			location.href = url;
+		})
+	</script>

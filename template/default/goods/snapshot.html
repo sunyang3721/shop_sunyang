@@ -1,0 +1,612 @@
+<?php include template('toper','common');?>
+<?php include template('header','common');?>
+<!--商品详情-->
+<script type="text/javascript" src="<?php echo __ROOT__ ?>template/default/statics/js/detail.js?v={HD_VERSION}" ></script>
+<script type="text/javascript" src="<?php echo __ROOT__ ?>template/default/statics/js/jquery.jqzoom.js?v={HD_VERSION}" ></script>
+	<!--面包屑-->
+		<div class="product-info container border border-gray-white clearfix">
+			<div class="preview">
+
+                <div id="spec-n">
+                    <div class="jqzoom"><img src="<?php echo $img_list[0]?>" width="338" height="338" /></div>
+                </div>
+                <div id="showDetails" style="display: none;">
+                    <img src="template/default/statics/images/test.jpg" id="showImgBig" alt="" width="338" height="338" />
+                </div>
+                <div class="slider" id="spec-list">
+                    <a href="javascript:;" class="slider-control border prev"><</a>
+                    <a href="javascript:;" class="slider-control border next">></a>
+                    <div class="slider-items">
+                        <ul class="lh">
+                            <?php foreach ($img_list AS $list_img){?>
+                            <li><img src="{$list_img}" alt="" width="50" height="50" /></li>
+                            <?php }?>
+                        </ul>
+                    </div>
+                </div>
+			</div>
+			<div class="item-info">
+				<div class="name">
+					<h1 class="text-big text-ellipsis">{$goods['sku_name']}</h1>
+				</div>
+				<div class="summary">
+					<p class="market-price">&emsp;市场价：<b>￥{$goods['sku_price']}</b></p>
+					<p class="price-info {if isset($goods['prom_time']) && $goods['prom_time'] > 0}hidden{else}show{/if}"><!--默认状态-->
+						<span class="promo-price">&emsp;销售价：<em class="text-mix">{$goods['real_price']}</em></span>
+					</p>
+                    <p><span>选购规格：
+                    {loop $spec $s}
+                    <em>{$s['value']}</em>
+                    {/loop}
+                    </span></p>
+				</div>
+				<p class="margin-big-left">您现在查看的是订单快照，该商品已被重新编辑。</p>
+                <p class="margin-big-left"><a style="color: red" href="{url('detail',array('sku_id'=>$info['sku_id']))}">点此查看最新商品详情</a></p>
+			</div>
+			<!--右边外栏-->
+			<div class="product-ext">
+				<div class="item-title">商品概况</div>
+				<div class="ext-content border-bottom clearfix">
+					<div class="item-double-txt">
+						<em class="text-mix"><?php echo $sales ? $sales : 0?></em>
+						<p>商品销量</p>
+					</div>
+					<div class="item-double-txt">
+						<em class="text-sub comment-total">0</em>
+						<p>商品评论</p>
+					</div>
+					<div class="item-double-txt last">
+						<em class="consult-total">0</em>
+						<p>商品咨询</p>
+					</div>
+				</div>
+				<div class="item-title">看了又看</div>
+				<div class="ext-content padding clearfix">
+					<div class="ext-show">
+						<div class="ext-con-wrap">
+						{hd:goods tagfile="goods" method="lists" num="6" order="rand()"}
+							{loop $data $r}
+								<div class="ext-con-box">
+									<a href="{url('detail',array('sku_id'=>$r['sku_id']))}" title="{$r['name']}"><img src="{thumb($r['thumb'])}" width="90" height="90" /></a>
+									<p>￥<?php echo $r['prom_price']?></p>
+								</div>
+							{/loop}
+						{/hd}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--组合商品-->
+		{if $goods[number] > 0}
+		{hd:promotion tagfile="prom_group" method="lists" sku_id="$_GET[sku_id]"}
+		{if $data}
+		<div class="container fitting-suit border border-gray-white prom_group">
+			<ul class="tab p-tab-trigger-wrap">
+				{loop $data $k $group}
+				<li class="ui-switchtab-item" data-id="{$group['id']}"><a href="javascript:;">{$k}</a></li>
+				{/loop}
+			</ul>
+			{loop $data $group}
+			<div class="ui-switch-panel ui-selected clearfix hidden group_list" data-id="{$group['id']}">
+				<div class="current-goods">
+					<div class="parts-item">
+						<div class="parts-item-goods">
+							<div class="pic">
+								<a href="{url('goods/index/detail',array('sku_id'=>$_GET['sku_id']))}"><img src="{$goods['thumb']}" width="150" height="150" /></a>
+							</div>
+							<p class="text-ellipsis"><a href="">{$goods['sku_name']}</a></p>
+							<p class="text-mix">￥<?php echo $goods['prom_price']?></p>
+						</div>
+						<i class="icon-and"></i>
+					</div>
+				</div>
+				<div class="fitting-suit-items slider clearfix">
+					<a href="javascript:;" class="slider-control border prev">&lt;</a>
+					<a href="javascript:;" class="slider-control border next">&gt;</a>
+					<div class="slider-items">
+						<ul class="lh">
+						{loop $group['group'] $k $sku}
+							<li class="parts-item" >
+								<div class="parts-item-goods">
+								<a href="{url('goods/index/detail',array('sku_id'=>$sku['sku_id']))}">
+									<div class="pic">
+										<img src="{$sku[thumb]}" width="150" height="150" />
+										{if $sku['number'] < 1}
+										<div class="no-number"><img src="template/default/statics/images/number_over.png" /><span></span></div>
+										{/if}
+									</div>
+								</a>
+									<div class="check-items">
+										{if $sku['number'] > 0}
+										<input class="check-item " type="checkbox" checked="checked" />
+										{else}
+										<input class="check-item " type="checkbox" disabled="disabled" />
+										{/if}
+										<p class="text-ellipsis"><a href="{url('goods/index/detail',array('sku_id'=>$sku['sku_id']))}">{$sku['sku_name']}</a></p>
+										<p class="text-mix">￥<em data-id="{$sku['sku_id']}" data-market="{$sku[market_price]}"><?php echo $sku['prom_price']?></em></p>
+									</div>
+								</div>
+								{if $k != count($group['group'])-1}
+								<i class="icon-and"></i>
+								{/if}
+							</li>
+						{/loop}
+						</ul>
+					</div>
+				</div>
+				<div class="fitting-suit-info fr">
+					<span class="padding-bottom border-bottom border-dotted">商品总价：<em class="text-big text-mix">￥<em class="price"><?php echo $goods['prom_price']?></em></em></span>
+					<span class="text-lh">已选商品：<em class="total_num">1</em>件</span>
+					<span class="text-lh">参考价格：<em class="delete-line">￥<em class="market">{$goods['market_price']}</em></em></span>
+					<div class="item-btn button border-none" data-event="cart_add" data-skuids="{$goods['sku_id']}">
+						<i class="icon-cart">
+							<svg width="14" height="14" viewBox="0 0 1024 1024">
+								<g>
+									<path d="M 143.123 602.62 l 194.878 -1.892 l 47.3 -342.457 l 348.132 -1.892 l 49.193 196.77 h 98.384 l -51.083 -293.262 l -541.118 1.892 l -49.192 342.456 h -96.493 Z M 300.161 40.689 c 0 0 0 0 0 0 c 0 -42.842 34.731 -77.572 77.572 -77.572 c 42.841 0 77.573 34.731 77.573 77.572 c 0 0 0 0 0 0 c 0 42.841 -34.731 77.573 -77.573 77.573 c -42.841 0 -77.572 -34.731 -77.572 -77.573 Z M 667.213 40.689 c 0 -42.842 34.731 -77.572 77.573 -77.572 s 77.572 34.731 77.572 77.572 c 0 42.841 -34.731 77.573 -77.572 77.573 c -42.841 0 -77.573 -34.731 -77.573 -77.573 Z" transform="translate(0 812) scale(1 -1)" fill="#fff"></path>
+								</g>
+							</svg>
+						</i>组合购买
+					</div>
+				</div>
+			</div>
+			{/loop}
+		</div>
+		{/if}
+		{/hd}
+		{/if}
+		<!--商品详情-->
+		<div class="container padding-big-top item-two-column clearfix">
+			<div class="left fl">
+				<div class="product-ext border border-gray-white clearfix">
+					<div class="item-title">浏览记录</div>
+					<div class="ext-content padding clearfix">
+						<div class="ext-show">
+							<div class="ext-con-wrap">
+							{hd:goods tagfile="goods" method="history" num="6"}
+								{loop $data $r}
+									<div class="ext-con-box">
+										<a href="{url('detail',array('sku_id'=>$r['sku_id']))}" title="{$r['sku_name']}"><img src="{thumb($r['thumb'])}" width="90" height="90" /></a>
+										<p>￥<?php echo $r['prom_price']?></p>
+									</div>
+								{/loop}
+							{/hd}
+							</div>
+						</div>
+					</div>
+				</div>
+				{hd:ads tagfile="ads" method="lists" position="2" num="1" order="rand()"}
+					{if ($data['list'])}
+						<div class="margin-top ad fl">
+							{loop $data['list'] $r}
+								{if empty($r['content'])}
+									<a href="javascript:;" >
+										<img src="{$data['defaultpic']}" />
+									</a>
+								{else}
+									<a href="{url('ads/index/adv_view',array('id'=>$r['id'],'url'=>$r['link']))}" title="{$r['title']}">
+										<img src="{$r['content']}"/>
+									</a>
+								{/if}
+							{/loop}
+						</div>
+					{/if}
+				{/hd}
+			</div>
+			<div id="pro-detail-right" class="fr right">
+				<div id="item-bar">
+					<ul class="tab p-tab-trigger-wrap">
+						<li class="ui-switchtab-item current"><a href="javascript:;">商品详情</a></li>
+						<li class="ui-switchtab-item"><a href="javascript:;" class="total-comment">商品评价(0)</a></li>
+						<li class="ui-switchtab-item" id="consult"><a href="javascript:;">商品咨询(0)</a></li>
+						<?php $cache = model('admin/setting','service')->get();?>
+						{if $cache[invoice_vat_enabled] == 1}
+						{hd:order method="records" tagfile="order" sid="$_GET[sku_id]" isspu="false" page="$_GET[page]" num="8"}
+						<li class="ui-switchtab-item"><a href="javascript:;">销售记录({$data[count]})</a></li>
+						{/hd}
+						{/if}
+					</ul>
+				</div>
+				<div class="detail-content-wrap">
+					<p>{$goods['content']}</p>
+				</div>
+				<div id="pro-detail-comment" class="margin-big-top border border-gray-white product-detail-panel item-blue-top">
+					<ul class="tab p-tab-trigger-wrap">
+						<li class="ui-switchtab-item"><a class="text-sub" href="javascript:;">商品评价</a></li>
+					</ul>
+					<div class="ui-switch-panel ui-selected padding-tb clearfix">
+                        <div class="text-center goods-comment-info">
+                            <span class="h2 text-mix" id="positive-nb">100%</span>
+                            <span>好评度</span>
+                        </div>
+                        <ul class="progress">
+                            <li>
+                                <span class="progress-label">好评：</span>
+                                <div class="progress-bar positive-bar" title="0%"><div class="bg-mix" style="width:0%"></div></div>
+                            </li>
+                            <li>
+                                <span class="progress-label">中评：</span>
+                                <div class="progress-bar neutral-bar" title="0%"><div class="bg-mix" style="width:0%"></div></div>
+                            </li>
+                            <li>
+                                <span class="progress-label">差评：</span>
+                                <div class="progress-bar negative-bar" title="0%"><div class="bg-mix" style="width:0%"></div></div>
+                            </li>
+                        </ul>
+                        <div class="goods-comment-btn border-left border-gray-white fr" data-url="{urlencode($_SERVER['REQUEST_URI'])}">
+                            <p class="text-center">购买商品后才可评价</p>
+                            <div class="item-btn button border-none">
+                                <i class="icon-message">
+                                    <svg width="14" height="14" viewBox="0 0 1024 1024">
+                                        <g>
+                                            <path d="M309.56394 344.948725m-50.542116 0a49.391 49.391 0 1 0 101.084233 0 49.391 49.391 0 1 0-101.084233 0ZM511.734452 395.490841c-27.913746 0-50.544163-22.630417-50.544163-50.542116 0-27.912723 22.630417-50.542116 50.544163-50.542116 27.909653 0 50.54314 22.629393 50.54314 50.542116C562.277592 372.860425 539.644105 395.490841 511.734452 395.490841zM890.80186 673.472993 132.664997 673.472993c-27.9117 0-50.542116-22.630417-50.542116-50.54314l0-555.965328c0-27.9117 22.630417-50.541093 50.542116-50.541093l263.612886 0 102.177124-152.553465 26.542516 0 102.184287 152.553465L890.80186 16.423433c27.910677 0 50.541093 22.62837 50.541093 50.541093L941.342953 622.929854C941.34193 650.842577 918.712537 673.472993 890.80186 673.472993zM890.80186 92.236096c0-13.966083-11.316743-25.270547-25.270547-25.270547L661.03892 66.965549l0.86981 1.300622-59.390645-0.496304-1.25048-0.334621-0.286526-0.468674-30.839379-50.541093-59.06421-96.79044-58.20361 96.79044-30.393217 50.541093-0.005117 0.010233-60.438511 0.574075 0.38988-0.583285L157.93759 66.967596c-13.95585 0-25.272593 11.304464-25.272593 25.270547L132.664997 597.659307c0 13.95585 11.316743 25.270547 25.272593 25.270547l707.593723 0c13.954827 0 25.270547-11.314697 25.270547-25.270547L890.80186 92.236096zM713.902918 395.490841c-27.9117 0-50.544163-22.630417-50.544163-50.542116 0-27.912723 22.63144-50.542116 50.544163-50.542116 27.910677 0 50.542116 22.629393 50.542116 50.542116C764.444011 372.860425 741.813594 395.490841 713.902918 395.490841z" transform="translate(0 812) scale(1 -1)" fill="#fff"></path>
+                                        </g>
+                                    </svg>
+                                </i>评价商品
+                            </div>
+                       </div>
+					</div>
+				</div>
+				<div id="pro-all-comment" class="margin-big-top border border-gray-white product-detail-panel item-blue-top pro-border-top-gray">
+					<ul class="tab p-tab-trigger-wrap consult-tab" id="comment_tab">
+						<li class="ui-switchtab-item current"><a href="javascript:;" data-load="false">全部评价</a></li>
+						<li class="ui-switchtab-item" data-mood="positive"><a href="javascript:;" data-load="false">好评({$count['positive']})</a></li>
+						<li class="ui-switchtab-item" data-mood="neutral"><a href="javascript:;" data-load="false">中评({$count['neutral']})</a></li>
+						<li class="ui-switchtab-item" data-mood="negative"><a href="javascript:;" data-load="false">差评({$count['negative']})</a></li>
+					</ul>
+					<div class="tab-tag p-tab-con-wrap consult-tag">
+						<div class="tag selected padding clearfix default_comment">
+							<ul class="comment-area layout">
+							</ul>
+							<p class="goods-item-no-info">暂无商品评价</p>
+							<div class="paging margin-top padding-tb clearfix comment_pages">
+							</div>
+						</div>
+						<div class="tag padding positive">
+							<ul class="comment-area layout">
+							</ul>
+							<p class="goods-item-no-info">暂无商品评价</p>
+							<div class="paging margin-top padding-tb clearfix comment_pages">
+							</div>
+						</div>
+						<div class="tag padding neutral">
+							<ul class="comment-area layout">
+							</ul>
+                            <p class="goods-item-no-info">暂无商品评价</p>
+                            <div class="paging margin-top padding-tb clearfix comment_pages">
+							</div>
+						</div>
+						<div class="tag padding negative">
+							<ul class="comment-area layout">
+							</ul>
+							<p class="goods-item-no-info">暂无商品评价</p>
+							<div class="paging margin-top padding-tb clearfix comment_pages">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="pro-goods-consult" class="margin-big-top border border-gray-white product-detail-panel item-blue-top">
+					<ul class="tab p-tab-trigger-wrap">
+						<li class="ui-switchtab-item"><a class="text-sub" href="javascript:;">商品咨询</a></li>
+					</ul>
+					<div class="ui-switch-panel ui-selected padding clearfix">
+                        <dl class="lh20 goods-consult-info">
+                            <dt>温馨提示：</dt>
+                            <dd class="text-gray">
+                                <span>因厂家更改商品包装、场地、附配件等不做提前通知，且每位咨询者购买、提问时间等不同。为此，其他网友的咨询仅供参考！给您带来的不便还请谅解，谢谢！</span>
+                            </dd>
+                        </dl>
+                        <div class="goods-consult-right border-left border-gray-white">
+                         <a href="{url('goods/consult/add',array('sku_id'=>$_GET[sku_id],'catid'=>$goods['catid']))}">
+                            <div class="item-btn button border-none">
+                                <i class="icon-message">
+                                    <svg width="14" height="14" viewBox="0 0 1024 1024">
+                                        <g>
+                                            <path d="M309.56394 344.948725m-50.542116 0a49.391 49.391 0 1 0 101.084233 0 49.391 49.391 0 1 0-101.084233 0ZM511.734452 395.490841c-27.913746 0-50.544163-22.630417-50.544163-50.542116 0-27.912723 22.630417-50.542116 50.544163-50.542116 27.909653 0 50.54314 22.629393 50.54314 50.542116C562.277592 372.860425 539.644105 395.490841 511.734452 395.490841zM890.80186 673.472993 132.664997 673.472993c-27.9117 0-50.542116-22.630417-50.542116-50.54314l0-555.965328c0-27.9117 22.630417-50.541093 50.542116-50.541093l263.612886 0 102.177124-152.553465 26.542516 0 102.184287 152.553465L890.80186 16.423433c27.910677 0 50.541093 22.62837 50.541093 50.541093L941.342953 622.929854C941.34193 650.842577 918.712537 673.472993 890.80186 673.472993zM890.80186 92.236096c0-13.966083-11.316743-25.270547-25.270547-25.270547L661.03892 66.965549l0.86981 1.300622-59.390645-0.496304-1.25048-0.334621-0.286526-0.468674-30.839379-50.541093-59.06421-96.79044-58.20361 96.79044-30.393217 50.541093-0.005117 0.010233-60.438511 0.574075 0.38988-0.583285L157.93759 66.967596c-13.95585 0-25.272593 11.304464-25.272593 25.270547L132.664997 597.659307c0 13.95585 11.316743 25.270547 25.272593 25.270547l707.593723 0c13.954827 0 25.270547-11.314697 25.270547-25.270547L890.80186 92.236096zM713.902918 395.490841c-27.9117 0-50.544163-22.630417-50.544163-50.542116 0-27.912723 22.63144-50.542116 50.544163-50.542116 27.910677 0 50.542116 22.629393 50.542116 50.542116C764.444011 372.860425 741.813594 395.490841 713.902918 395.490841z" transform="translate(0 812) scale(1 -1)" fill="#fff"></path>
+                                        </g>
+                                    </svg>
+                                </i>我要咨询
+                            </div>
+                            </a>
+                        </div>
+					</div>
+				</div>
+				<div id="pro-all-consult" class="margin-big-top border border-gray-white product-detail-panel item-blue-top pro-border-top-gray">
+					<ul class="tab p-tab-trigger-wrap">
+						<li class="ui-switchtab-item current"><a class="text-sub" href="javascript:;">全部咨询</a></li>
+					</ul>
+					{hd:goods tagfile="consult" method="lists" num="5" spu_id="$goods[spu_id]"}
+					{if empty($data)}
+					<div class="ui-switch-panel ui-selected padding">
+                        <p class="goods-item-no-info">暂无商品咨询</p>
+					</div>
+					{else}
+					<div class="layout consult-lists">
+						<div class="padding clearfix">
+							{loop $data $r}
+							<div class="list">
+								<p class="clearfix"><span class="user-name"><?php echo $r['username'] ? $r['username'] : '游客'?></span><span class="fr text-gray">{date("Y-m-d H:i:s",$r['dateline'])}</span></p>
+								<p>咨询内容：<span class="text-sub">{$r['question']}</span></p>
+								{if $r['reply_content']}
+								<p>卖家回复： <span class="text-mix">{$r['reply_content']}</span></p>
+								{/if}
+							</div>
+							{/loop}
+						</div>
+					</div>
+					<script>$('.consult-total').html(<?php echo count($data)?>)</script>
+					{/if}
+					{/hd}
+					{hd:goods tagfile="consult" method="count" spu_id="$goods[spu_id]"}
+					{if $data>5}
+						<div class="margin-bottom padding-right layout text-right">
+							共<strong>{$data}</strong>条&nbsp;&nbsp;
+							<a class="text-sub text-underline" href="{url('goods/consult/add',array('sku_id'=>$_GET[sku_id]))}">浏览所有咨询信息&gt;&gt;</a>
+						</div>
+					{/if}
+						<script type="text/javascript">
+							var num = <?php echo $data?>;
+							$('#consult').find('a').html('商品咨询('+(num)+')');
+						</script>
+					{/hd}
+					</div>
+				{if $cache[invoice_vat_enabled] == 1}
+				<div id="pro-buy-record" class="margin-big-top border border-gray-white product-detail-panel item-blue-top">
+					<ul class="tab p-tab-trigger-wrap">
+						<li class="ui-switchtab-item"><a class="text-sub" href="javascript:;" id="record_btn">购买记录(0)</a></li>
+					</ul>
+					<div class="ui-switch-panel ui-selected padding">
+						<div class="table text-ellipsis buy-record">
+							<div class="tr strong">
+								<div class="td w20">买家</div>
+								<div class="td w20">商品价格</div>
+								<div class="td w10">数量</div>
+								<div class="td w20">付款时间</div>
+								<div class="td w30">款式和型号</div>
+							</div>
+							<div id="order_goods"></div>
+							<div class="paging margin-top padding-tb clearfix record-pages">
+							</div>
+						</div>
+
+                        <!--<p class="goods-item-no-info">暂无购买记录</p>-->
+					</div>
+				</div>
+				{/if}
+			</div>
+		</div>
+	</div>
+<?php include template('toolbar','common');?>
+<?php include template('footer','common');?>
+<script type="text/javascript" src="{__ROOT__}statics/js/goods/jquery.md5.js?v={HD_VERSION}"></script>
+<script>
+		$(".timer").timer();
+		$('.goods-comment-btn').bind('click',function(){
+			var url_forward = $(this).data('url');
+			var comment = "<?php echo url('comment/index/ajax_comment_index')?>";
+			$.get(comment,{url_forward:url_forward},function(ret){
+				if(ret.status == 0) {
+					$.tips({
+						icon:'error',
+						content:ret.message,
+						callback:function() {
+							window.location.href = ret.referer;
+						}
+					});
+				}else{
+					window.location.href = ret.referer;
+				}
+			},'json')
+		})
+		//初始货品
+		var product_json = <?php echo json_encode($goods['sku_arr'])?>;
+		var shop_price = "<?php echo $goods['prom_price']?>";
+		var spec_id = "<?php echo $goods['spec_id']?>";
+		var sku_obj = <?php echo ($goods['spec']) ? $goods['spec'] : "[]";?>;
+		var sku_json = "<?php echo $goods['spec_str']?>";
+		var sku_url = "<?php echo url('goods/index/detail')?>";
+		var list_url = "<?php echo url('goods/index/lists',array('id'=>$goods['catid']))?>";
+		var comment_url = "<?php echo url('comment/index/ajax_comment')?>";
+		$(function(){
+			var lists = '<div class="hd-toolbar-tab hd-tbar-tab-backlist">'
+				+		'<a href="'+ list_url +'"><i class="tab-ico"></i></a>'
+				+		'</div>';
+			$('.hd-toolbar-footer').append(lists);
+			$(".fr li a").attr('data-ajax','true');
+			var $a=$("#comment_tab").find('a').eq(0);
+			ajax_record(1);
+			ajax_comment(1,$a);
+		})
+			function ajax_comment(page,that){
+				var page = page || 1;
+				var spu_id = <?php echo $goods['spu_id']?>;
+				var mood = $("#comment_tab").find("li.current").data("mood");
+				var html = '';
+				$.post(comment_url,{spu_id:spu_id,mood:mood,page:page},function(ret){
+					if(ret){
+						$(that).data('load',true);
+						if(ret.count > 0){
+							var positive = <?php echo $count['positive']?>;
+							var neutral = <?php echo $count['neutral']?>;
+							var negative = <?php echo $count['negative']?>;
+							$.each(ret.lists,function(i,item){
+								var imgs = img_view = reply_content = ''
+								$.each(item.imgs,function(index,value){
+									imgs += '<li><a class="pic-center" href="#"><img src="' + value + '" /></a></li>';
+								})
+								if(imgs){
+									img_view = 		'<div class="comment-pic-view">'
+											+			'<div class="widget-carousel-content">'
+											+				'<ul class="widget-carousel-lists">'
+											+					imgs
+											+				'</ul>'
+											+			'</div>'
+											+			'<div class="widget-carousel-box pic-center"><a class="widget-carousel-link prev" href="#"></a><a class="widget-carousel-link next" href="#"></a></div>'
+											+		'</div>';
+								}else{
+									img_view = ''
+								}
+								if(item.reply_content){
+									reply_content = '<div class="m-t-15 comment-text text-mix">'
+												+		'<p>商家回复：' + item.reply_content + '</p>'
+												+	 '</div>'
+								}else{
+									reply_content = ''
+								}
+								html += '<li class="comment-list">'
+									+		'<div class="user-info-block">'
+									+			'<div class="avatar-wrapper">'
+									+				'<img src="'+item.avatar+'" />'
+									+			'</div>'
+									+			'<p class="name-wrapper">'+ item.username +'</p>'
+									+		'</div>'
+									+		'<div class="comment-view-wrapper">'
+									+			'<div class="time-area">'
+									+				'<span>评价时间：' + item._datetime + '</span>'
+									+			'</div>'
+									+			'<div class="comment-text">'
+									+				'<p>' + item.content + '</p>'
+									+			'</div>'
+									+			img_view
+									+			reply_content
+									+		'</div>'
+									+	'</li>';
+							})
+							switch(mood){
+									case 'positive':
+										$('.positive').find('.goods-item-no-info').remove();
+										$('.positive ul').html(html);
+										$('.positive').find('.comment_pages').html(ret.pages);
+									break;
+									case 'negative':
+										$('.negative').find('.goods-item-no-info').remove();
+										$('.negative ul').html(html);
+										$('.negative').find('.comment_pages').html(ret.pages);
+									break;
+									case 'neutral':
+										$('.neutral').find('.goods-item-no-info').remove();
+										$('.neutral ul').html(html);
+										$('.neutral').find('.comment_pages').html(ret.pages);
+									break;
+									default:
+										$('.default_comment').find('.goods-item-no-info').remove();
+										$('.default_comment ul').html(html);
+										$('.total-comment').text('商品评价('+ ret.count +')');
+										$('.comment-total').html(ret.count);
+										$('.default_comment').find('.comment_pages').html(ret.pages);
+										$('.neutral-bar').attr('title',(neutral/ret.count).toFixed(2)*100+'%').children('.bg-mix').css('width',(neutral/ret.count).toFixed(2)*100+'%');
+										$('.positive-bar').attr('title',(positive/ret.count).toFixed(2)*100+'%').children('.bg-mix').css('width',(positive/ret.count).toFixed(2)*100+'%');
+										$('.negative-bar').attr('title',(negative/ret.count).toFixed(2)*100+'%').children('.bg-mix').css('width',(negative/ret.count).toFixed(2)*100+'%');
+										if(ret.count != 0){
+											$('#positive-nb').text(parseInt((positive/ret.count)*100)+'%');
+										}
+									break;
+								}
+								$('.default_comment').find('.comment_pages').attr('data-func','ajax_comment');
+						}
+					}
+				},'json');
+			}
+		$('#comment_tab a').live('click', function() {
+			var data_load=$(this).data('load');
+			if(data_load){
+				return false;
+			}
+			ajax_comment(1,this);
+		});
+		$('.comment_pages li  a').live('click', function() {
+			var page = $.urlParam('page', $(this).attr('href'));
+			ajax_comment(page,this);
+			return false;
+		});
+		$('.comment_pages .button').live('click', function() {
+			var this_page=$(".comment_pages .current").find('span').html();
+			var go_page=$(".comment_pages .input").val();
+			if(this_page == go_page){
+				return false;
+			}
+			var page = $.urlParam('page', $(this).attr('href'));
+			ajax_comment(page,this);
+			return false;
+		});
+		$.urlParam = function(name, url){
+		    var url = url || window.location.href;
+		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+		    if(!results) return false;
+		    return results[1] || 0;
+		}
+		function ajax_record(page){
+			var page = page || 1;
+			var url = '<?php echo url("order/cart/ajax_order_goods")?>';
+			var sku_id = '<?php echo $goods['sku_id']?>';
+			$.post(url,{sku_id:sku_id,page:page},function(ret){
+				var html = '';
+				if(ret.count > 0){
+					$.each(ret.lists,function(i,item){
+						html += '<div class="tr">'
+							+		'<div class="td w20">'+item.username+'</div>'
+							+		'<div class="td w20 strong"><span class="text-mix">￥'+ item.sku_price +'</span></div>'
+							+		'<div class="td w10">'+ item.buy_nums +'</div>'
+							+		'<div class="td w20">'+ item.dateline +'</div>'
+							+		'<div class="td w30">'
+							+		item._sku_spec
+							+		'</div>'
+							+	'</div>'
+					})
+					$('#order_goods').html(html);
+					$('.record-pages').html(ret.pages);
+					$('.record-pages').attr('data-func','ajax_record');
+					$('#record_btn').html('购买记录('+ ret.count +')');
+				}
+			},'json')
+		}
+		$('.record-pages a').live('click', function() {
+			var page = $.urlParam('page', $(this).attr('href'));
+			ajax_record(page);
+			return false;
+		})
+		if($('.prom_group').length > 0){
+			$('.prom_group').find('.tab li').eq(0).addClass('current');
+			$('.group_list').eq(0).removeClass('hidden');
+			$('.prom_group').find('.tab li').live('click',function(){
+				$(this).addClass('current').siblings('li').removeClass('current');
+				$('.group_list[data-id = "' + $(this).data('id') + '"]').removeClass('hidden').siblings('.group_list').addClass('hidden');
+			});
+
+			$(".group_list").each(function(){
+				if($(this).find(".lh .parts-item").length<=4){
+					$(this).find(".slider-control").addClass("hidden");
+				}
+			});
+
+			function getPrice(){
+				$(".group_list").each(function(){
+					var $this = $(this);
+					var $suit = $this.find(".fitting-suit-info");
+					var market_price = "<?php echo $goods['market_price']?>";
+					var number = 1,
+						market_price = parseFloat(market_price),
+						total_price = parseFloat(shop_price);
+						skuids = "<?php echo $goods['sku_id']?>";
+					$(this).find(".check-items").each(function(){
+						if($(this).children(".check-item").is(":checked")){
+							number += 1;
+							market_price +=  parseFloat($(this).find(".text-mix em").data("market"));
+							total_price +=  parseFloat($(this).find(".text-mix em").html());
+							skuids += ',' + $(this).find(".text-mix em").attr("data-id");
+						}
+					});
+
+					$suit.find(".total_num").html(number);
+					$suit.find(".price").html(total_price.toFixed(2));
+					$suit.find(".item-btn").attr("data-skuids",skuids);
+					$suit.find(".market").html(market_price.toFixed(2));
+				});
+			}
+			getPrice();
+
+			$('.fitting-suit-items .check-item').bind('click',function(){
+				getPrice();
+			})
+		}
+</script>

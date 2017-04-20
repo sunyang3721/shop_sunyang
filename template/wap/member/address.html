@@ -1,0 +1,31 @@
+{template header common}
+	<div class="mui-content">
+    	<ul class="member-address mui-table-view layout-list-common margin-none mui-clearfix">
+			{loop $lists $r}
+	        <li class="address-list" data-id="{$r[id]}">
+				<a href="{url('member/address/edit',array('id'=>$r['id']))}" class="mui-block mui-navigate-right padding-big-right">
+				{if $r[isdefault]}
+		        	<div class="address-text">
+		        		<span class="name text-ellipsis">{$r[name]}</span>
+	        			<span class="address-btn margin-small-right">默认</span>
+	        			<span class="mui-pull-right">{$r[mobile]}</span>
+		        		<p>[默认]{implode(" ", $r[full_district])} {$r[address]}　　{if $r[zipcode]}邮编：{$r[zipcode]} {/if}</p>
+		        	</div>
+				{else}
+					<div class="address-text" data-event="default">
+		        		<span class="name text-ellipsis">{$r[name]}</span>
+	        			<span class="mui-pull-right">{$r[mobile]}</span>
+		        		<p>{implode(" ", $r[full_district])} {$r[address]}　　{if $r[zipcode]}邮编：{$r[zipcode]} {/if}</p>
+		        	</div>
+				{/if}
+				</a>
+	        </li>
+			{/loop}
+	    </ul>
+    	<div class="padding-lr margin-top">
+    		<a href="{url('member/address/add')}" class="mui-btn mui-btn-primary full hd-h4">添加新收货地址</a>
+    	</div>
+    	{template footer common}
+	</div>
+</body>
+</html>

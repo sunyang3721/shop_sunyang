@@ -1,0 +1,85 @@
+{template header common}
+	<div class="mui-content">
+	    <ul class="mui-table-view layout-list-common comment-form margin-none">
+	    	<li class="padding border-bottom mui-text-center">
+	    		<span class="service-apply-ok"></span>
+	    		<h2 class="hd-h3 margin-tb strong">
+	    		{if $servers[refund_id] && !$servers[return_id]}
+		    		{if $servers[status] == 0}您已申请成功，等待卖家处理
+					{elseif $servers[status] == -2}您的退款申请失败，请联系人工处理
+					{elseif $servers[status] == -1}您的退款申请已取消！
+					{elseif $servers[status] == 2}您的退款申请已退款成功
+					{/if}
+	    		{else}
+		    		{if $servers[status] == 0}您已申请成功，等待卖家处理
+					{elseif $servers[status] == -2}您的退货申请失败，请联系人工处理
+					{elseif $servers[status] == -1}您的退货申请已取消！
+					{elseif $servers[status] == 1}您的申请已通过
+					{/if}
+	    		{/if}
+	    	</li>
+	    	<li class="padding">
+	    		<div class="lh-20">
+	    			<p>·如果卖家同意，您可以退货给卖家并完成退款</p>
+					<p>·如果卖家拒绝，需要您修改退货并退款申请</p>
+					<p>·每个商品&订单您只有一次售后维权的机会</p>
+	    		</div>
+	    	</li>
+	    </ul>
+	    <div class="padding">
+	    {if $servers[status] != -1 && $servers[status] != -2}
+		    {if $servers['status'] == 1}
+		    	<a href="{url('return_refund',array('id'=>$_GET['id'],'type' => 'delivery'))}" class="mui-btn full mui-btn-primary hd-h4">退货并填写退货信息</a>
+		    {/if}
+		    <button type="button" class="mui-btn full mui-btn-primary {if $_GET['type'] == 'refund'}cancel_refund_delivery{else}cancel_return_delivery{/if} hd-h4 {if $servers[status] == 1}margin-top{/if}">取消售后{if $server['status'] == 0}申请{/if}</button>
+		{/if}
+		</div>
+	</div>
+	{template footer common}
+</body>
+<script type="text/javascript">
+	$('.cancel_return_delivery').bind('click',function(){
+			var url = "<?php echo url('ajax_return_cancel')?>";
+			var id = "<?php echo $_GET['id']?>";
+			$.confirms("每件商品仅有一次售后机会，是否确认取消?",function(){
+				$.post(url,{id:id},function(ret){
+					if(ret.status == 0) {
+						$.tips({
+							content:ret.message,
+							callback:function() {
+								return false;
+							}
+						});
+					} else {
+						$.tips({
+							content:ret.message,
+							callback:function() {
+								window.location.reload();
+							}
+						});					
+					}
+				},'json')
+			})
+		})
+		$('.cancel_refund_delivery').bind('click',function(){
+			var url = "<?php echo url('ajax_refund_cancel')?>";
+			var id = "<?php echo $_GET['id']?>";
+			$.post(url,{id:id},function(ret){
+				if(ret.status == 0) {
+					$.tips({
+						content:ret.message,
+						callback:function() {
+							return false;
+						}
+					});
+				} else {
+					$.tips({
+						content:ret.message,
+						callback:function() {
+							window.location.reload();
+						}
+					});					
+				}
+			},'json')
+		})
+</script>

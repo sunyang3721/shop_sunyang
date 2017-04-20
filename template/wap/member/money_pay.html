@@ -1,0 +1,75 @@
+{template header common}
+<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+	<div class="mui-content">
+		<form action="" method="post"  target="_blank" name="recharge">
+		<div class="padding bg-white border-bottom">
+			<input class="margin-none" type="text" value="" placeholder="请输入充值金额" name="money"/>
+		</div>
+		<ul class="pay-lists list-col-10 mui-clearfix">
+			{if empty($payments)}
+				<li class="pay-list"> 后台暂未开启支付方式 </li>
+			{else}
+			{loop $payments $pay}
+			{if strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') == false}
+			{if $pay[pay_code] != 'wechat_js'}
+			<li class="pay-list" data-paycode='{$pay[pay_code]}' data-paybank='{$pay[pay_bank]}'>
+				<label class="mui-block">
+					<div class="hd-radio">
+	    				<input name="radio" value="0" type="radio" />
+	    			</div>
+					<div class="pay-icon"><img src="{SKIN_PATH}statics/images/{$pay[pay_ico]}.png" /></div>
+					<span class="hd-h5">{$pay['pay_name']}</span>
+					<!--<p class="lh-18">{$pay['pay_desc']}</p>-->
+				</label>
+			</li>
+			{/if}
+			{else}
+			<li class="pay-list" data-paycode='{$pay[pay_code]}' data-paybank='{$pay[pay_bank]}'>
+				<label class="mui-block">
+					<div class="hd-radio">
+	    				<input name="radio" value="0" type="radio" />
+	    			</div>
+					<div class="pay-icon"><img src="{SKIN_PATH}statics/images/{$pay[pay_ico]}.png" /></div>
+					<span class="hd-h5">{$pay['pay_name']}</span>
+					<p class="lh-18">{$pay['pay_desc']}</p>
+				</label>
+			</li>
+			{/if}
+			{/loop}
+			{/if}
+		</ul>
+	    <div class="margin padding-small">
+			<input type="hidden" name="pay_code" value=""/>
+			<input type="hidden" name="pay_bank" value=""/>
+			<input type="submit" value="确认支付" class="mui-btn mui-btn-blue full hd-h4 recharge"/>
+	    </div>
+		</form>
+	</div>
+	{template footer common}
+</body>
+</html>
+<script>
+var recharge=$("form[name=recharge]").Validform({
+	ajaxPost:false,
+	beforeCheck:function(){
+		var money = $("input[name=money]").val();
+		if(money == '' || money.match(/^[0-9]{1}\d*(\.\d{1,2})?$/) == null){
+			$.tips({content:'充值金额错误'});
+			return false;
+		}
+		if($("input[name=pay_code]").val() == ''){
+			$.tips({content:'支付方式选择错误'});
+			return false;
+		}
+	}
+});
+$("input[name=radio]").bind('click',function(){
+	var paycode = $(this).parents(".pay-list").data('paycode'),paybank = $(this).parents(".pay-list").data('paybank'); 
+	$("input[name=pay_bank]").val(paybank);
+	$("input[name=pay_code]").val(paycode);
+});
+$(function(){
+	// 默认选中第一个支付方式
+	$("ul.pay-lists > li").eq(0).find('input').trigger("click");
+})
+</script>

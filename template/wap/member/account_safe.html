@@ -1,0 +1,107 @@
+{template header common}
+	<div class="mui-content">
+	    <ul class="mui-table-view layout-list-common user-info-detail margin-none">
+			<li class="mui-table-view-cell" id="file-avatar">
+				<a class="mui-navigate-right user-head" href="#">
+					<span class="hd-h4 user-info-h4">头像</span>
+					<span class="mui-pull-right margin-right">
+						<img class="full" src="{$member['avatar']}" />
+					</span>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{url('member/account/resetmobile')}" class="mui-navigate-right">
+					<span class="hd-h4">手机号码</span>
+					<span class="mui-pull-right margin-right text-gray">{$member['mobile']}</span>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{url('member/address/index')}" class="mui-navigate-right">
+					<span class="hd-h4">收货地址</span>
+					<span class="mui-pull-right margin-right text-gray">立即修改</span>
+				</a>
+			</li>
+		</ul>
+		{hook/wap_account_info data}
+		<!--<ul class="mui-table-view layout-list-common margin-top-15">
+			<li class="mui-table-view-cell">
+				<a href="coupon.html" class="mui-navigate-right">
+					<span class="hd-h4">我的优惠券</span>
+					<span class="mui-pull-right margin-right text-gray"><em class="text-org">0</em>张</span>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<span class="hd-h4">我的积分</span>
+				<span class="mui-pull-right margin-right text-gray"><em class="text-org">0</em>分</span>
+			</li>
+		</ul>-->
+	</div>
+	{template footer common}
+</body>
+</html>
+<?php 
+helper('attachment');
+$attachment_init = attachment_init(array('module'=>'member', 'mid' => $member['id'],'allow_exts'=>array('bmp','jpg','jpeg','gif','png')));
+?>
+<link type="text/css" rel="stylesheet" href="{__ROOT__}statics/js/upload/uploader.css?v={HD_VERSION}" />
+<script type="text/javascript" src="{__ROOT__}statics/js/upload/uploader.js?v={HD_VERSION}"></script>
+<script>
+	var uploader = WebUploader.create({
+		auto:true,
+		chunked:false,
+		fileVal:'upfile',
+		// 允许上传的类型
+		accept: {
+			title : '图片文件',
+			extensions : 'jpg,jpeg,png,gif,bmp',
+			mimeType : 'image/*'
+		},
+		// 指定选择文件的按钮容器
+		pick: {
+			id : '#file-avatar',
+			multiple : false
+		},
+		// swf文件路径
+		swf: '{__ROOT__}statics/js/upload/uploader.swf',
+		// 文件接收服务端
+		server: '<?php echo url('attachment/index/upload')?>',
+		// 附加参数
+		formData:{
+			file : 'upfile',
+			upload_init : '<?php echo $attachment_init?>'
+		},
+		// 压缩图片
+		compress: {
+			width : 408,
+			height: 408,
+			allowMagnify: false
+		}
+	});
+	uploader.onFileQueued = function(file){
+		$.tips({content:'图片上传中...'});
+	}
+	uploader.onUploadError = function(file,reason){
+		$.tips({content:'上传失败'});
+	}
+	uploader.onUploadSuccess = function(file,response){
+		if(response.status == 1){
+			if(response.result.width < 200 || response.result.height < 200){
+				$.tips({content:'图片分辨率至少是200*200'});
+				return false;
+			}
+			var ajaxurl = '<?php echo url('member/account/avatar')?>';
+			$.post(ajaxurl,{avatar:response.result.url,w:response.result.width,h:response.result.height},function(ret){
+				if(ret.status == 1){
+					window.location.href = ret.referer;
+				}else{
+					$.tips({content:ret.message});
+					return false;
+				}
+			},'json');
+			return true;
+		}else{
+			$.tips({content:response.message});
+			return false;
+		}
+	}
+</script>

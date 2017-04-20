@@ -1,0 +1,384 @@
+{template header member} 
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'] ?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					<dl class="margin-big-top member-memu clearfix">
+						{template menu_account member}
+					</dl>
+				</div>
+				<div class="right padding-big-left padding-big-right">
+					<div class="margin-big-top save-level songti">
+						<div class="margin-bottom strong text-default">账号安全等级：<span class="text-green level-text"></span></div>
+						<div class="level-bar" data-width="{$safe_level}"><!--33为低，66为中，100为高-->
+							<div class="bar red-bar"></div>
+							<div class="bar orange-bar"></div>
+							<div class="bar green-bar"></div>
+						</div>
+						<p>完善信息提供账户安全等级！</p>
+					</div>
+					<div class="margin-top margin-big-bottom padding-big-top padding-big-bottom border-top border-bottom border-dotted border-gray-white">
+						<span class="text-gray songti">最近一次登录时间：{date('Y年m月d日',$member['login_time'])}，地点：<span id='logaddress'>加载中</span></span>
+						<span class="fr"><i class="margin-right ico-warn va-m"></i>安全提醒: 请妥善保管密码！我们的工作人员不会以任何理由向您索取密码。</span>
+					</div>
+					<div class="table border save-table">
+						<div class="th padding-big-left bg-gray-white text-lh-40">
+							<div class="td layout">安全中心</div>
+						</div>
+						<div class="tr">
+							<div class="td w25 border-top border-white padding-big-left">账户密码</div>
+							<div class="td w75 border-top border-white"><a class="text-main" id="password" href="">修改</a></div>
+						</div>
+						<div class="tr">
+							<div class="td w25 border-top border-white padding-big-left">绑定手机：
+							{if empty($member['mobile'])}
+								还未绑定
+							{else}
+								{$member['mobile']}
+							{/if}
+							</div>
+							<div class="td w75 border-top border-white"><a class="text-main" id="phone" href="">修改</a></div>
+						</div>
+						<div class="tr">
+							<div class="td w25 border-top border-white padding-big-left">绑定邮箱：
+							{if empty($member['email'])}
+								还未绑定
+							{else}
+								{$member['email']}
+							{/if}
+							</div>
+							<div class="td w75 border-top border-white"><a class="text-main" id="email" href="">修改</a></div>
+						</div>
+						<?php if($coder){ ?>
+						<div class="tr">
+							<div class="td w25 border-top border-white padding-big-left">关注公众号：
+							{if !$open}
+								未关注
+							{else}
+								已关注
+							{/if}
+							</div>
+							<div class="td w75 border-top border-white"><a class="text-main wx-follow" id="weixin" href="javascript:;" >关注</a></div>
+						</div>
+						<?php }?>
+						{hook/safe_input}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--底部-->
+		{template footer common}
+
+		<!--修改密码-->
+		<div class="password popup-item">
+			<form method="post" action='{url("resetpassword",array("formhash"=>FORMHASH))}' name="pwdform" autocomplete="off">
+			<div class="padding-large-top padding-big-bottom">
+				<ul class="save-popup double-line text-left clearfix">
+					<li class="list">
+						<span class="label">旧密码：</span>
+						<div class="content">
+							<input class="input radius" name="oldpassword" datatype="*" autofocus="" type="password" placeholder="请输入原密码！" />
+						</div>
+					</li>
+					<li class="list">
+						<span class="label">新密码：</span>
+						<div class="content">
+							<input class="input radius" name="newpassword" datatype="*6-16" type="password" placeholder="请输入6-16位新密码！" />
+						</div>
+					</li>
+					<li class="list">
+						<span class="label">确认新密码：</span>
+						<div class="content">
+							<input class="input radius" name="newpassword1" datatype="*" recheck="newpassword" type="password" placeholder="请再次输入新密码！" />
+						</div>
+					</li>
+				</ul>
+			</div>
+			</form>
+		</div>
+		<!--更改手机号-->
+		<div class="phone popup-item">
+			<form method="post" action='{url("resetmobile",array("formhash"=>FORMHASH))}' name="bindmobileform" autocomplete="off">
+			<div class="padding-large-top padding-big-bottom">
+				<ul class="save-popup double-line text-left clearfix">
+					<li class="list">
+						<span class="label">手机：</span>
+						<div class="content">
+							<input class="input radius" name="mobile" datatype="mobile" type="text" placeholder="请输入您的手机号码!" />
+						</div>
+					</li>
+					<?php if($mobile_validate){ ?>
+					<li class="list">
+						<span class="label">验证码：</span>
+						<div class="content verify-code">
+							<input class="input radius" type="text" name='vcode' datatype="/^\d{4}$/" id="vcode" disabled="disabled" />
+							<input class="button bg-sub" type="button" id="sendsms" name="send_sms" value="发送验证码" />
+						</div>
+					</li>
+					<?php }?>
+				</ul>
+			</div>
+			</form>
+		</div>
+		<!--修改邮箱-->
+		<div class="email popup-item">
+			<div class="padding-large-top padding-big-bottom">
+			<form method="post" action='{url("checkansend_email",array("formhash"=>FORMHASH))}' name="emailform" autocomplete="off">
+				<ul class="save-popup double-line text-left clearfix">
+					<li class="list">
+						<span class="label">邮箱地址：</span>
+						<div class="content">
+							<input class="input radius" type="text" name="email" datatype="/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/" placeholder="请输入您的邮箱地址！" />
+						</div>
+						
+					</li>
+					
+				</ul>
+			</form>
+			</div>
+		</div>
+		<link rel="stylesheet" type="text/css" href="{__ROOT__}statics/js/dialog/ui-dialog.css?v={HD_VERSION}">
+		<script type="text/javascript" src="{__ROOT__}statics/js/dialog/dialog-plus-min.js?v={HD_VERSION}"></script>
+		<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+		<script type="text/javascript" src="template/default/statics/js/jquery.cookie.js?v={HD_VERSION}"></script>
+		<script>
+			//登录地区
+			$(function(){
+				var login_ip = '<?php echo $member['login_ip']?>'
+				var addressurl = '<?php echo url('ajax_login_address')?>';
+				var d = ''
+				$.getJSON(addressurl,{'ip':login_ip},function(data){
+					if(data.code == 1){
+						$('#logaddress').html("无法识别您的地址");
+					}else{
+						$('#logaddress').html(data.data.country+' '+data.data.region+' '+data.data.city);
+					}
+				})
+				//修改密码
+				$("#password").click(function(){
+					d = dialog({
+						id : 'pwd_dialog',
+						content : $(".password"),
+						title: '修改密码',
+						okValue: '确定',
+						ok: function(){
+							$("form[name=pwdform]").submit();
+							return false;//return false时不关闭弹窗
+						},
+						cancelValue: '取消',
+						cancel: function(){
+							
+						}
+					});
+					d.showModal();
+					return false;
+				});
+				//表单验证
+				$("form[name=pwdform]").Validform({
+					tiptype:function(msg,o,cssctl){},
+					ajaxPost:true,
+					callback:function(data){
+						_trip(data.message);
+						if(data.status == 1){
+							d.close().remove();
+							window.location.reload();
+						}
+					}
+				});
+				//绑定手机号
+				$("#phone").click(function(){
+					d = dialog({
+						id : 'phone_dialog',
+						content : $(".phone"),
+						title: '绑定手机号',
+						okValue: '确定',
+						ok: function(){
+							$("form[name=bindmobileform]").submit();
+							return false;//return false时不关闭弹窗
+						},
+						cancelValue: '取消',
+						cancel: function(){
+							
+						}
+					});
+					d.showModal();
+					return false;
+				});
+				//公众号二维码
+				$(".wx-follow").click(function(){
+					d = dialog({
+						content :'<img src="<?php echo $coder;?>" width="200" height="200">',
+						title: '公众号二维码',
+					});
+					d.showModal();
+					return false;
+				});
+				//表单验证
+				$("form[name=bindmobileform]").Validform({
+					tiptype:function(msg,o,cssctl){},
+					ajaxPost:true,
+					callback:function(data){
+						_trip(data.message);
+						if(data.status == 1){
+							d.close().remove();
+							window.location.reload();
+						}
+					}
+				});
+				//绑定邮箱
+				$("#email").click(function(){
+					d = dialog({
+						id : 'email_dialog',
+						content : $(".email"),
+						title: '修改密码',
+						okValue: '确定',
+						ok: function(){
+							$("form[name=emailform]").submit();
+							return false;//return false时不关闭弹窗
+						},
+						cancelValue: '取消',
+						cancel: function(){
+							
+						}
+					});
+					d.showModal();
+					return false;
+				});
+				//表单验证
+				$("form[name=emailform]").Validform({
+					tiptype:function(msg,o,cssctl){},
+					ajaxPost:true,
+					callback:function(data){
+						_trip(data.message);
+						if(data.status == 1){
+							d.close().remove();
+							window.location.reload();
+						}
+					}
+				});
+			})
+			function _trip(content){
+				var d = dialog({
+					id : 'trip',
+					padding:30,
+					content: ''+content+'',
+					quickClose: true
+				}).show();
+				setTimeout(function () {
+					d.close().remove();
+				}, 1000);
+			}
+			//进度条
+			function progress(){
+				var _width = $(".level-bar").data("width");
+				var i = 0;
+				var red = 1;
+				var org = 1;
+				var interval = setInterval(function(){
+					i++;
+					if(i<=_width){
+						$(".level-bar .bar").width(i+"%");
+					}else{
+						clearInterval(interval);
+						if(_width<=33){
+							$(".level-text").text("低").css({color:"#f54528"});
+						}else if(_width<=66){
+							$(".level-text").text("中").css({color:"#f90"});
+						}else{
+							$(".level-text").text("高").css({color:"#4bba1e"});
+						}
+					}
+					if(_width>33){
+						if(i>17&&i<=49){
+							red = red - 0.03125;
+							$(".level-bar .red-bar").css({opacity:red});
+						}
+					}
+					if(_width>66){
+						if(i>50&&i<=82){
+							org = org - 0.03125;
+							$(".level-bar .orange-bar").css({opacity:org});
+						}
+					}
+				},5);
+			}
+			progress();
+			
+			/*仿刷新：检测是否存在cookie*/
+			if($.cookie("captcha")){
+				reget($.cookie("captcha"));
+			}
+			$("#sendsms").on("click",function(){
+				var mobj = $('input[name="mobile"]');
+				var str = mobj.val();
+                var oldStr = '{$member["mobile"]}';
+                if(str == oldStr){
+                    _trip('不能重复绑定本机号码');
+                    return false;
+                }
+				if(str.length!=0){
+					var reg = /^(1(([35][0-9])|(47)|[7][0678]|[8][0123456789]))\d{8}$/;
+					var r = str.match(reg);
+					if(r==null){
+						_trip('您输入的手机格式不正确!');
+						return false;
+					}
+
+                    if(confirm('确认将验证码发送到 '+ str +' 吗?')) {
+                        checkAndSend(str);
+                    }else{
+                        return false;
+                    }
+
+				}else{
+					_trip('您输入的手机格式不正确!');
+					return false;
+				}
+			});
+
+			//检查验证
+			function checkAndSend(mobile,code){
+                var ajaxurl='{url("member/account/checkmobile")}';
+                $.post(ajaxurl,{'mobile':mobile},function(data){
+                    if(data.status == 0){
+                        _trip(data.message);
+                    }else if(data.status == 1){
+                        var ajaxurl='<?php echo url("member/account/checkansend")?>';
+                        $.post(ajaxurl,{'mobile':mobile},function(data){
+                            _trip(data.message);
+                        },'json');
+                        $("#vcode").removeAttr("readonly disabled");
+                        reget(60);
+                    }
+                },'json');
+			}
+			//重新获取验证码
+			function reget(count){
+				var mobj = $('input[name="mobile"]');
+				var btn = $("#sendsms");
+				var count = count;
+				var resend = setInterval(function(){
+					count--;
+					if (count > 0){
+						btn.val(count+"秒后重新获取");
+
+						mobj.attr('readonly',true);
+						$.cookie("captcha", count, {path: '/', expires: (1/86400)*count});
+					}else {
+						clearInterval(resend);
+						mobj.removeAttr('disabled readonly');
+						btn.val("重获验证码").removeAttr('disabled').css({'cursor':'','background':'#046bb3'});
+					}
+				}, 1000);
+
+				btn.attr('disabled',true).css({'cursor':'not-allowed','background':'#989898'});
+			}
+			
+		</script>
+	</body>
+</html>

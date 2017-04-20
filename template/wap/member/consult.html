@@ -1,0 +1,94 @@
+{template header common}
+<script type="text/javascript">
+		mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+		var page = '<?php echo $_GET['page']?>';
+		var url = '<?php echo url('member/consult/get_consult')?>';
+		function add_more(){
+			var param = {
+				"limit" : 4,
+				"page" : page
+			}
+			pull_get_lists(param,url,'up');
+		}
+		function refresh_page(){
+			var param = {
+				"limit" : 4,
+				"page" : 1
+			}
+			pull_get_lists(param,url,'down');
+		}
+		function pull_get_lists(param,url,type){
+			$.post(url,param,function(ret){
+				var html = '';
+				if(ret && ret.length > 0){
+					$.each(ret,function(i,v){
+						html += '<li class="mui-table-view-cell margin-bottom border-top bg-white">'
+							 + '<a href="'+v._sku_url+'" class="mui-navigate-right">'
+							 + '<span class="mui-pull-left margin-right"><img src="'+v.thumb+'"></span>' 
+							 + '<div class="title margin-small-bottom">'
+							 + '<span>'+v.sku_name+'</span></div>'
+							 + (v.goods_spec == undefined ?'<span class="text-ellipsis text-gray"></span></a>': '<span class="text-ellipsis text-gray">规格：'+v.goods_spec+'</span></a>')
+							 + '<div class="margin-top padding-small-top border-top">'
+							 + '<div class="consult-info-list">'
+							 + '<span class="mui-pull-left">咨询时间：</span>'
+							 + '<p class="text-drak">'+v.dateline+'</p></div>'
+							 + '<div class="consult-info-list">'
+							 + '<span class="mui-pull-left">咨询内容：</span>'
+							 + '<p class="text-blue">'+v.question+'</p></div>'
+							 + (v.status == 1 ? '<div class="consult-info-list"><span class="mui-pull-left">卖家回复：</span><p class="text-red">'+v.reply_content+'</p></div>' :'')
+							 +'</div></li>';
+					})
+					if(type == 'up'){
+						$(".consult-lists").append(html);
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$(".consult-lists").html(html);
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+				}else{
+					if($(".consult-lists").html() == ''){
+						html += '<li class="user-list-none order-lh-40 mui-text-center">'
+							 + '<img src="{SKIN_PATH}statics/images/bg_4.png" />'
+							 + '<p class="text-black hd-h4">您还没有咨询记录</p></li>';
+						$(".consult-lists").html(html);
+					}
+					if(type == 'up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					}	
+				}
+			},'json');
+		}
+	</script>
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+	<div class="mui-scroll" >
+	    <ul class="layout-list-common comment-form margin-none bg-none consult-lists"></ul>
+	</div>
+	</div>
+{template footer common}
+</body>
+</html>
+<script>
+$(function(){
+	add_more();
+})
+</script>

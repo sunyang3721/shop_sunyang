@@ -1,0 +1,59 @@
+{template header common}
+<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+<link type="text/css" rel="stylesheet" href="{__ROOT__}statics/js/upload/uploader.css?v={HD_VERSION}" />
+<script type="text/javascript" src="{__ROOT__}statics/js/upload/uploader.js?v={HD_VERSION}"></script>
+	<div class="mui-content">
+		<ul class="mui-table-view layout-list-common comment-form margin-none">
+	    	<li class="mui-table-view-cell">
+	    		<a href="{url('goods/index/detail',array('sku_id' => $goods['sku_id']))}" class="mui-navigate-right">
+	    			<span class="mui-pull-left margin-right"><img src="{thumb($goods[sku_thumb],50,50)}"></span>
+	    			<div class="title margin-small-bottom">
+	    				<span>{$goods[sku_name]}</span>
+	    			</div>
+	    			<span class="text-ellipsis text-gray">{$goods[_sku_spec]}</span>
+	    		</a>
+	    		<div class="margin-top padding-top border-top">
+	    		{if $result[mood] == 'positive'}
+	    			<span class="mui-btn margin-small-right hd-btn-blue">好&nbsp;&nbsp;&nbsp;&nbsp;评</span>
+	    		{elseif $result[mood] == 'neutral'}
+	    			<span class="mui-btn margin-small-right hd-btn-blue">中&nbsp;&nbsp;&nbsp;&nbsp;评</span>
+	    		{elseif $result[mood] == 'negative'}
+	    			<span class="mui-btn margin-small-right hd-btn-blue">差&nbsp;&nbsp;&nbsp;&nbsp;评</span>
+	    		</div>
+	    		{/if}
+	    		<input type="hidden" name="mood" value="positive">
+	    	</li>
+	    	<li>
+	    		<textarea class="border-none margin-none" disabled="disabled" readonly="readonly">{$result[content]}</textarea>
+	    	</li>
+	    </ul>
+	    <div class="list-col-10 padding-lr">
+	    	<ul class="comment-upload-list padding-top mui-clearfix">
+	    	{loop json_decode($result[imgs],true) $r}
+	    		<li><img src="{$r}" /></li>
+	    	{/loop}
+	    	</ul>
+	    </div>
+	</div>
+	{template footer common}
+	<div class="comment-slider hide">
+		<div class="mui-slider">
+		    <div class="mui-slider-group"></div>
+		</div>
+	</div>
+	<script>
+		mui(".comment-upload-list").on('tap','li',function(){
+			var imgs =  $(this).parent(".comment-upload-list").find("img");
+			var lists = '';
+			var index = $(this).index();
+			$.each(imgs, function() {
+				lists += '<div class="mui-slider-item"><img src="'+$(this).attr("src")+'" /></div>'
+			});
+			$(".comment-slider").removeClass("hide").find(".mui-slider-group").html(lists);
+			mui('.comment-slider').slider().gotoItem(index);
+		});
+		
+		mui(".comment-slider").on('tap','.mui-slider-item',function(){
+			$(".comment-slider").addClass("hide");
+		});
+	</script>

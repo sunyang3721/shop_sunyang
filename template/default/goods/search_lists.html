@@ -1,0 +1,186 @@
+<?php include template('toper','common');?>
+<?php include template('header','common');?>
+		<!--导航结束-->
+		<!--面包屑-->
+		<div class="container crumbs clearfix">
+			<p class="fl layout">
+				<i class="icon-crumbs"></i>
+				<a href="">搜索</a>
+				<em>></em>
+				{$_GET['keyword']}
+			</p>
+		</div>
+		<!--list-->
+		<div class="item-two-column container clearfix">
+			<div class="left fl">
+				<div class="layout border border-gray-white clearfix">
+					<div class="item-title">为您推荐</div>
+					<div class="ext-content padding clearfix">
+						<div class="ext-show">
+							<div class="ext-con-wrap clearfix">
+								<div class="ext-show">
+						<div class="ext-con-wrap">
+							{hd:goods tagfile="goods" method="lists" num="6" order="rand()"}
+							{loop $data $r}
+							<div class="ext-con-box">
+									<a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}" title="{$r['sku_name']}"><img src="<?php echo thumb($r['thumb'])?>" width="90" height="90" /></a>
+									<p>￥<?php echo $r['prom_price']?></p>
+							</div>
+							{/loop}
+							{/hd}
+						</div>
+					</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{hook/search_top}
+			{hd:goods tagfile="goods" method="page" order="$result[order]" num="12" page="$_GET[page]" goods_ids="$result[_goods_ids]" show_switch="$result[show_switch]"}
+			{if $data[count] != 0}
+				<div class="fr right goods-list-wrap">
+				<!--搜索结果提示-->
+				<div class="fl layout border item-blue-top margin-big-bottom clearfix">
+					<div class="item-title padding-left">
+						搜索内容：<span class="text-mix">{$_GET['keyword']}</span>
+					</div>
+					<p class="layout text-lh-large padding-left">搜索结果：找到与"<span class="text-sub">{$_GET['keyword']}</span>"相关的商品 <span class="text-mix">{$data['count']}</span> 件</p>
+				</div>
+				<!--筛选-->
+				<div class="fl layout border border-gray-white item-blue-top filter">
+					<dl>
+						<dt>排序方式：</dt>
+						<dd {if $result['sort'] == 'comper'} class="selected" {/if}><a href="{create_url('sort','comper,')}">综合</a></dd>
+						<dd {if $result['sort'] == 'sale'} class="selected" {/if}><a href="{create_url('sort','sale,')}">销量{if $result['sort'] == 'sale'}<i class="ico-down"></i>{/if}</a></dd>
+						<dd {if $result['sort'] == 'shop_price'} class="selected" {/if}><a href="{create_url('sort','shop_price,'.$result['_by'])}">价格{if $result['sort'] == 'shop_price'}{if $result['_by'] == 'asc'}<i class="ico-down"></i>{else}<i class="ico-up"></i>{/if}{/if}</a></dd>
+						<dd {if $result['sort'] == 'hits'} class="selected" {/if}><a href="{create_url('sort','hits,')}">人气{if $result['sort'] == 'hits'}<i class="ico-down"></i>{/if}</a></dd>
+						<dd class="filter-page item-page border-none">
+						{$data['page']}
+						</dd>
+					</dl>
+				{/hd}
+				</div>
+				<!--商品列表-->
+				<div class="fl list-wrap">
+					<ul class="list-h clearfix">
+					{hd:goods tagfile="goods" method="lists" order="$result[order]" num="12" page="$_GET[page]" goods_ids="$result[_goods_ids]" show_switch="$result[show_switch]"}
+					{loop $data $r}
+						<li>
+							<div class="lh-wrap">
+								<div class="p-img">
+									<a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}"><img src="<?php echo thumb($r['thumb'])?>" width="230" height="230" /></a>
+									{if $r['status_ext'] == 1}
+									<div class="picon pi3"></div>
+									{elseif $r['status_ext'] == 2}
+									<div class="picon pi2"></div>
+									{elseif $r['status_ext'] == 3}
+									<div class="picon pi1"></div>
+									{/if}
+								</div>
+								<div class="p-name">
+									<a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}">{if isset($r['prom_time']) && $r['prom_time'] > 0}<span class="padding-small-left padding-small-right radius-small bg-mix text-white margin-small-right">限时促销</span>{/if}{$r['sku_name']}</a>
+								</div>
+								<div class="p-price">
+									<span class="text-mix">￥<?php echo $r['prom_price']?></span>
+								</div>
+								<div class="p-hand text-right">
+									<div class="short-share">
+										{if $r[number] > 0}
+										<a class="cart-btn fl" data-event="cart_add" data-skuids="{$r['sku_id']}">加入购物车</a>
+										{else}
+										<span class="fl">商品已售罄</span>
+										{/if}
+										{if is_favorite($member['id'],$r['sku_id'])}
+										<span class="button"><em class="text-gray">已收藏</em></span>
+										{else}
+										<a class="button collect-btn" data-skuid="{$r['sku_id']}" data-name="{$r['sku_name']}" data-price="{$r['shop_price']}">收藏商品</a>
+										{/if}
+									</div>
+								</div>
+							</div>
+						</li>
+					{/loop}
+					{/hd}
+					</ul>
+				</div>
+				<div class="paging margin-top padding-tb clearfix" data-id="{$_GET[id]}" data-page="{$_GET[page]}">
+					<?php echo $pages?>
+				</div>
+			</div>
+			{else}
+			<div class="fr right goods-list-wrap">
+				<!--搜索结果提示-->
+				<div class="fl layout border item-blue-top margin-big-bottom clearfix">
+					<div class="item-title padding-left">
+						搜索内容：<span class="text-mix">{$_GET['keyword']}</span>
+					</div>
+					<p class="layout text-lh-large padding-left">搜索结果：<span class="text-sub">很抱歉！没有找到与"{$_GET['keyword']}"相关的商品，要不你换个关键词我帮你再找找吧！</span></p>
+				</div>
+
+				<div class="fl layout border border-gray-white item-blue-top pro-border-top-gray border-bottom-none">
+					<ul class="tab p-tab-trigger-wrap">
+						<li class="ui-switchtab-item current"><a href="javascript:;">猜您喜欢</a></li>
+					</ul>
+				</div>
+				<!--商品列表-->
+				<div class="fl list-wrap">
+					<ul class="list-h clearfix">
+					{hd:goods tagfile="goods" method="lists" num="12" order="rand()"}
+					{loop $data $r}
+						<li>
+							<div class="lh-wrap">
+								<div class="p-img">
+									<a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}"><img src="<?php echo thumb($r['thumb'])?>" width="230" height="230" /></a>
+									{if $r['status_ext'] == 1}
+									<div class="picon pi3"></div>
+									{elseif $r['status_ext'] == 2}
+									<div class="picon pi2"></div>
+									{elseif $r['status_ext'] == 3}
+									<div class="picon pi1"></div>
+									{/if}
+								</div>
+								<div class="p-name">
+									<a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}">{$r['sku_name']}</a>
+								</div>
+								<div class="p-price">
+									<span class="text-mix">￥<?php echo $r['prom_price']?></span>
+								</div>
+								<div class="p-hand text-right">
+									<div class="short-share">
+										{if $r[number] > 0}
+										<a class="cart-btn fl" data-event="cart_add" data-skuids="{$r['sku_id']}">加入购物车</a>
+										{else}
+										<span class="fl">商品已售罄</span>
+										{/if}
+										{if is_favorite($member['id'],$r['sku_id'])}
+										<span class="button"><em class="text-gray">已收藏</em></span>
+										{else}
+										<a class="button collect-btn" data-skuid="{$r['sku_id']}" data-name="{$r['sku_name']}" data-price="{$r['shop_price']}">收藏商品</a>
+										{/if}
+									</div>
+								</div>
+							</div>
+						</li>
+					{/loop}
+					{/hd}
+					</ul>
+				</div>
+			</div>
+			{/if}
+		</div>
+		<?php include template('toolbar','common');?>
+		<?php include template('footer','common');?>
+		<script>
+			$(function(){
+				//点击到指定页
+				$(".paging .button").click(function(){
+					jump_to_page(this);
+				});
+				//回车到指定页
+				$(".paging input[name=page]").live('keyup',function(e){
+					if(e.keyCode == 13){
+						jump_to_page(this);
+					}
+				});
+			})
+		</script>

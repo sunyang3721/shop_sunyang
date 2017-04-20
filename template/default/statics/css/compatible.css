@@ -1,0 +1,14 @@
+.user .icon-member { background: url(../images/icon_compatible.png) no-repeat -19px 0; }
+.icon-cart { background: url(../images/icon_compatible.png) no-repeat -57px 0; }
+.icon-message { background: url(../images/icon_compatible.png) no-repeat -76px 0; }
+.icon-and { background: url(../images/icon_compatible.png) no-repeat -76px -57px; }
+.user .icon-cart { background: url(../images/icon_compatible.png) no-repeat -38px 0; }
+.user .cart-goods { min-height: 68px; }
+.category .dt i { width: 14px; height: 14px; background: url(../images/icon_compatible.png) no-repeat left top; }
+.category .left-category dt i { background: url(../images/icon_compatible.png) no-repeat 0 -38px; }
+.shade-slider .shade-left, .shade-slider .shade-right { opacity: 0.6; filter:alpha(opacity=60); background-color: #000; }
+.hd-toolbar-footer .hd-tbar-tab-top .tab-ico { background: url(../images/icon_compatible.png) no-repeat 0 -57px; }
+.hd-toolbar-footer .hd-tbar-tab-backlist .tab-ico { background: url(../images/icon_compatible.png) no-repeat -38px -57px; }
+.sp-category .open dt i { background: url(../images/icon_compatible.png) no-repeat -19px -19px; }
+.sp-category dl dt i { background: url(../images/icon_compatible.png) no-repeat 0 -19px; }
+.crumbs .icon-crumbs { background: url(../images/icon_compatible.png) no-repeat -39px -19px; }

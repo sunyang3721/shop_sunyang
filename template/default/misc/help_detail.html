@@ -1,0 +1,43 @@
+ <?php include template('toper','common');?>
+ <?php include template('header','common');?>
+		<!--面包屑-->
+		<div class="container crumbs clearfix">
+			<p class="fl layout">
+				<i class="icon-crumbs"></i>
+				<a href="{__APP__}">首页</a>
+				<em>></em>
+				{help_crumbs($_GET[id],true)}
+			</p>
+		</div>
+		<!--帮助页开始-->
+		<div class="item-two-column container clearfix">
+			<div class="fl left">
+				<div class="list-category border border-gray-white">
+					<div class="item-title">帮助中心</div>
+					<div class="layout sp-category">
+					   {hd:misc method="lists" num="5" tagfile="help" id="0"}
+					   {loop $data $r}
+						<dl {if $parent_id == $r[id]}class="open"{/if}>
+							<dt><i></i>{$r[title]}</dt>
+							{hd:misc method="lists" tagfile="help" id="$r[id]"}
+						    {loop $data $s}
+							<dd><a {if $title == $s[title]}class="text-sub"{/if} href="{url('misc/index/help_detail',array('id'=>$s['id']))}">{$s[title]}</a></dd>
+							{/loop}
+							{/hd}
+						</dl>
+						{/loop}
+						{/hd}
+					</div>
+				</div>
+			</div>
+			<div class="fr padding right border border-gray-white item-blue-top">
+				<div class="help-title text-large">{$title}</div>
+				<div class="article-content padding">
+				{$content}
+				</div>
+			</div>
+		</div>
+		<!--帮助页结束-->
+		<!--底部-->
+<?php include template('toolbar','common');?>	
+<?php include template('footer','common');?>

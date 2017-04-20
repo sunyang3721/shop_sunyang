@@ -1,0 +1,41 @@
+{template header common}
+	<div class="mui-content">
+		<div class="padding-lr list-col-10 margin-none">
+			<div class="border-bottom mui-clearfix order-lh-40">
+				<span class="icon-15 mui-inline margin-small-right"><img src="{SKIN_PATH}statics/images/ico_23.png" /></span>请选择支付方式
+			</div>
+			<div class="padding-tb" data-id="type_box">
+				<p>数据正在努力加载中...</p>
+			</div>
+		</div>
+		{hook/wap_settlement_send_time}
+    	<div class="padding-big" data-id="delivery">
+    		<a href="javascript:;" class="mui-btn mui-btn-primary full hd-h4">确定支付配送方式</a>
+    	</div>
+	</div>
+	{template footer common}
+</body>
+</html>
+
+<script type="text/javascript" src="{SKIN_PATH}statics/js/order.js?v={HD_VERSION}"></script>
+<script type="text/javascript">
+	
+	mui(document).on("tap", ".mui-btn", function(){
+		if(!$(this).hasClass('hd-btn-blue') && !$(this).hasClass('full')){
+			$(this).addClass('hd-btn-blue').removeClass('hd-btn-gray');
+			$(this).siblings().removeClass('hd-btn-blue').addClass('hd-btn-gray');
+		}
+	});
+	
+	//确定 支付
+	$("[data-id='delivery']").on("tap",function() {
+		//读取localStorage已有数据
+		var hd_key = window.localStorage.getItem('hdkey');
+		var hd_datas = JSON.parse(window.localStorage.getItem('hddatas'));
+			hd_datas[hd_key].payMethod = $("[data-id='type_box']").find(".hd-btn-blue").data("id");
+		window.localStorage.setItem('hddatas', JSON.stringify(hd_datas));
+		window.location.href = document.referrer;
+	});
+	hd_order.setDeliver();
+	
+</script>

@@ -1,0 +1,43 @@
+<?php define('SKIN_PATH', __ROOT__.(str_replace(DOC_ROOT, '', TPL_PATH)).config('TPL_THEME').'/');?>
+ <script type="text/javascript" src="{SKIN_PATH}statics/js/mui.min.js?v={HD_VERSION}"></script>
+ <script type="text/javascript" src="{SKIN_PATH}statics/js/jquery-2.1.1.min.js?v={HD_VERSION}" ></script>
+<script type="text/javascript" src="{SKIN_PATH}statics/js/haidao.js?v={HD_VERSION}"></script>
+ <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/mui.min.css?v={HD_VERSION}"/>
+ <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/haidao.css?v={HD_VERSION}"/>
+ <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/haidao.mobile.css?v={HD_VERSION}"/>
+<script type="text/javascript">
+	window.onload = callpay();
+    function jsApiCall(){
+		WeixinJSBridge.invoke(
+			'getBrandWCPayRequest',
+			<?php echo $gateway['gateway_url'];?>,
+			function(res){
+				if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+				 	window.location.href = "<?php echo $success_url?>";
+				}else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+                    window.location.href = "<?php echo $error_url?>";
+				}else{
+					$.tips({
+						content:'支付失败,请联系管理员！',
+						callback:function() {
+							window.location.href = "<?php echo $error_url?>";
+						}
+					});
+				}
+			}
+		);
+	}
+
+	function callpay(){
+		if (typeof WeixinJSBridge == "undefined"){
+		    if( document.addEventListener ){
+		        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+		    }else if (document.attachEvent){
+		        document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+		        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+		    }
+		}else{
+		    jsApiCall();
+		}
+	}
+</script>

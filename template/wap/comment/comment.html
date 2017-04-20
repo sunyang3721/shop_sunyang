@@ -1,0 +1,115 @@
+{template header common}
+	<script type="text/javascript">
+      	mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+	    var page = "<?php echo $_GET['page']?>";
+		var url = "<?php echo url('comment/index/ajax_iscomment')?>";
+	    function add_more(){
+	    	var param = {
+    			iscomment : "{$_GET['iscomment']}",
+    			page : page
+    		};
+    		pull_get_lists(param,url,'up');
+    	}
+	    
+	    function refresh_page(){
+	    	var param = {
+    			iscomment : "{$_GET['iscomment']}",
+    			page : 1
+    		};
+    		pull_get_lists(param,url,'down');
+	    }
+		function pull_get_lists(param,url,type){
+			$.get(url,param,function(ret){
+    			if(ret.lists && ret.lists.length > 0){
+    				var html = '';
+    				$.each(ret.lists,function(i,item){
+    					var url = '',
+    						comment_detail = '{url("comment/index/comment_detail")}',
+    						set_comment = '{url("comment/index/set_comment")}'
+    					if(item.iscomment == 1){
+    						url = '<a href="'+ comment_detail +'&id=' + item.id + '" class="mui-btn hd-btn-gray mui-pull-right">查看评价</a>';
+    					}else{
+    						url = '<a href="' + set_comment +'&id=' + item.id + '" class="mui-btn hd-btn-blue mui-pull-right">评价晒单</a>';
+    					}
+    					html += '<li class="goods-item-list padding-none">'
+							 +		'<div class="list-item">'
+							 + 		 	'<div class="list-item-pic">'
+							 +				'<a href="'+ item.url +'"><img src="'+ item.sku_thumb +'" /></a>'
+							 +			'</div>'
+							 +		'<div class="list-item-bottom">'
+							 +			'<div class="list-item-title">'
+							 +				'<a href="'+ item.url+'">'+ item.sku_name +'</a>'
+							 +			'</div>'
+							 +			'<div class="list-item-text text-ellipsis comment-list-text">'
+							 +				'<span class="text-gray hd-h6 inline">'+ item._sku_spec +'</span>'
+							 +				 url
+							 +			'</div>'
+							 +		'</div>'
+							 +	'</div>'
+							 +	'</li>';
+					})
+					if(type == 'up'){
+						$('.custom-goods-row').append(html);
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$('.custom-goods-row').html(html);
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+    			}else{
+    				if(page == 1){
+    					var html = '<li class="user-list-none order-lh-40 mui-text-center">'
+						+	'<img src="{SKIN_PATH}statics/images/bg_4.png" />'
+						+	'<p class="text-black hd-h4">暂无内容！</p>'
+						+	'</li>';
+						$('.custom-goods-row').html(html);
+    				}
+					if(type =='up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					}
+    			}
+    		},'json')
+		}
+	</script>
+	<div class="filter-items full bg-white border-bottom mui-text-left mui-clearfix">
+		<div class="inline padding-lr-15">
+			<a href="{url('index',array('iscomment' => 0))}" class="filter-item {if $_GET['iscomment'] == 0}current{/if}">待评价</a>
+		</div>
+		<div class="inline padding-lr-15">
+			<a href="{url('index',array('iscomment' => 1))}" class="filter-item {if $_GET['iscomment'] == 1}current{/if}">已评价</a>
+		</div>
+	</div>
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper content-bottom">
+	<div class="mui-content">
+	   	<div class="has-scorll-top"></div>
+		<ul class="margin-top custom-goods-items custom-goods-row custom-list-goods border-top mui-clearfix">
+		
+		</ul>
+	</div>
+	</div>
+	{template footer common}
+</body>
+<script type="text/javascript">
+	$(function(){
+		add_more();
+	})
+</script>

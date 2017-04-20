@@ -1,0 +1,79 @@
+{template header common}
+	<div class="mui-content">
+		<form action="{url('order/order/detail')}" method="post" name="dopay">
+			<input type="hidden" name="order_sn" value="{$order_sn}" />
+			<input type="hidden" name="balance_checked" value="{if ($member_info['money'] > 0)}1{/if}" />
+			<input type="hidden" name="pay_code" value="" />
+			<input type="hidden" name="pay_bank" value="" />
+			<ul class="mui-table-view layout-list-common hd-h4 margin-none">
+				<li class="mui-table-view-cell">订单号：<em class="text-org">{$order_sn}</em></li>
+			</ul>
+			<ul class="mui-table-view layout-list-common hd-h4 margin-top">
+				<li class="mui-table-view-cell">应付总额：<em class="text-org">￥{$order[real_amount]}</em></li>
+				<li class="mui-table-view-cell">支付方式：在线支付</li>
+				{if $balance_pay == 1}
+					<li class="mui-table-view-cell">
+						<label data-id="balance_pay">
+							<div class="hd-checkbox hd-h5">
+			    				<input type="checkbox" />
+			    				<span class="label">账户余额：{sprintf("%.2f",$member_info[money])} 元</span>
+			    			</div>
+			    			{if ($order[real_amount] - $order[balance_amount] > $member_info[money])}
+				    			<div class="mui-block padding-large-left" data-id="pay_amount">
+				    				<span class="text-org hd-h5">您还需在线支付：<em>0</em> 元</span>
+				    			</div>
+			    			{/if}
+						</label>
+					</li>
+				{/if}
+			</ul>
+			<ul class="pay-lists list-col-10 mui-clearfix" data-id="pays">
+				<?php if(empty($payments)) : ?>
+					<li class="pay-list"> 后台暂未开启支付方式 </li>
+				<?php else: ?>
+					{loop $payments $pay}
+					{if strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') == false}
+					{if $pay[pay_code] != 'wechat_js'}
+						<li class="pay-list">
+							<label class="mui-block">
+								{if $pay[pay_code] == 'jdpay'}
+								<div class="hd-radio"><input name="pay_method" data-id="pay_method" type="radio" data-code="{$pay[pay_code]}" data-bank="{$pay[pay_ico]}" /></div>
+								<div class="pay-icon" style="width: 40%"><img src="{SKIN_PATH}statics/images/banks/{$pay[pay_ico]}.png" /></div>
+								{else}
+								<div class="hd-radio"><input name="pay_method" data-id="pay_method" type="radio" data-code="{$pay[pay_code]}" /></div>
+								<div class="pay-icon"><img src="{SKIN_PATH}statics/images/{$pay[pay_ico]}.png" /></div>
+								<span class="hd-h5">{$pay[pay_name]}</span>
+								{/if}
+								<!-- <p class="lh-18">{$pay[pay_desc]}</p> -->
+							</label>
+						</li>
+					{/if}
+					{else}
+					{if $pay[pay_code] != 'ws_wap'}
+						<li class="pay-list">
+							<label class="mui-block">
+								<div class="hd-radio"><input name="pay_method" data-id="pay_method" type="radio" data-code="{$pay[pay_code]}" /></div>
+								<div class="pay-icon"><img src="{SKIN_PATH}statics/images/{$pay[pay_ico]}.png" /></div>
+								<span class="hd-h5">{$pay[pay_name]}</span>
+								<!-- <p class="lh-18">{$pay[pay_desc]}</p> -->
+							</label>
+						</li>
+					{/if}
+					{/if}
+					{/loop}
+				<?php endif; ?>
+			</ul>
+		    <div class="margin padding-small">
+		    	<a data-id="subbtn" href="javascript:;" class="mui-btn mui-btn-blue full hd-h4">确认支付</a>
+		    </div>
+	    </form>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript" src="{SKIN_PATH}statics/js/order-pay.js?v={HD_VERSION}"></script>
+<script type="text/javascript">
+	var order = <?php echo json_encode($order);?>;
+	var member = <?php echo json_encode($member_info);?>;
+	hd_pay.init();
+</script>

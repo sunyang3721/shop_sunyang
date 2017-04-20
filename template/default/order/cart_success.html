@@ -1,0 +1,153 @@
+<?php include template('toper','common'); ?>
+<?php include template('header','common'); ?>
+
+	<!--面包屑-->
+	<div class="container crumbs clearfix">
+		<p class="fl layout">
+			<i class="icon-crumbs"></i>
+			<a href="{__APP__}">首页</a>
+			<em>></em>
+			购物车成功
+		</p>
+	</div>
+
+	<div class="container narrow-two-column join-cart-success clearfix">
+		<div class="right fl">
+			<div class="border border-gray-white item-blue-top">
+				<div class="join-cart-box">
+					<span class="tip">商品已成功加入购物车！</span>
+					<a class="fr item-btn button border-none text-center" href="<?php echo url("order/cart/index") ?>">去购物车结算 <span class="margin-small-left strong songti">></span></a>
+					<a class="fr button bg-gray-white margin-big-right" href="javascript:;">继续购物</a>
+				</div>
+			</div>
+			{hook/success_header_between_lists}
+			<div class="margin-big-top layout border border-gray-white item-blue-top pro-border-top-gray border-bottom-none">
+				<ul class="tab p-tab-trigger-wrap">
+					<li class="ui-switchtab-item current"><a href="javascript:;">购买了该商品用户还买了</a></li>
+				</ul>
+			</div>
+			<!--商品列表-->
+			<div class="list-wrap">
+				{hd:goods tagfile="goods" method="lists" num="8" order="rand()"}
+				<ul class="list-h clearfix">
+					{loop $data $r}
+					<li>
+						<div class="lh-wrap">
+							<div class="p-img">
+								<a href="{url('goods/index/detail',array('sku_id' => $r['sku_id']))}"><img src="{$r['thumb']}" width="204" height="204" /></a>
+							</div>
+							<div class="p-name">
+								<a href="{url('goods/index/detail',array('sku_id' => $r['sku_id']))}">{if isset($r['prom_time']) && $r['prom_time'] > 0}<span class="padding-small-left padding-small-right radius-small bg-mix text-white margin-small-right">限时促销</span>{/if}{$r[sku_name]}</a>
+							</div>
+							<div class="p-price">
+								<span class="text-mix">￥<?php echo $r['prom_price']?></span>
+							</div>
+							<div class="p-hand text-right">
+								<div class="short-share">
+									{if $r[number] > 0}
+									<a class="cart-btn fl" data-event="cart_add" data-skuids="{$r['sku_id']}">加入购物车</a>
+									{else}
+									<span class="fl">商品已售罄</span>
+									{/if}
+									{if is_favorite($member['id'],$r['sku_id'])}
+									<span class="button"><em class="text-gray">已收藏</em></span>
+									{else}
+									<a class="button collect-btn" data-name="{$r['sku_name']}" data-skuid="{$r['sku_id']}" data-price="{$r['shop_price']}">收藏商品</a>
+									{/if}
+								</div>
+							</div>
+						</div>
+					</li>
+					{/loop}
+				</ul>
+				{/hd}
+			</div>
+			<div class="margin-big-top layout border border-gray-white item-blue-top pro-border-top-gray border-bottom-none">
+				<ul class="tab p-tab-trigger-wrap">
+					<li class="ui-switchtab-item current"><a href="javascript:;">您可能还需要以下商品</a></li>
+				</ul>
+			</div>
+			<!--商品列表-->
+			<div class="list-wrap">
+			{hd:goods tagfile="goods" method="lists" num="8" order="rand()"}
+				<ul class="list-h clearfix">
+					{loop $data $d}
+					<li>
+						<div class="lh-wrap">
+							<div class="p-img">
+								<a href="{url('goods/index/detail',array('sku_id' => $d['sku_id']))}"><img src="{$d[thumb]}" width="204" height="204" /></a>
+							</div>
+							<div class="p-name">
+								<a href="{url('goods/index/detail',array('sku_id' => $d['sku_id']))}">{if isset($d['prom_time']) && $d['prom_time'] > 0}<span class="padding-small-left padding-small-right radius-small bg-mix text-white margin-small-right">限时促销</span>{/if}{$d[sku_name]}</a>
+							</div>
+							<div class="p-price">
+								<span class="text-mix">￥<?php echo $d['prom_price']?></span>
+							</div>
+							<div class="p-hand text-right">
+								<div class="short-share">
+									{if $d[number] > 0}
+									<a class="cart-btn fl" data-event="cart_add" data-skuids="{$r['sku_id']}">加入购物车</a>
+									{else}
+									<span class="fl">商品已售罄</span>
+									{/if}
+									{if is_favorite($member['id'],$d['sku_id'])}
+									<span class="button"><em class="text-gray">已收藏</em></span>
+									{else}
+									<a class="button collect-btn" data-skuid="{$d['sku_id']}" data-name="{$d['sku_name']}"  data-price="{$d['shop_price']}">收藏商品</a>
+									{/if}
+								</div>
+							</div>
+						</div>
+					</li>
+					{/loop}
+				</ul>
+			{/hd}
+			</div>
+		</div>
+		<div class="left padding-left fr" id="carts_c">
+			<div class="border item-blue-top">
+				<div class="user-content bg-white cart clearfix">
+					<div class="fl layout user-con-top border-bottom">
+						<a class="fl" href="{url('order/cart/index')}">我的购物车</a>
+						<a class="fr" href="javascript:;">清空购物车</a>
+					</div>
+					<div class="cart-goods border-bottom fl padding-small-left padding-small-right">
+						{loop $carts['skus'] $key $cart}
+							<div class="list" data-skuid="{$cart['sku_id']}">
+								<div class="pic margin-none"><a href="{url('goods/index/detail',array('sku_id' => $cart['sku_id']))}"><img src="{$cart[_sku_][thumb]}" /></a></div>
+								<div class="cart-goods-title">
+									<h6><a href="{url('goods/index/detail',array('sku_id' => $cart['sku_id']))}">{$cart[_sku_][sku_name]}</a></h6>
+									<p class="text-ellipsis">{$cart[_sku_][_spec]}</p>
+								</div>
+								<div class="cart-goods-fun">
+									<span>￥{$cart[_sku_][prom_price]} x<em>{$cart[number]}</em></span>
+									<p class="text-right"><a href="javascript:;" class="text-main">删除</a></p>
+								</div>
+							</div>
+						{/loop}
+					</div>
+					<div class="cart-info padding-lr fl">
+						<p class="margin-small-top" id="cart_html">共
+							<em class="text-mix g_c">{$carts['sku_counts']}</em> 种商品
+							<em class="text-mix m_c">{$carts['sku_numbers']}</em> 件，商品金额总计:
+							<em class="text-mix text-default p_c">￥{$carts['all_prices']}</em>
+						</p>
+						<a class="cart-btn margin-tb" href="<?php echo url("order/cart/index") ?>">去购物车结算</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php include template('toolbar','common');?>
+<!--底部-->
+<?php include template('footer','common'); ?>
+
+<script type="text/javascript">
+// 加入购物车后台设置
+var cart_jump = "<?php echo $cart_jump?>";
+// 成功跳转地址
+var success_url = "<?php echo url('order/cart/success')?>";
+$('.margin-big-right').bind('click',function(){
+	history.go(-1);
+})
+</script>

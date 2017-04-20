@@ -1,0 +1,71 @@
+{template header common}
+<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+<style>
+	.wx-text-center{ text-align: center;}
+	.wx-text-big{ font-size: .4rem;}
+	.wx-pd-lr{ padding: 0 .15rem;}
+	.wx-blind{ margin-top: .8rem;}
+	.wx-btn{ display: block; margin-top: 1rem; padding: .12rem .24rem; width:100%; text-align: center; line-height: 1.42; font-size: .24rem; border-radius: .08rem; background: #1a8fda; color: #fff;}
+	.wx-hide{ display: none;}
+</style>
+	<div class="mui-content">
+	    <div class="padding bg-white login-wrap" id="logaddress" >
+	    	<form class="padding-small wx-form wx-hide" action="{url('binding')}" name = "binding_form" method="POST" >
+				<input type="hidden" name="openid" value="<?php echo $openid;?>" />
+		        <div class="list">
+		        	<input type="text" class="input"  name="username" placeholder="用户名/手机号/邮箱" datatype="s2-15|mobile|email" nullmsg="请输入用户名/邮箱/手机号" errmsg="格式不正确">
+		        </div>
+		        <div class="list">
+		        	<input type="password" class="input" name="password" placeholder="密码" datatype="*" nullmsg="请输入密码" />
+		        </div>
+		        <input type="submit" class="mui-btn full" value="绑定" />
+		    </form>
+	    </div>
+	</div>
+	{template footer common}
+    <script>
+			$(function(){
+				var openid = '<?php echo $openid;?>'
+				var url = '<?php echo url("ajax_verifi")?>';
+				$.getJSON(url,{'openid':openid},function(data){
+					var _html="",txt="";
+					if(data.status == 0){
+						_html+='<div class="wx-pd-lr wx-blind"><p class="wx-text-center wx-text-big">此微信已绑定</p><a href="<?php echo url("public/login");?>" class="wx-btn">点此跳转到登录</a></div>';
+						$('#logaddress').html(_html);
+						$(".wx-form").addClass("wx-hide");
+					}else{
+						$(".wx-form").removeClass("wx-hide");
+					}
+				})
+			});
+
+
+
+    	//弹窗提示，在验证返回结果后调用
+    	//$.tips({content:"绑定！"});
+		var coder = $("form[name=binding_form]").Validform({
+			showAllError:true,
+			ajaxPost:true,
+			callback:function(ret) {
+				if(ret.status == 0) {
+					$.tips({
+						icon:'error',
+						content:ret.message,
+						callback:function() {
+							return false;
+						}
+					});
+				} else {
+					$.tips({
+						icon:'success',
+						content:ret.message,
+						callback:function(){
+							window.location.href = ret.referer;
+						}
+					});
+				}
+			}
+		})
+    </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+{template header member}
+<style>
+.margin-large-left:hover{text-decoration:underline;}
+.margin-left:hover{text-decoration:underline;}
+</style>
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'];?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					<dl class="margin-big-top member-memu clearfix">
+						<dt class="text-sub text-default">系统消息</dt>
+						<dd {if (!isset($_GET['status']))}class="current"{/if}><a href="{url('member/message/index')}">全部消息</a></dd>
+						<dd {if ($_GET['status'] == '0')}class="current"{/if}><a href="{url('member/message/index', array('status' => 0))}">未读消息</a></dd>
+						<dd {if ($_GET['status'] == 1)}class="current"{/if}><a href="{url('member/message/index', array('status' => 1))}">已读消息</a></dd>
+					</dl>
+				</div>
+				<div class="right padding-big-left padding-big-right check-fun">
+					<div class="member-order-top margin-big-top margin-big-bottom small-search clearfix">
+						<div class="fl">
+							<div class="border-left border-middle border-sub padding-left text-default text-lh-little">全部消息</div>
+						</div>
+					</div>
+					<div class="padding border border-bottom-none bg-gray-white">
+						<label class="margin-right"><input class="margin-right va-m check-switch" type="checkbox" />全部</label>
+						<a class="margin-large-left margin-right text-sub" href="javascript:;">标记所选为已读</a>|
+						<a class="margin-left text-sub" href="javascript:;" data-ajax="true">删除所选</a>
+					</div>
+					<!--
+                    	未读信息为粗体strong黑色，已读为正常字体灰色
+                    -->
+					<div class="message-list">
+						<ul class="clearfix">
+						<?php foreach($result as $k => $v){?>
+							<li {if $v[status]} class="read"{/if}>
+								<div class="message-top check-child">
+									<input type="checkbox" name="id" value="{$v[id]}"/>
+									<a class="message-link" href="javascript:;" ><b></b>{$v[title]}</a>
+									<span class="fr text-gray">{date('Y-m-d H:i:s',$v[dateline])}</span>
+								</div>
+								<div class="message-deital">
+									<p>{$v[message]}</p>
+								</div>
+							</li>
+						<?php }?>
+						</ul>
+					</div>
+					<div class="paging margin-top padding-tb clearfix" data-id="{$_GET[id]}" data-page="{$_GET[page]}">
+						<?php echo $pages?>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+		
+			$(function(){
+				//点击到指定页
+				$(".paging .button").click(function(){
+					jump_to_page(this);
+				});
+				//回车到指定页
+				$(".paging input[name=page]").live('keyup',function(e){
+					if(e.keyCode == 13){
+						jump_to_page(this);
+					} 
+				});
+			})
+		
+			$(".message-list .message-link").live('click',function(){
+				if($(this).parent().parent().attr('class') == undefined){
+					var id = $(this).prev().val();
+					var url = '<?php echo url('member/message/ajax_update')?>';//{"id[]":id}
+					$.post(url,{'id[]':id},function(data){
+						if(data.status == 1){
+							$("input[name=id]").each(function(){
+								if($(this).val() == id){
+									$(this).parent().parent().attr('class','read selected');
+								}
+							})
+						}
+					},'json')
+				}
+				if($(this).parents("li").hasClass("selected")){
+					$(this).parents("li").removeClass("selected");
+				}else{
+					$(this).parents("li").addClass("selected").siblings("li").removeClass("selected");
+				}
+				return false;
+			});
+			$(".padding .margin-large-left").live('click',function(){
+				var ids = Array();
+				var url = '<?php echo url('member/message/ajax_update')?>';
+				$("input[name=id]").each(function(){
+					if($(this).attr('checked') == 'checked'){
+						ids.push($(this).val());
+					}
+				})
+				$.post(url,{'id[]':ids},function(ret){
+					if(ret.status == 0) {
+						$.tips({
+							icon:'error',
+							content:ret.message,
+							callback:function() {
+								return false;
+							}
+						});
+					} else {
+						$.tips({
+							icon:'success',
+							content:ret.message,
+							callback:function() {
+								window.location.reload();
+							}
+						});					
+					}
+				},'json')
+			})
+			$('[data-ajax]').click(function() {
+				var ids = Array();
+				var url = '<?php echo url('member/message/delete')?>';
+				$("input[name=id]").each(function(){
+					if($(this).attr('checked') == 'checked'){
+						ids.push($(this).val());
+					}
+				})
+				if(ids.length < 1){
+					$.tips({
+							icon:'error',
+							content:'请选择要删除的消息',
+							callback:function() {
+								
+							}
+						});
+					return false;
+				}else{
+					if(confirm('是否确认删除?')){
+						$.post(url,{'id[]':ids},function(data){
+						if(data.status == 1){
+							$.tips({
+								icon:'success',
+								content:'删除成功',
+								callback:function() {
+									window.location.reload();
+								}
+							});
+						}else{
+							$.tips({
+								icon:'error',
+								content:data.message,
+								callback:function() {
+									
+								}
+							});
+						}
+					},'json')
+				return false;
+					}
+				}
+			})
+		</script>
+{template footer common}

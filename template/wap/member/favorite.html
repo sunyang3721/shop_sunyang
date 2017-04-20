@@ -1,0 +1,127 @@
+{template header common}
+	<script>
+	mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+		var page = '<?php echo $_GET['page']?>';
+		var url = '<?php echo url('member/favorite/get_favorite')?>';
+		function add_more(){
+			var param = {
+				"limit" : 3,
+				"page" : page,
+				"closing" : '<?php echo $_GET['closing']?>'
+			}
+			pull_get_lists(param,url,'up');
+		}
+		function refresh_page(){
+			var param = {
+				"limit" : 3,
+				"page" : 1,
+				"closing" : '<?php echo $_GET['closing']?>'
+			}
+			pull_get_lists(param,url,'down');
+		}
+		function pull_get_lists(param,url,type){
+			$.post(url,param,function(ret){
+				var html = '';
+				var goods_detail = '<?php echo url('goods/index/detail')?>';
+				if(ret && ret.length > 0){
+					$.each(ret,function(i,v){
+						html += '<li class="order-list list-col-10">'
+							 +'<a href="'+v.url+'" class="order-collect padding-tb">'
+							 +'<img src="'+v.thumb+'" />'
+							 +'<p>'+v.sku_name+'</p>'
+							 +'<span class="text-org hd-h4">￥'+v.shop_price+'</span></a>'
+							 +'<div class="order-hand padding-tb border-top mui-clearfix">'
+							 +'<a href="#" class="mui-btn hd-btn-blue mui-pull-right favorite-cancel" data-id="'+v.sku_id+'">取消收藏</a>'
+							 +'</div></li>'
+					});
+					if(type == 'up'){
+						$(".favorite-lists").append(html);
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$('.favorite-lists').html(html);
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+				}else{
+					if(page == 1){
+						html += '<li class="user-list-none order-lh-40 mui-text-center">'
+							 + '<img src="{SKIN_PATH}statics/images/bg_4.png" />'
+							 + '<p class="text-black hd-h4">您还没有收藏记录</p></li>';
+						$(".favorite-lists").html(html);
+					}
+					if(type == 'up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					}
+				}
+			},'json');
+		}
+		$(function(){
+			add_more();
+			mui.init();
+		})
+	</script>
+	<div class="hd-grid filter-items bg-white">
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/favorite/index')}"  class="{if !isset($_GET['closing'])}filter-item current{else}filter-item{/if}">全部</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/favorite/index',array('closing'=>'week'))}" class="{if $_GET['closing'] == 'week'}filter-item current{else}filter-item{/if}">本周</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/favorite/index',array('closing'=>'month'))}" class="{if $_GET['closing'] == 'month'}filter-item current{else}filter-item{/if}">本月</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/favorite/index',array('closing'=>'year'))}" class="{if $_GET['closing'] == 'year'}filter-item current{else}filter-item{/if}">本年</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{url('member/favorite/index',array('closing'=>'lastyear'))}" class="{if $_GET['closing'] == 'lastyear'}filter-item current{else}filter-item{/if}">历史</a>
+		</div>
+	</div>
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+		<div class="mui-content">
+		    <div class="has-scorll-top"></div>
+			<ul class="order-lists user-lists mui-clearfix favorite-lists"></ul>
+		</div>
+	</div>
+	{template footer common}
+	<script>
+		$('body').on('tap','.favorite-cancel',function(){
+			var sku_id = $(this).data('id');
+			var url = '<?php echo url('member/favorite/delete')?>';
+			$.confirms("是否取消收藏",function(){
+				$.post(url,{sku_id:sku_id},function(ret){
+					if(ret.status == 1){
+						$.tips({content:ret.message});
+						window.location.href = ret.referer;
+					}else{
+						$.tips({content:ret.message});
+					}
+				},'json');
+			});
+		});
+	mui('.order-list').on('tap','.order-collect',function(){
+		window.location.href = $(this).data('href');
+	});
+	</script>
+</body>
+</html>
+

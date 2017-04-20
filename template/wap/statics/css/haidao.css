@@ -1,0 +1,217 @@
+body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, q, dl, dt, dd, ol, ul, li, input, fieldset, form, legend, caption, tbody, tfoot, thead, article, aside, dialog, figure, footer, header, hgroup, nav, section{margin:0;padding:0;border:0;font-size:14px;font:inherit;vertical-align:baseline;}
+body{font-size:.24rem;color:#333;font-family:"Microsoft YaHei","Helvetica Neue", Helvetica, STHeiTi, sans-serif;}
+/*栅格系统*/
+.hd-grid{width: 100%;}
+.hd-grid:before, .hd-grid:after{display:table;content:' ';}
+.hd-grid:after{clear: both;}
+.hd-grid [class*='hd-col-xs-'] {float:left;position:relative;min-height:1px;}
+.hd-col-xs-e4{width:25%;}
+.hd-col-xs-e5{width:20%;}
+.hd-col-xs-e10{width:10%;}
+/*字体*/
+.text-org{color:#fc6e51;}
+.text-gray{color:#787878;}
+.text-black{color:#000;}
+.text-white{color:#fff;}
+.text-drak{color:#35393c;}
+.price-org{color:#fc6e51;}
+.text-pink{color:#f14d4d;}
+.text-blue{color:#0068b7;}
+.text-red{color:#e03235;}
+
+.strong{font-weight:bold;}
+.inline{display:inline-block;}
+.relative{position:relative;}
+.hide{display:none !important;}
+.over-initial{overflow:initial;}
+
+.text-ellipsis{white-space:nowrap;text-overflow:ellipsis;overflow:hidden;}
+/*背景色*/
+.bg-white{background-color:#fff;}
+.bg-light-gray{background-color:#eee;}
+.bg-drak-gray{background-color:#666;}
+.bg-gray{background-color:#ddd;}
+.bg-orange{background-color:#fc6e51;}
+.bg-red{background-color:#f15252;}
+.bg-none{background-color:transparent !important;}
+/***border***/
+.border{border:solid 1px #e1e1e1;}
+.border-top{border-top:solid 1px #e1e1e1;}
+.border-right{border-right:solid 1px #e1e1e1;}
+.border-bottom{border-bottom:solid 1px #e1e1e1;}
+.border-left{border-left:solid 1px #e1e1e1;}
+.border-top-bottom{border-top:solid 1px #e1e1e1;border-bottom:solid 1px #e1e1e1;}
+.border-left-right{border-left:solid 1px #e1e1e1;border-right:solid 1px #e1e1e1;}
+/*边框样式*/
+.border-dashed{border-style:dashed;}
+.border-dotted{border-style:dotted;}
+.border-double{border-style:double;}
+.border-inset{border-style:inset;}
+.border-outset{border-style:outset;}
+/*边框大小*/
+.border-large{border-width:10px;}
+.border-big{border-width:5px;}
+.border-middle{border-width:3px;}
+.border-small{border-width:2px;}
+.border-none{border: none !important;}
+/*边框颜色*/
+.border-gray-white{border-color:#eee;}
+.border-light-gray{border-color:#ccc;}
+.border-gray{border-color:#999;}
+.border-main{border-color:#2a95de;}
+.border-sub{border-color:#1380cb;}
+.border-mix{border-color:#d93600;}
+.border-dot{border-color:#ff5a00;}
+.border-white{border-color:#fff;}
+.border-black{border-color:#000;}
+/***border radius***/
+.radius-none{border-radius:0;}
+.radius-small{border-radius:.04rem;}
+.radius{border-radius:.8rem;}
+.radius-big{border-radius:.12rem;}
+.radius-rounded{border-radius:2em;}
+.radius-circle{border-radius:50%;}
+/*内边距,全,上,下,左,右*/
+.padding-large{padding:.6rem;}
+.padding-large-top{padding-top:.6rem;}
+.padding-large-right{padding-right:.6rem;}
+.padding-large-bottom{padding-bottom:.6rem;}
+.padding-large-left{padding-left:.6rem;}
+
+.padding-big{padding:.4rem;}
+.padding-big-top{padding-top:.4rem;}
+.padding-big-right{padding-right:.4rem;}
+.padding-big-bottom{padding-bottom:.4rem;}
+.padding-big-left{padding-left:.4rem;}
+
+.padding-15{padding:.3rem;}
+.padding-tb-15{padding:.3rem 0;}
+.padding-lr-15{padding:0 .3rem;}
+.padding-top-15{padding-top:.3rem;}
+.padding-right-15{padding-right:.3rem;}
+.padding-bottom-15{padding-bottom:.3rem;}
+.padding-left-15{padding-left:.3rem;}
+
+.padding{padding:.2rem;}
+.padding-tb{padding:.2rem 0;}
+.padding-lr{padding:0 .2rem;}
+.padding-top{padding-top:.2rem;}
+.padding-right{padding-right:.2rem;}
+.padding-bottom{padding-bottom:.2rem;}
+.padding-left{padding-left:.2rem;}
+
+.padding-small{padding:.1rem;}
+.padding-small-top{padding-top:.1rem;}
+.padding-small-right{padding-right:.1rem;}
+.padding-small-bottom{padding-bottom:.1rem;}
+.padding-small-left{padding-left:.1rem;}
+
+.padding-little{padding:.04rem;}
+.padding-little-top{padding-top:.04rem;}
+.padding-little-right{padding-right:.04rem;}
+.padding-little-bottom{padding-bottom:.04rem;}
+.padding-little-left{padding-left:.04rem;}
+
+.padding-none{padding:0 !important;}
+/*外边距,全,上,下,左,右*/
+.margin-large{margin:.6rem;}
+.margin-large-top{margin-top:.6rem;}
+.margin-large-right{margin-right:.6rem;}
+.margin-large-bottom{margin-bottom:.6rem;}
+.margin-large-left{margin-left:.6rem;}
+
+.margin-big{margin:.4rem;}
+.margin-big-top{margin-top:.4rem;}
+.margin-big-right{margin-right:.4rem;}
+.margin-big-bottom{margin-bottom:.4rem;}
+.margin-big-left{margin-left:.4rem;}
+
+.margin-15{margin:.3rem;}
+.margin-tb-15{margin:.3rem 0;}
+.margin-lr-15{margin:0 .3rem;}
+.margin-top-15{margin-top:.3rem;}
+.margin-right-15{margin-right:.3rem;}
+.margin-bottom-15{margin-bottom:.3rem;}
+.margin-left-15{margin-left:.3rem;}
+
+.margin{margin:.2rem !important;clear:both;}
+.margin-tb{margin:.2rem 0;}
+.margin-lr{margin:0 .2rem;}
+.margin-top{margin-top:.2rem;}
+.margin-right{margin-right:.2rem;}
+.margin-bottom{margin-bottom:.2rem;}
+.margin-left{margin-left:.2rem;}
+
+.margin-around{margin:0 .2rem;}
+
+.margin-small{margin:.1rem;}
+.margin-small-top{margin-top:.1rem;}
+.margin-small-right{margin-right:.1rem;}
+.margin-small-bottom{margin-bottom:.1rem;}
+.margin-small-left{margin-left:.1rem;}
+
+.margin-little{margin:.04rem;}
+.margin-little-top{margin-top:.04rem;}
+.margin-little-right{margin-right:.04rem;}
+.margin-little-bottom{margin-bottom:.04rem;}
+.margin-little-left{margin-left:.04rem;}
+
+.margin-none{margin:0 !important;}
+/*标题*/
+.hd-h1{font-size:.48rem !important;}
+.hd-h2{font-size:.40rem !important;}
+.hd-h3{font-size:.32rem !important;}
+.hd-h4{font-size:.28rem !important;}
+.hd-h5{font-size:.26rem !important;}
+.hd-h6{font-size:.24rem !important;}
+/*行高*/
+.lh-40{line-height:.8rem;}
+.lh-30{line-height:.6rem;}
+.lh-25{line-height:.5rem;}
+.lh-20{line-height:.4rem;}
+.lh-18{line-height:.36rem;}
+.lh-normal{line-height:normal;}
+/*表单*/
+input[type=checkbox], input[type=radio]{vertical-align: middle;}
+
+/**/
+.full{width: 100%;}
+.give-top{position:fixed !important;top:0px !important;}
+
+/*confirm提示*/
+.confirm-wrap{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.8);z-index:99999;}
+.confirm-wrap .confirm-box{position:absolute;top:50%;left:.4rem;right:.4rem;margin-top:-1.3rem;padding:.2rem .4rem;border-radius:.1rem;font-size:.28rem;background:#f8f8f8;}
+.confirm-wrap .confirm-box .content{max-height:.84rem;line-height:.42rem;text-align:center;overflow:hidden;}
+.confirm-wrap .confirm-box span{padding:0;width:100%;line-height:.64rem;font-size:.24rem;}
+
+/*
+ * 媒体适配
+ * 基于PSD为640，为方便计算，因此在640下以font-size: 100px;为单位
+ * 
+ * */
+
+html {font-size: 50px;}
+
+@media screen and (min-width: 320px) {
+    html {font-size: 50px;}
+}
+ 
+@media screen and (min-width: 360px) {
+    html {font-size: 56.25px;}
+}
+ 
+@media screen and (min-width: 400px) {
+    html {font-size: 62.5px;}
+}
+ 
+@media screen and (min-width: 440px) {
+    html {font-size: 68.75px;}
+}
+ 
+@media screen and (min-width: 480px) {
+    html {font-size: 75px;}
+}
+
+@media screen and (min-width: 640px) {
+    html {font-size: 100px;}
+}

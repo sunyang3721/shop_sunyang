@@ -1,0 +1,45 @@
+{template header common}
+	<div class="mui-content">
+    	<ul class="custom-goods-items custom-goods-row custom-list-goods border-top mui-clearfix">
+	    	<li class="goods-item-list">
+				<div class="list-item mui-clearfix">
+					<div class="list-item-pic">
+						<a href="{url('goods/index/detail',array('sku_id'=>$sku_id))}"><img src="<?php echo thumb($thumb)?>"></a>
+					</div>
+					<div class="list-item-bottom">
+						<div class="list-item-title">
+							<a href="{url('goods/index/detail',array('sku_id'=>$sku_id))}">{$sku_name}</a>
+						</div>
+					</div>
+				</div>
+			</li>
+	    </ul>
+	    <div class="margin-top padding-15 bg-white">
+	    	<textarea name="question" class="hd-h5 margin-none" id="question" placeholder="请输入咨询内容……"></textarea>
+	    </div>
+    	<div class="padding-15">
+    		<span class="mui-btn mui-btn-primary full hd-h4">发表咨询</span>
+    	</div>
+	</div>
+	{template footer common}
+</body>
+</html>
+<script type="text/javascript">
+	$('.mui-btn-primary').bind('click',function(){
+			var url = '<?php echo url('goods/consult/add')?>';
+			var sku_id = '<?php echo $_GET['sku_id']?>';
+			var spu_id = '<?php echo $spu_id?>';
+			var question = $("textarea[name=question]").val();
+			$.post(url,{'sku_id':sku_id,'spu_id':spu_id,'question':question},function(ret){
+				if(ret.status == 1){
+					$.tips({
+						content:'咨询成功',
+						callback:function() {
+							window.location.href = '<?php echo url('goods/index/detail',array('sku_id' => $_GET['sku_id']))?>';
+						}
+					});
+					return false;
+				}
+			},'json');
+		})
+</script>

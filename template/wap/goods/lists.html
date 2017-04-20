@@ -1,0 +1,264 @@
+{template header common}
+    <script type="text/javascript">
+      	mui.init();
+		mui.init({
+	        pullRefresh: {
+	            container: '#refreshContainer', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+	            up: {
+	                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+	                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+	                callback: add_more //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	            },
+	            down : {
+			      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+			      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+			      callback : refresh_page //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			    }
+	        }
+	    });
+	    var map = jQuery.parseJSON('{json_encode($_GET)}');
+	    var page = "<?php echo $_GET['page']?>";
+		var url = "<?php echo url('goods/index/get_lists')?>";
+	    function add_more(){	
+    		var param = {
+    			id : "{$_GET['id']}",
+    			sort : "{$result['order']}",
+    			limit : 10,
+    			page : page,
+    			map : map
+			};
+			pull_get_lists(param,url,'up');
+    	}
+	    function refresh_page(){
+    		var param = {
+    			id : "{$_GET['id']}",
+    			sort : "{$result['order']}",
+    			limit : 10,
+    			page : 1,
+    			map : map
+			};
+			pull_get_lists(param,url,'down');
+	    }
+		function pull_get_lists(param,url,type){
+			$.get(url,param,function(ret){
+    			if(ret.lists && ret.lists.length > 0){
+    				var html = '';
+    				$.each(ret.lists,function(i,item){
+    					html += '<li class="goods-item-list">'
+						    +		'<a class="list-item" href="'+ item.url +'">'
+							+			'<div class="list-item-pic">'
+							+				'<div class="square-item"><img src="{SKIN_PATH}statics/images/loading.gif" class="lazy" data-original="'+ item.thumb +'" /></div>'
+							+			'</div>'
+							+		'<div class="list-item-bottom">'
+							+		'<div class="list-item-title">'+ item.sku_name +'</div>'
+							+		'<div class="list-item-text">'
+							+			'<span class="price-org">￥'+item.prom_price+'</span>'
+							+		'</div>'
+							+		'</div>'
+							+		'</a>'
+							+	'</li>';
+					})
+					if(type == 'up'){
+						$('#goods-lists').append(html);
+						page = page*1 + 1;
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+						$('#goods-lists').html(html);
+						page = 2;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(false);
+						mui('#refreshContainer').pullRefresh().refresh(true);
+					}
+					$("img.lazy").lazyload({
+					    effect : "fadeIn"
+					});
+    			}else{
+    				if(page == 1){
+    					var html = '<li class="user-list-none mui-text-center">'
+						+	'<img src="{SKIN_PATH}statics/images/bg_6.png" />'
+						+	'<p class="text-black hd-h4">暂无此类商品</p>'
+						+	'</li>';
+						$('#goods-lists').html(html);
+    				}
+					if(type == 'up'){
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}else{
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					}
+    			}
+    		},'json')
+		}
+    </script>
+    <script type="text/javascript" src="{__ROOT__}statics/js/jquery.lazyload.js?v={HD_VERSION}"></script>
+    <div class="hd-grid filter-items bg-white">
+		<div class="hd-col-xs-e5">
+			<a href="{create_url('sort','comper,')}" class="filter-item {if $result['sort'] == 'comper'}current{/if}">综合</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{create_url('sort','sale,')}" class="filter-item {if $result['sort'] == 'sale'}current{/if}">销量</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{create_url('sort','shop_price,'.$result['_by'])}" class="filter-item {if $result['sort'] == 'shop_price'}current{/if}">价格</a>
+		</div>
+		<div class="hd-col-xs-e5">
+			<a href="{create_url('sort','hits,')}" class="filter-item {if $result['sort'] == 'hits'}current{/if}">人气</a>
+		</div>
+		<div class="hd-col-xs-e5 filter-more">
+			<span>筛选</span>
+		</div>
+	</div>
+	<div class="filter-wrap">
+		<div class="filter-box">
+			<div class="filter-hand bg-white mui-clearfix">
+				<a class="mui-pull-left text-gray filter-cancel">取消</a>
+			    <div class="mui-title">筛选</div>
+			    <?php $params = array('brand_id'=>$_GET['brand_id'],'price'=>$_GET['price'],'attr'=>$_GET['attr'],'sort'=>$_GET['sort']);
+			     foreach ($params as $key => $value) {
+			    	if($key == 'attr'){
+				    	foreach ($value as $k => $attr) {
+			    			$attr_params .= '&attr['.$k.']='.$attr;
+				    	}
+			    	}else{
+			    		if($value) $attr_params .= '&'.$key.'='.$value;
+			    	}
+			    }?>
+			    <span class="mui-pull-right filter-sure" data-params="<?php echo $attr_params?>">确认</span>
+			</div>
+			<ul class="mui-table-view">
+			{if !empty($brands)}
+				<li class="mui-table-view-cell">
+					<span class="mui-navigate-right">
+						品牌
+						<select name="brand_id" class="mui-select">
+                            <option value="-1" selected="select">全部</option>
+                            <?php foreach ($brands AS $brand):?>
+                            <option value="{$brand[id]}" {if $_GET[brand_id] == $brand[id]}selected="selected"{/if}>{$brand[name]}</option>
+                            <?php endforeach?>
+                    	</select>
+					</span>
+				</li>
+			{/if}
+			{if $grades}
+			<?php
+				$current = current($grades);
+				$end = end($grades);
+			?>
+				<li class="mui-table-view-cell">
+					<span class="mui-navigate-right">
+						价格
+						<select name="price" class="mui-select">
+                            <option value="-1" selected="">全部</option>
+                           <?php $max_price = $current[0] - 1;?>
+                            <option value="<?php echo '0,'.$max_price?>" {if $_GET[price] == '0,'.$max_price}selected="selected"{/if}>{$max_price}以下</option>
+                           <?php foreach ($grades AS $grade):?>
+                           	<option value="<?php echo implode(',',$grade)?>" {if $_GET[price] == implode(',',$grade)}selected="selected"{/if}><?php echo $grade[0].'-'.$grade[1]?></option>
+                           <?php endforeach?>
+                           <?php $min_price = $end[1] + 1;?>
+                           <option value="<?php echo $min_price.',0'?>" {if $_GET[price] == $min_price.',0'}selected="selected"{/if}>{$min_price}以上</option>
+                    	</select>
+					</span>
+				</li>
+			{/if}
+			{hd:goods method="lists" tagfile="type" catid='$_GET[id]'}
+				{loop $data $k $r}
+				{if $r[search] == 1}
+				<li class="mui-table-view-cell">
+					<span class="mui-navigate-right">
+						{$r[name]}
+						<select name="attr[{$k}]" class="mui-select">
+                            <option value="-1" {if !$_GET[attr][$k]}selected="selected"{/if}>全部</option>
+                            {loop $r[value] $v}
+                            <option value="{$v}" {if $_GET[attr][$k] == $v}selected="selected"{/if}>{$v}</option>
+                            {/loop}
+                    	</select>
+					</span>
+				</li>
+				{/if}
+				{/loop}
+			{/hd}
+			{hd:goods method="specs" tagfile="type" catid='$_GET[id]'}
+				{loop $data $k $r}
+				<li class="mui-table-view-cell">
+					<span class="mui-navigate-right">
+						{$r[name]}
+						<select name="attr[{$k}]" class="mui-select">
+                            <option value="-1" {if !$_GET[attr][$k]}selected="selected"{/if}>全部</option>
+                            {loop $r[value] $v}
+                            <option value="{$v}" {if $_GET[attr][$k] == $v}selected="selected"{/if}>{$v}</option>
+                            {/loop}
+                    	</select>
+					</span>
+				</li>
+				{/loop}
+				{/hd}
+			</ul>
+		</div>
+	</div>
+	<!--下拉刷新容器-->
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+	  	<div class="mui-scroll">
+	  		<!--数据列表-->
+		    <ul id="goods-lists" class="margin-top custom-goods-items <?php if(config('display_mode')===0){echo 'custom-goods-row custom-list-goods';};?> mui-clearfix"></ul>
+	  	</div>
+	</div>
+	<script>
+		
+		$(function(){
+			add_more();
+			mui(".filter-items").on('tap','.filter-more',function(){
+				if($(".filter-wrap").hasClass("open")){
+					$(".filter-wrap").hide(0,function(){
+						$(".filter-wrap").removeClass("open");
+					});
+				}else{
+					$(".filter-wrap").show(0,function(){
+						$(".filter-wrap").addClass("open");
+					});
+				}
+			});
+			
+			mui(".filter-hand").on('tap','.filter-cancel',function(){
+				$(this).parents(".filter-wrap").removeClass("open").hide();
+			});
+			
+			mui(".filter-hand").on('tap','.filter-sure',function(){
+				var lists_rewrite = '<?php echo json_encode(config('goods#index#lists','rewrite'))?>';
+				var lists_rewrite = jQuery.parseJSON(lists_rewrite);
+				var attr_params = $(this).attr('data-params') ? $(this).attr('data-params') : '';
+				window.location.href = "{url('goods/index/lists',array('id'=>$_GET['id']))}" + (lists_rewrite.show == 1 ?attr_params.replace('&','?') :attr_params);
+				//$(this).parents(".filter-wrap").removeClass("open").hide();
+			});
+			
+			$('select').bind('change',function(){
+				var _this = $('.filter-sure');
+				var $_select = $(this);
+				var confirm_params = _this.attr('data-params') ? _this.attr('data-params') : '';
+				if(confirm_params.indexOf($(this).attr('name')) == -1 && $_select.val() != -1){
+					_this.attr('data-params',confirm_params + '&' + $_select.attr('name') + '=' + $_select.val());
+				}else{
+					var params_arr = confirm_params.split('&');
+					var new_params = '';
+					//遍历属性，找出重复选择的项
+				 	$.each(params_arr,function(i,item){
+				 		//找到相同name的属性时替换或销毁处理
+				 		if(item.indexOf($_select.attr('name')) != -1){
+				 			//如果选择的为全部，则将该属性置空
+				 			if($_select.val() == -1){
+					 			params_arr[i] = '';
+					 		}else{
+				 				params_arr[i] = '&' + $_select.attr('name') + '=' + $_select.val();
+					 		}
+				 		}else{
+				 			//没有找到的项原样输出
+				 			item ? params_arr[i] = '&' + item : '';
+				 		}
+				 		new_params += params_arr[i];
+					});
+					_this.attr("data-params", new_params);
+				}
+			})
+		})
+		
+	</script>
+</body>
+</html>

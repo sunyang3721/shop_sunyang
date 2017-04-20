@@ -1,0 +1,37 @@
+{template header common}
+	<div class="mui-content">
+	    <div class="logistics-company padding">
+	    	<div class="mui-pull-left margin-right">
+	    		<img src="{$logo}" width="50" />
+	    	</div>
+	    	<div class="text-white">
+	    		<h4 class="hd-h5">{$deliverys[$_GET["delivery_name"]]}</h4>
+	    		<h4>运单号：{$_GET['delivery_sn']}</h4>
+	    	</div>
+	    </div>
+	    <div class="list-col-10 padding-lr">
+	    	<div class="padding-tb border-bottom">
+	    		<span class="hd-h5">物流跟踪</span>
+	    	</div>
+	    	<ul class="logistics-info padding-left-15">
+	    	{if !$track}
+	    	<li class="tracking-list {if $k == 0}new{/if}">
+    			<div class="box">
+    				<p>暂无物流信息！</p>
+    			</div>
+    		</li>
+	    	{else}
+	    	{loop $track['data'] $k $data}
+				<li class="tracking-list {if $k == 0}new{/if}">
+	    			<div class="box">
+	    				<p>{$data['context']}</p>
+	    				<p>{$data['time']}</p>
+	    			</div>
+	    		</li>
+			{/loop}
+			{/if}
+	    	</ul>
+	    </div>
+	</div>
+</body>
+</html>

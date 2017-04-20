@@ -1,0 +1,148 @@
+{template header member}
+<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo __ROOT__;?>statics/js/upload/uploader.css?v={HD_VERSION}" />
+<script type="text/javascript" src="<?php echo __ROOT__;?>statics/js/upload/uploader.js?v={HD_VERSION}"></script>
+		<div class="margin-big-top layout">
+			<div class="container border border-gray-white member clearfix">
+				<div class="left padding-big">
+					<div class="user-head margin-big-left margin-big-top">
+						<img src="<?php echo $member['avatar'];?>" height="148" />
+						<span><a href="{url('member/account/avatar')}">修改头像</a></span>
+					</div>
+					<div class="margin-top text-center text-default"><p><?php echo $member['_group']['name'] ?></p></div>
+					{template menu_index member}
+				</div>
+				<div class="right padding-top">
+					<div class="margin-big-top margin-bottom margin-large-left padding-left process clearfix">
+						<!--退货退款 开始-->
+						<ul class="margin-big-left">
+							<li class="process-list proce-right all">
+								<div class="proce"></div>
+								<div class="node">
+									<div class="item">
+										<span class="text-drak-grey">买家申请退货退款</span>
+									</div>
+								</div>
+							</li>
+							<li class="process-list all">
+								<div class="proce"></div>
+								<div class="node">
+									<div class="item">
+										<span class="text-drak-grey">卖家处理退货申请</span>
+									</div>
+								</div>
+							</li>
+							<li class="process-list all">
+								<div class="proce"></div>
+								<div class="node">
+									<div class="item">
+										<span class="text-drak-grey">买家退货给卖家</span>
+									</div>
+								</div>
+							</li>
+							<li class="process-list proce-left">
+								<div class="proce"></div>
+								<div class="node">
+									<div class="item">
+										<span class="text-drak-grey">卖家确认收货，退款完成</span>
+									</div>
+								</div>
+							</li>
+						</ul>
+						<!--退货退款 结束-->
+					</div>
+					<?php $setting = model('admin/setting','service')->get(); ?>
+					<div class="margin-big-left margin-big-right margin-big-bottom tabs-scroll">
+						<div class="border border-sub padding-big bg-blue-gray">
+							<form class="double-line clearfix" action="{url('ajax_delivery')}" method="post" name="ajax_delivery">
+								<div class="list">
+									<p><b class="text-default">请退货并填写物流信息</b></p>
+									<b>1.请退货<span class="text-gray text-normal">（未经卖家同意，请勿使用到付或平邮）</span></b>
+									<p class="text-gray text-indent">收件人： {$setting[seller_name]}</p>
+									<p class="text-gray text-indent">邮 编：{$setting[seller_zipcode]}</p>
+									<p class="text-gray text-indent">联系电话：{$setting[seller_mobile]}</p>
+									<p class="text-gray text-indent">邮寄地址：{$setting[seller_address]}</p>
+									<b>2.请填写退货物流信息</b>
+								</div>
+								<div class="list">
+									<span class="label">物流公司：</span>
+									<div class="content">
+										<select name="delivery_name">
+											<option value="">请选择物流公司</option>
+											<?php foreach ($deliverys as $key => $delivery){?>
+											<option value="{$delivery}">{$delivery}</option>
+											<?php }?>
+										</select>
+									</div>
+								</div>
+								<div class="list">
+									<span class="label">物流单号：</span>
+									<div class="content">
+										<input class="input" type="text" name="delivery_sn"/>
+									</div>
+								</div>
+								<div class="list">
+									<span class="label">备注：</span>
+									<div class="content">
+										<textarea class="textarea layout" name="delivery_desc" placeholder="请填写备注"></textarea>
+									</div>
+								</div>
+								<div class="list">
+									<span class="label"></span>
+									<div class="content">
+										<input type="hidden" name="id" value="{$_GET['id']}" />
+										<input type="submit" class="fl button bg-sub ajax_delivery" value="提交申请">
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="padding-big-left padding-big-right padding-big-bottom">
+						<p>售后说明：<span class="text-mix">每个商品&订单您只有一次售后维权的机会</span></p>
+						<p>1. <b>退货退款</b></p>
+						<p>申请条件：若为商品问题，或者不想要了且与卖家达成一致退货，请选择“退货退款”选项，退货后请保留物流底单。</p>
+						<p class="text-sub">退货流程：1.申请退货 >2.卖家发送退货地址给买家 >3.买家退货并填写退货物流信息 >4.卖家确认收货，退款成功</p>
+						<p>2. <b>仅退款</b></p>
+						<p>申请条件：若您未收到货，或已收到货且与卖家达成一致不退货仅退款时，请选择“仅退款”选项。</p>
+						<p class="text-sub">退款流程：1.申请退款 > 2. 卖家同意退款申请>3.退款成功</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{template footer common}
+	</body>
+</html>
+<script>
+	$(function(){
+		var id = 'return';
+		$(".tab-trigger .item").click(function(){
+			$(".tabs-wrap").stop().animate({marginLeft:"-"+$(this).index()*928+"px"},100);
+			id = $(this).data('id');
+		})
+		$('.ajax_delivery').live('click',function(){
+			var ajax_refund = $("form[name=ajax_delivery]").Validform({
+				showAllError:true,
+				ajaxPost:true,
+				callback:function(ret) {
+					if(ret.status == 0) {
+						$.tips({
+							icon:'error',
+							content:ret.message,
+							callback:function() {
+								return false;
+							}
+						});
+					} else {
+						$.tips({
+							icon:'success',
+							content:ret.message,
+							callback:function() {
+								window.location.reload();
+							}
+						});
+					}
+				}
+			})
+		})
+	})
+</script>

@@ -1,0 +1,194 @@
+{template header common}
+	<script type="text/javascript">
+		/*
+		 * 数据拓展可以以新增一个订单提交点击事件，在点击提交时生成数据，
+		 * 如$("#submit").on('tap',function(){hd_params.param = "值"});
+		 * 点击事件得放在原有的点击提交事件前，否则会因先执行了原本的提交而无法获取值传参
+		 * 也可以在数据生成时存储到order_params对象中，hd_params.param = "值"
+		 */
+		var hd_params = {};
+	</script>
+	<div class="mui-content has-footer-bar">
+	    <ul class="mui-table-view layout-list-common margin-none">
+	    	<li class="mui-table-view-cell">
+	    		<div class="full mui-pull-left padding-bottom border-bottom lh-icon-15">
+	    			<span class="icon-15 mui-pull-left margin-small-right"><img src="{SKIN_PATH}statics/images/ico_22.png" /></span>请选择并确认您的收货地址
+	    		</div>
+	    		<div class="mui-clearfix"></div>
+				<a href="{url('order/order/settlement_address',array('skuids' => $_GET["skuids"]))}" class="mui-navigate-right settlement-address">
+					<span class="hd-h4" data-show="address_name">收货地址</span>
+					<span class="mui-pull-right" data-show="address_mobile">请选择</span>
+	        		<p class="margin-small-top text-drak hide" data-show="address_detail">收货地址：无</p>
+				</a>
+			</li>
+		</ul>
+		<ul class="mui-table-view layout-list-common margin-top">
+			<li class="mui-table-view-cell">
+				<a href="{url('order/order/settlement_delivery')}" class="mui-navigate-right">
+					<span class="hd-h4" data-show="title">支付配送</span>
+					<span class="mui-pull-right mui-text-right" data-show="pay_delivery">请选择</span>
+				</a>
+			</li>
+			{if ($setting['invoice_enabled'] == 1)}
+				<li class="mui-table-view-cell">
+					<a href="{url('order/order/settlement_invoice')}" class="mui-navigate-right">
+						<span class="hd-h4">发票信息</span>
+						<span class="mui-pull-right" data-show="invoice_content">请填写</span>
+					</a>
+				</li>
+			{/if}
+		</ul>
+		{hook/wap_settlement_extra}
+		{loop $carts['skus'] $sellerid $cart}
+			<ul data-sellerid="{$sellerid}" class="custom-goods-items custom-goods-row row1 custom-list-goods list-col-10 mui-clearfix">
+				<li class="padding border-bottom lh-icon-15">
+					<span class="mui-pull-left icon icon-15"><img src="{SKIN_PATH}statics/images/ico_shop.png"></span>
+					<span class="margin-left">{$setting[site_name]}自营</span>
+					<span class="mui-pull-right">运费：￥<em data-show="delivery_price">{$cart[delivery_price]}</em></span>
+				</li>
+				<li class="bg-white border-bottom padding-lr">
+					<div class="deliverys {if ($carts['deliverys'] == true)}mui-hidden{/if}"><p class="margin-top mui-text-center text-org">您所选择的收货地址暂时无法配送</p></div>
+					<div class="padding-tb order-note">
+						<input data-id="remarks" class="margin-none" type="text" placeholder="对商家的留言">
+					</div>
+					{if ($cart['_promos'])}
+						<a href="{url('order/order/settlement_order',array('sellerid' => $sellerid))}" class="padding-tb border-top prom-nav text-drak mui-block mui-navigate-right">
+			    			<span class="hd-h5">订单促销</span>
+							<span class="mui-pull-right margin-big-right" data-show="order_prom">请选择</span>
+			    		</a>
+		    		{/if}
+				</li>
+				{loop $cart[sku_list] $v}
+			    	<li class="goods-item-list" data-skuid="{$v[_sku_][sku_id]}">
+						<div class="list-item">
+							<div class="list-item-pic">
+								<a href="{url('goods/index/detail',array('sku_id' => $v[_sku_][sku_id]))}"><img src="{$v[_sku_][thumb]}"></a>
+							</div>
+							<div class="list-item-bottom">
+								<div class="list-item-title">
+									<a href="{url('goods/index/detail',array('sku_id' => $v[_sku_][sku_id]))}">{$v[_sku_][sku_name]}</a>
+								</div>
+								<div class="list-item-text hd-h6 mui-row">
+									<span class="text-ellipsis text-gray mui-col-xs-6">
+										{loop $v[_sku_][spec] $spec}
+											{$spec[name]}：{$spec[value]}　
+										{/loop}
+									</span>
+									<span class="mui-text-right mui-col-xs-6"><em class="price-org hd-h4">￥{$v[_sku_][prom_price]}</em>× {$v['number']}</span>
+								</div>
+							</div>
+						</div>
+						{if ($v[_promos])}
+						<div class="mui-pull-left full padding-lr-15">
+							<a href="{url('order/order/settlement_goods',array('sellerid' => $sellerid ,'skuid' => $v[_sku_][sku_id]))}" class="padding-tb full border-top prom-nav text-drak mui-block mui-navigate-right">
+				    			<span class="bg-red promotion-btn">促销优惠</span>
+				    			<span class="mui-pull-right margin-big-right" data-show="goods_prom">请选择</span>
+				    		</a>
+						</div>
+					    {/if}
+					</li>
+				{/loop}
+		    </ul>
+		{/loop}
+	</div>
+	<nav class="cart-footer-bar">
+		<div class="cart-footer-box full">
+		    <p class="mui-pull-right cart-total mui-text-right">
+				<span class="text-org">合计：￥<em class="normal" data-show="real_amount">{$carts[real_amount]}</em></span><br/>
+				结算商品数量：<em class="normal" data-show="sku_numbers">{$carts[sku_numbers]}</em> 件
+			</p>
+		</div>
+		<a id="settlement-submit" href="javascript:;" class="cart-footer-btn mui-text-center">结算</a>
+	</nav>
+</body>
+</html>
+{hook/wap_settlement_info}
+<script type="text/javascript" src="{SKIN_PATH}statics/js/order.js?v={HD_VERSION}"></script>
+<script>
+	window.onload = function(){
+
+		var hd_skuids = '<?php echo $_GET["skuids"] ?>';
+		var hd_prom = <?php echo json_encode($cart[_promos]); ?>;	//促销信息
+		var hd_key = '<?php echo md5($_GET[skuids]); ?>';
+		var hd_datas = {}; //定义一个保存数据库取出值得对象
+		hd_datas[hd_key] = {
+			mid: '<?php echo $member["id"]?>',		//会员ID
+			address: <?php echo json_encode($address); ?>,	//收货地址，没有收货地址为null
+			payMethod: <?php print_r(key($pay_type)); ?>,	//已选支付类型，默认为1
+			payType: <?php echo json_encode($pay_type); ?>,	//支付类型
+			invoices: <?php echo json_encode($setting[invoice_content]); ?>,//发票类型
+			invoiceCon: '不开发票',		//发票内容
+			isinvoice: 0,			//是否开发票，默认为0不开发票
+			invoiceEnabled: '<?php echo $setting[invoice_enabled]; ?>', //暂未搞懂这是什么鬼
+			carts: <?php echo json_encode($carts); ?>,	//购物车信息
+			deliverys: <?php echo json_encode($carts["deliverys"])?>,	//配送方式，初始为空，默认选中第一个需要JS处理
+			orderList: <?php echo json_encode($cart[_promos]); ?>,		//订单促销列表
+			referer: '{url("order/order/settlement" ,array("skuids" => $_GET["skuids"]))}',
+		};
+		hd_order.start(hd_key, hd_datas, hd_skuids);
+		//重新计算价格
+		function recount(){
+			var $params = hd_order.params();
+			$.each($params, function(k, v) {
+				hd_params[k] = v;
+			});
+			$.getJSON('?m=order&c=order&a=get', hd_params, function(ret) {
+				if(ret.status == 0) {
+					$.tips({icon: 'error',content: ret.message});
+				} else {
+					if(ret.result.deliverys === true){
+						$('.deliverys').addClass('mui-hidden');
+					}else{
+						$('.deliverys').removeClass('mui-hidden');
+					}
+					$("[data-show='real_amount']").text(ret.result.real_amount);
+					$("[data-show='sku_numbers']").text(ret.result.sku_numbers);
+					$.each(ret.result.skus ,function(sellerid, v) {
+						$("[data-sellerid="+ sellerid +"]").find("[data-show='delivery_price']").text(v.delivery_price);
+					});
+				}
+			})
+		}
+		recount(); //重新计算价格
+
+		// 商家留言
+		function getRemarks(){
+			var _datas = JSON.parse(window.localStorage.getItem('hddatas'));
+			//这里应该属于多商家平台的，目前以这个格式传过去不显示
+			/*var remarks = {};
+			$.each($("[data-id='remarks']"), function(){
+				var sellerid = $(this).parents("ul").data("sellerid");
+				remarks[sellerid] = $(this).val();
+			})*/
+			_datas[hd_key].remarks = $("[data-id='remarks']").val();
+			window.localStorage.setItem('hddatas', JSON.stringify(_datas));
+		}
+		$("[data-id='remarks']").on("change" ,function() {
+			getRemarks();
+		})
+
+		//提交
+		mui(document).on("tap", "#settlement-submit", function(){
+			getRemarks();
+			$("[data-id='submit']").text('提交中...');
+			var $params = hd_order.params();
+			$.each($params, function(k, v) {
+				hd_params[k] = v;
+			});
+			$.post('?m=order&c=order&a=create', hd_params, function(ret) {
+				if(ret.status == 1) {
+					$("[data-id='submit']").text('提交成功');
+					setTimeout(window.location.href = ret.referer,500);
+					window.localStorage.removeItem("hdkey");
+					window.localStorage.removeItem("hddatas");
+					return false;
+				} else {
+					$.tips({icon: 'error',content: ret.message});
+					$("[data-id='submit']").text('重新提交');
+					return false;
+				}
+			}, 'json');
+		});
+
+	}
+</script>

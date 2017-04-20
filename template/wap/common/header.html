@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html> 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>{if isset($SEO['title']) && !empty($SEO['title'])}{$SEO['title']}{/if}{$SEO['site_title']}</title>
+    <meta name="description" content="{$SEO['keywords']}">
+    <meta name="keywords" content="{$SEO['description']}">
+    <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/mui.min.css?v={HD_VERSION}"/>
+    <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/haidao.css?v={HD_VERSION}"/>
+    <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/haidao.mobile.css?v={HD_VERSION}"/>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/mui.min.js?v={HD_VERSION}"></script>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/haidao.slider.js?v={HD_VERSION}"></script>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/jquery-2.1.1.min.js?v={HD_VERSION}" ></script>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/haidao.js?v={HD_VERSION}"></script>
+    <style type="text/css">
+    body { background-color: <?php $wap_global = cache('wap_global');echo $wap_global['bgcolor'] ? $wap_global['bgcolor']:'#eee'?>; }
+    .header { background-color: <?php echo $wap_global['headbg'] ? $wap_global['headbg'] :'#0068b7'?>; }
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav header">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">{$SEO['title']}</h1>
+	    <span class="mui-pull-right classify-btn">
+	    	<a class="mui-block" href="#menu"><img src="{SKIN_PATH}statics/images/ico_2.png" /></a>
+	    </span>
+	    <div id="menu" class="menu bg-white">
+	    	<div class="mui-row">
+		    	<a class="mui-col-xs-3" href="{__APP__}">
+		    		<img src="{SKIN_PATH}statics/images/ico_11.png" />首页
+		    	</a>
+		    	<a class="mui-col-xs-3" href="{url('goods/index/category_lists')}">
+		    		<img src="{SKIN_PATH}statics/images/ico_12.png" />全部分类
+		    	</a>
+		    	<a class="mui-col-xs-3" href="{url('order/cart/index')}">
+		    		<img src="{SKIN_PATH}statics/images/ico_13.png" />购物车
+		    	</a>
+		    	<a class="mui-col-xs-3" href="{url('member/index/index')}">
+		    		<img src="{SKIN_PATH}statics/images/ico_14.png" />会员中心
+		    	</a>
+		    	{hook/wap_header}
+		    </div>
+	    </div>
+	</header>

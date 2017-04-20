@@ -1,0 +1,413 @@
+<?php include template('toper','common');?>
+<?php include template('header','common');?>
+<script type="text/javascript" src="template/default/statics/js/index.js?v={HD_VERSION}"></script>
+<script type="text/javascript" src="template/default/statics/js/jquery.cookie.js?v={HD_VERSION}"></script>
+		<!--Banner-->
+		<div class="banner">
+			<div class="shade-slider">
+				<ul class="box">
+				{hd:misc method="lists" tagfile="focus" order="sort ASC"}
+					{loop $data $r}
+					<li class="item"><a href="{$r[url]}" {if $r[target] == 1} target="_blank" {/if} ><img src="{$r[thumb]}" width="1200" /></a></li>
+					{/loop}
+				{/hd}
+				</ul>
+			</div>
+		</div>
+		<!--Banner end-->
+		<!--content-->
+		<div class="container border-bottom border-gray-white clearfix">
+			<div class="fl index-activity">
+				<ul class="tab layout border-bottom border-gray-white clearfix goods_lists">
+				{hd:goods tagfile="goods" method="page" statusext="3" num="5"}
+				{if $data['count'] > 0}
+					<li class="current" data-id="3">
+						<span>新品推荐</span>
+						<b></b>
+					</li>
+				{/if}
+				{/hd}
+				{hd:goods tagfile="goods" method="page" statusext="1" num="5"}
+				{if $data['count'] > 0}
+					<li data-id="1">
+						<span>促销单品</span>
+						<b></b>
+					</li>
+				{/if}
+				{/hd}
+				{hd:goods tagfile="goods" method="page" statusext="2" num="5"}
+				{if $data['count'] > 0}
+					<li data-id="2">
+						<span>热卖商品</span>
+						<b></b>
+					</li>
+				{/if}
+				{/hd}
+				{hd:goods tagfile="goods" method="page" statusext="4" num="5"}
+				{if $data['count'] > 0}
+					<li data-id="4">
+						<span>爆款推荐</span>
+						<b></b>
+					</li>
+				{/if}
+				{/hd}
+				</ul>
+				<div class="tab-tag clearfix statusext_box">
+				</div>
+			</div>
+			<div class="fr margin-top notice">
+				<div class="news-plate">
+					<div class="title border-bottom border-gray-white">
+						<div class="border-left border-small border-sub padding-left text-sub">文章资讯
+						<em style="float:right;"><a href="{url('misc/index/article_lists',array('category_id'=>'all'))}">更多</a></em>
+						</div>
+					</div>
+					<ul class="content margin-small-top">
+						{hd:misc method="lists" num="5" where="recommend=1" tagfile="article" order="sort ASC"}
+						{loop $data $k $r}
+						<li><em>·</em><a {if $k < 2 }class="hot"{/if} target="_blank" href="{url('misc/index/article_detail',array('id'=>$r['id']))}" title="{$r[title]}">{$r[title]}</a></li>
+						{/loop}
+						{/hd}
+					</ul>
+				</div>
+				<div class="brand-text">
+					<div class="title padding-bottom padding-top">
+						<div class="border-left border-small border-sub padding-left text-sub">推荐品牌</div>
+					</div>
+					<ul>
+					{hd:goods tagfile="brand" method="lists" num="4"}
+					{loop $data $r}
+						<li><a href="{url('goods/index/brand_list',array('id'=>$r['id']))}">{$r[name]}</a></li>
+					{/loop}
+					{/hd}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!--猜您喜欢-->
+		<div class="container padding-big-top">
+			<div class="layout border border-gray-white item-blue-top pro-border-top-gray">
+				<ul class="tab p-tab-trigger-wrap">
+					<li class="ui-switchtab-item current"><a href="javascript:;">猜您喜欢</a></li>
+					<div class="fr margin-big-right text-lh-30"><span>换一批<b class="margin-left refresh change_goods"></b></span>
+					</div>
+				</ul>
+
+				<div class="like">
+					<ul class="clearfix guess_like">
+						{hd:goods tagfile="goods" method="lists" num="6" order="rand()"}
+						{loop $data $r}
+						<li class="index-pic-1">
+							<div class="img"><a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}"><img class="lazy" src="{SKIN_PATH}statics/images/lazy.gif" data-original="<?php echo thumb($r['thumb'],500,500)?>" width="150" height="150" /></a></div>
+							<div class="text">
+								<div class="title text-ellipsis"><a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}">{$r[sku_name]}</a></div>
+								<div class="price">￥<?php echo $r['prom_price']?></div>
+							</div>
+						</li>
+						{/loop}
+					{/hd}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!--1 Floor-->
+		{hd:goods tagfile="category" method="lists" catid="0"}
+		{loop $data $k $r}
+		<?php $catid = $r['id']?>
+		<div class="floor container padding-big-top clearfix">
+			<div class="floor-info tab">
+				<div class="floor-logo"><?php echo $k+1?>F</div>
+				<h3>{$r[name]}</h3>
+				<ul class="fr text-default clearfix">
+				{hd:goods tagfile="category" method="lists" catid="$r[id]"}
+				{loop $data $key $r}
+					<li data-id="{$r[id]}" {if $key == 0}data-ajax="1"{/if}><span>{$r[name]}</span></li>
+				{/loop}
+				{/hd}
+				</ul>
+			</div>
+			<div class="floor-content tab-tag">
+				{hd:goods tagfile="category" method="lists" catid="$catid"}
+				{loop $data $key $r}
+				<?php $cat_id = $r['id']?>
+				<div class="tag">
+					<div class="left">
+						<ul class="clearfix" data-id="<?php echo $cat_id?>">
+						{if $key == 0}
+						{hd:goods tagfile="goods" method="lists" catid="$cat_id" num="8"}
+						{loop $data $k $r}
+						<li class="index-pic-2">
+							<div class="img"><a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}"><img class="lazy" src="{SKIN_PATH}statics/images/lazy.gif" data-original="<?php echo thumb($r['thumb'],500,500)?>" width="218" height="218" /></a></div>
+							<div class="text">
+								<div class="title"><a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}">{$r[sku_name]}</a></div>
+								<div class="price">￥{$r[prom_price]}</div>
+							</div>
+						</li>
+						{/loop}
+						{/hd}
+						{/if}
+						</ul>
+					</div>
+					<div class="right">
+						<div class="top-text">TOP热销榜</div>
+						<ul class="top-con" data-id="<?php echo $cat_id?>">
+						{if $key == 0}
+						{hd:goods tagfile="goods" method="lists" catid="$cat_id" order="sales desc" num="10"}
+							{loop $data $k $r}
+							<li {if $k < 1}class="hover"{/if}>
+								<div class="no-num"><span {if $k < 3}class="text-mix"{/if}>NO.{if $k < 9}0{/if}<?php echo $k+1?></span></div>
+								<div class="img"><a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}"><img class="lazy" src="{SKIN_PATH}statics/images/lazy.gif" data-original="<?php echo thumb($r['thumb'],500,500)?>" width="97" height="97" /></a></div>
+								<div class="text">
+									<div class="title"><a href="{url('goods/index/detail',array('sku_id'=>$r['sku_id']))}">{$r[sku_name]}</a></div>
+									<div class="price"><span>￥<?php echo $r['prom_price']?></span></div>
+								</div>
+							</li>
+							{/loop}
+						{/hd}
+						{/if}
+						</ul>
+					</div>
+				</div>
+				{/loop}
+				{/hd}
+			</div>
+		</div>
+		{/loop}
+		{/hd}
+		<!--content end-->
+		<!--遮罩层广告-->
+			{hd:ads tagfile="ads" method="lists" position="3" num="1" order="id desc"}
+				{if ($data['list'])}
+					<div class="mask">
+						<div class="ads" >
+							<a href="javascript:;">关闭</a>
+							{loop $data['list'] $r}
+								{if empty($r['content'])}
+									<img src="{$data['defaultpic']}" />
+								{else}
+									<img src="{$r[content]}" title="{$r[title]}" />
+								{/if}
+							{/loop}
+						</div>
+					</div>
+				{/if}
+			{/hd}
+		<!--底部-->
+		<div class="hd-toolbar-footer">
+			<div class="hd-toolbar-tab hd-tbar-tab-top margin-bottom">
+				<a href="#"><i class="tab-ico"></i></a>
+			</div>
+		</div>
+		<!--floor nav-->
+		<div class="floor-nav">
+			<ul>
+			{hd:goods tagfile="category" method="lists" catid="0"}
+			{loop $data $k $r}
+				<li>
+					<a class="name" href="javascript:;">{$r[name]}</a>
+					<a class="f" href="javascript:;"><?php echo $k+1?>F</a>
+				</li>
+			{/loop}
+			{/hd}
+			</ul>
+		</div>
+		<div class="hd-toolbar-footer">
+			<div class="hd-toolbar-tab hd-tbar-tab-top margin-bottom">
+				<a href="#"><i class="tab-ico"></i></a>
+			</div>
+		</div>
+		<div class="layout border-top border-gray-white global-footer margin-big-top">
+		<div class="layout border border-main"></div>
+			<div class="container hd-service clearfix">
+				{hd:misc method="lists" num="5" tagfile="help" id="0" order="sort asc"}
+				{loop $data $r}
+				<dl class="fore">
+					<dt>{$r[title]}</dt>
+					<dd>
+					{hd:misc method="lists" num="4" tagfile="help" id="$r[id]" order="sort asc"}
+						{loop $data $s}
+						<div><a href="{url('misc/index/help_detail',array('id'=>$s['id']))}">{$s[title]}</a></div>
+						{/loop}
+					{/hd}
+					</dd>
+				</dl>
+				{/loop}
+				{/hd}
+				<dl class="fore last fr">
+					<dt>&nbsp;</dt>
+					<dd>
+						<span><img src="{SKIN_PATH}statics/images/logo.png" width="158" /></span>
+					</dd>
+				</dl>
+			</div>
+			<div class="friend-link padding-large-top container">
+				<dl class="clearfix">
+					<dt class="fl">友情链接：</dt>
+					<dd class="fl">
+						{hd:misc tagfile="friendlink" method="lists" order="sort ASC" num="10"}
+							{loop $data $r}
+								<a href="{$r[url]}" {if ($r[target] == 1)}target="_blank"{/if}>{$r[name]}</a>
+							{/loop}
+						{/hd}
+					</dd>
+				</dl>
+			</div>
+			<div class="container copyright border-top border-gray-white padding-tb clearfix">
+				<p class="cop-left fl w50 text-lh-small"><?php echo SITE_AUTHORIZE == 0? COPYRIGHT:''?></p>
+				<div class="cop-right fr text-right w50">
+					<?php $cache = model('admin/setting','service')->get();?>
+					<p class="text-lh-small"><!-- <a href="">手机版</a> |  -->
+					{if $cache[com_name]}
+					<a target="_blank" href="{$cache[site_url]}">{$cache[com_name]}</a>
+					{/if}
+					{if $cache[icp]}
+					|<a target="_blank" href="http://www.miitbeian.gov.cn/">{$cache[icp]}</a>
+					{/if}
+					{if $cache[site_statice]}
+					|<a href="">{$cache[site_statice]}</a></p>
+					{/if}
+					<p class="text-lh-small">PRC, <em id="time"></em></p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="<?php echo __ROOT__ ?>statics/js/jquery.lazyload.js?v={HD_VERSION}" ></script>
+<script type="text/javascript">
+var url = "<?php echo url('goods/index/ajax_goods')?>";
+$(function(){
+	toggle_ads();
+	if($('.goods_lists .current').attr('data-ajax') == 1) return;
+	ajax_statusext($('.goods_lists .current').attr('data-id'),5,450);
+})
+function toggle_ads(){
+	if($.cookie('visits') !== '1'){
+		var time = new Date();
+		var nowline =  time.getHours();
+		var deadline = 24 - nowline;
+		$.cookie('visits','1',{hoursToLive: deadline });
+		$(".mask").show();
+	}
+	$(".roof").show();
+}
+$(".mask a").live('click',function(){
+	$(".mask").hide();
+})
+$('.change_goods').live('click',function(){
+	ajax_like('rand',6,450);
+})
+$('.text-default li').live('mouseenter',function(){
+	if($(this).attr('data-ajax') == 1) return;
+	var catid = $(this).attr('data-id');
+	ajax_goods(catid,8,500);
+})
+$('.goods_lists li').live('mouseenter',function(){
+	if($(this).attr('data-ajax') == 1) return;
+	ajax_statusext($(this).attr('data-id'),5,450);
+})
+function ajax_statusext(statusext,limit,length){
+	$.get(url,{statusext:statusext,limit:limit,length:length},function(ret){
+		if(!ret.lists) return;
+		var html = '<ul class="tag selected" data-id="'+ statusext +'">';
+		$.each(ret.lists,function(i,item){
+			html += '<li class="index-pic-1">'
+				+		'<div class="img"><a href="'+ item.url +'"><img class="lazy" src="{SKIN_PATH}statics/images/lazy.gif" data-original="'+ item.thumb +'" width="150" height="150" /></a></div>'
+				+		'<div class="text">'
+				+			'<div class="title text-ellipsis"><a href="'+ item.url +'">'+ item.sku_name +'</a></div>'
+				+			'<div class="price">￥'+ item.prom_price +'</div>'
+				+		'</div>'
+				+	'</li>';
+		})
+		html += '</ul>';
+		$('.statusext_box ul').removeClass('selected');
+		$('.statusext_box').append(html);
+		$('.statusext_box img.lazy').lazyload({
+		    effect : "fadeIn"
+		});
+		$('.goods_lists li[data-id="'+ statusext +'"]').attr('data-ajax',1);
+	},'json');
+}
+function ajax_like(order,limit,length,type){
+	$.get(url,{order:order,limit:limit,length:length},function(ret){
+		if(!ret.lists) return;
+		var html = '';
+		$.each(ret.lists,function(i,item){
+			html += '<li class="index-pic-1">'
+				+		'<div class="img"><a href="'+ item.url +'"><img class="lazy" src="{SKIN_PATH}statics/images/lazy.gif" data-original="'+ item.thumb +'" width="150" height="150" /></a></div>'
+				+			'<div class="text">'
+				+				'<div class="title text-ellipsis"><a href="'+ item.url +'">'+ item.sku_name +'</a></div>'
+				+				'<div class="price">￥'+ item.prom_price +'</div>'
+				+			'</div>'
+				+		'</li>';
+		})
+		$('.guess_like').html(html);
+		$('.guess_like img.lazy').lazyload({
+		    effect : "fadeIn"
+		});
+	},'json');
+}
+function ajax_goods(catid,limit,length){
+	$.get(url,{catid:catid,limit:limit,length:length},function(ret){
+		if(!ret.lists){
+			$('.text-default li[data-id="'+ catid +'"]').attr('data-ajax',1);
+			return;
+		}
+		var html = '';
+		if(ret.lists.length > 0){
+			$.each(ret.lists,function(i,item){
+				html += '<li class="index-pic-2">'
+					+		'<div class="img"><a href="'+ item.url +'"><img class="lazy" src="{SKIN_PATH}statics/images/lazy.gif" data-original="'+ item.thumb +'" width="218" height="218" /></a></div>'
+					+		'<div class="text">'
+					+			'<div class="title"><a href="'+ item.url +'">'+ item.sku_name +'</a></div>'
+					+			'<div class="price">￥'+ item.prom_price +'</div>'
+					+		'</div>'
+					+	'</li>'
+			})
+			$('.left ul[data-id="' + catid + '"]').html(html);
+			$('.left ul[data-id="' + catid + '"] img.lazy').lazyload({
+			    effect : "fadeIn"
+			});
+			ajax_top(catid,'sales',10,100);
+		}
+	},'json');
+}
+function ajax_top(catid,order,limit,length){
+	$.get(url,{catid:catid,order:order,limit:limit,length:length},function(ret){
+		if(!ret.lists){
+			return;
+		}
+		var html = '';
+		if(ret.lists.length > 0){
+			$.each(ret.lists,function(i,item){
+				var li_html = i < 1 ? '<li class="hover">' : '<li>';
+				var top_num = i < 9 ? '0' + (i*1+1) : i+1;
+				html += li_html
+					+		'<div class="no-num"><span class="text-mix">NO.' + top_num + '</span></div>'
+					+		'<div class="img"><a href="'+ item.url +'"><img class="lazy" src="{SKIN_PATH}statics/images/lazy.gif" data-original="'+ item.thumb +'" width="97" height="97" /></a></div>'
+					+		'<div class="text">'
+					+			'<div class="title"><a href="'+ item.url +'">'+ item.sku_name +'</a></div>'
+					+			'<div class="price"><span>￥'+ item.prom_price +'</span></div>'
+					+		'</div>'
+					+	'</li>'
+			})
+			$('.right ul[data-id="' + catid + '"]').html(html);
+			$('.right ul[data-id="' + catid + '"] img.lazy').lazyload({
+			    effect : "fadeIn"
+			});
+			$('.text-default li[data-id="'+ catid +'"]').attr('data-ajax',1);
+		}
+	},'json');
+}
+function current(){
+	var d = new Date();
+	var year = d.getFullYear(),
+	month = d.getMonth() < 10 ? '0'+(d.getMonth() + 1) : d.getMonth() + 1,
+	date = d.getDate() < 10 ? '0'+d.getDate() : d.getDate(),
+	hours = d.getHours() < 10 ? '0'+d.getHours() : d.getHours(),
+	minutes = d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes(),
+	seconds = d.getSeconds() < 10 ? '0'+d.getSeconds() : d.getSeconds();
+	return  year+'-'+month+'-'+date+' '+hours+':'+minutes+':'+seconds;
+}
+setInterval(function(){$("#time").html(current)},1000);
+</script>
+{hook/global_footer}

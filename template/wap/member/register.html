@@ -1,0 +1,113 @@
+{template header common}
+<script type="text/javascript" src="{__ROOT__}statics/js/haidao.validate.js?v={HD_VERSION}"></script>
+<script type="text/javascript" src="template/default/statics/js/jquery.cookie.js?v={HD_VERSION}"></script>
+<?php
+	$setting = model('admin/setting','service')->get();
+?>
+	<div class="mui-content">
+	    <div class="padding bg-white login-wrap">
+	    	<form class="padding-small" action="{url('register')}" name="register" method="post">
+		       	<div class="list">
+		       		<input type="text" name="username" class="input error-input" placeholder="请输入您的用户名" datatype="s2-15" nullmsg="请填写用户名，由3-15个字符组成" errormsg="请填写用户名，由3-15个字符组成" ajaxurl="{url('ajax_register_check')}"/>
+		       	</div>
+		        <div class="list">
+		        	<input type="password" name="password" class="input" placeholder="请输入登陆密码" datatype="*" ajaxurl="{url('ajax_register_check')}" nullmsg="请输入登陆密码"/>
+		        </div>
+		        <div class="list">
+		        	<input type="password" name="pwdconfirm" class="input" placeholder="请确认您的密码" datatype="*" nullmsg="请输入确认密码" recheck="password" />
+		        </div>
+				<?php if(in_array('email',$setting['reg_user_fields'])){?>
+		        <div class="list">
+		        	<input type="text" class="input" name="email" placeholder="请输入您的邮箱地址！" datatype="email" nullmsg="请输入您的电子邮箱" ajaxurl="{url('ajax_register_check')}"/>
+		        </div>
+				<?php } ?>
+				<?php if(in_array('phone',$setting['reg_user_fields'])){?>
+		        <div class="list">
+		        	<input type="text" class="input"  name="mobile" placeholder="请输入您的手机号码！" datatype="mobile" ajaxurl="{url('ajax_register_check')}" nullmsg="请输入手机号码"/>
+		        </div>
+				<?php if($sms_reg){ ?>
+				<div class="list relative">
+		        	<input type="text" class="number" placeholder="请输入手机验证码" name="vcode" disabled="disabled"  datatype="n" ajaxurl="{url('ajax_register_vcode_check')}" nullmsg="请输入验证码"/>
+		        	<button class="mui-btn mui-btn-primary ver-code" id="sendsms">发送验证码</button>
+		        </div>
+				<?php }} ?>
+				<input type="hidden" name="url_forward" value="{$_GET[url_forward]}">
+		        <input type="submit" class="mui-btn full" value="立即注册" />
+		        <a class="mui-btn full margin-top margin-bottom mui-btn-danger" href="{url('member/public/login')}">已有账号？登录</a>
+		    </form>
+	    </div>
+	   <!--<ul class="other-login">
+	    	<li><a class="login_qq login-item" href="#"></a><em class="mui-pull-right">|</em></li>
+	    	<li><a class="login_sina login-item" href="#"></a><em class="mui-pull-right">|</em></li>
+	    	<li><a class="login_alipay login-item" href="#"></a></li>
+	    </ul>-->
+	</div>
+	{template footer common}
+</body>
+</html>
+<script>
+var register = $("form[name=register]").Validform({
+			showAllError:true,
+			ajaxPost:true,
+			callback:function(ret) {
+				if(ret.status == 0) {
+					$.tips({
+						icon:'error',
+						content:ret.message,
+						callback:function() {
+							return false;
+						}
+					});
+				}else{
+					$.tips({
+						icon:'success',
+						content:ret.message
+					});
+					window.location.href=ret.referer;
+				}
+			}
+		});
+$("input[name=mobile]").bind('blur',function(){
+	var ajaxurl = $("input[name=vcode]").attr('ajaxurl');
+	$("input[name=vcode]").attr('ajaxurl',ajaxurl+'&mobile='+$(this).val());
+})
+/*仿刷新：检测是否存在cookie*/
+if($.cookie("reg_captcha")){
+	reget($.cookie("reg_captcha"));
+}
+//发送验证码
+$("#sendsms").bind("click",function(){
+	var mobile = $('input[name="mobile"]').val();
+	var checkurl = "<?php echo url('member/public/ajax_register_check')?>";
+	$.post(checkurl,{name:'mobile',param:mobile},function(ret){
+		if(ret.status == 1){
+			var ajaxurl="<?php echo url('member/public/register_validate')?>";
+			$.post(ajaxurl,{'mobile':mobile},function(data){
+			},'json');
+			$("input[name=vcode]").removeAttr("readonly disabled");
+			reget(60);
+		}else{
+			$.tips({content:ret.message});
+		}
+	},'json');
+})
+function reget(count){
+	  var mobj = $('input[name="mobile"]');
+		var btn = $("#sendsms");
+		var count = count;
+		var resend = setInterval(function(){
+			count--;
+			if (count > 0){
+				btn.text(count+"s后再试");
+				mobj.attr('readonly',true);
+				$.cookie("reg_captcha", count, {path: '/', expires: (1/86400)*count});
+			}else {
+				clearInterval(resend);
+				mobj.removeAttr('disabled readonly');
+				btn.text("重获验证码").removeAttr('disabled').css({'cursor':'','background':'#046bb3'});
+			}
+		}, 1000);
+
+  btn.attr('disabled',true).css({'cursor':'not-allowed','background':'#989898'});
+}
+</script>

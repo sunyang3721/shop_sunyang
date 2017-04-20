@@ -1,0 +1,105 @@
+{template header common}
+
+	<div class="mui-content">
+	    <div class="user-brief mui-clearfix">
+	    	<div class="user-head mui-pull-left">
+	    		<a ><img class="full" src="<?php echo $member['avatar'];?>" /></a>
+	    	</div>
+	    	<ul class="user-text mui-pull-left">
+    			<li><?php echo $member['username']; ?></li>
+    			<li>会员等级：<?php echo $member['_group']['name'] ?></li>
+    			<!-- <li>积分：<em class="text-org">0</em></li> -->
+				<li>经验值：<em class="text-org"><?php echo $member['exp']?></em></li> 
+	    	</ul>
+	    </div>
+	    <div class="mui-row member-quick-nav bg-white">
+	    	<a href="{url('member/favorite/index',array('closing'=>'week'))}" class="mui-col-xs-4 item-collect"><span>{count($favorite['lists'])}</span>收藏的商品</a>
+	    	<!--<a href="coupon.html" class="mui-col-xs-4 item-coupon border-left"><span>0x</span>我的优惠券</a>-->
+			<a href="{url('member/message/index',array('status'=>0))}" class="mui-col-xs-4 item-coupon border-left"><span>{$counts[message]}</span>站内消息</a>
+	    	<a href="{url('member/money/log')}"class="mui-col-xs-4 item-balance border-left"><span class="mui-block text-ellipsis">￥<?php echo $member['money']?></span>我的余额</a>
+	    </div>
+	    <ul class="mui-table-view layout-list-common">
+			<li class="mui-table-view-cell">
+				<a href="{url('member/order/index')}" class="mui-navigate-right">
+					<span class="icon-20"><img src="{SKIN_PATH}statics/images/ico_3.png" /></span>
+					<span class="hd-h4">我的订单</span>
+					<p class="mui-pull-right">查看全部订单</p>
+				</a>
+			</li>
+		</ul>
+	    <div class="mui-row wait-work bg-white border-bottom">
+	    	<a href="{url('member/order/index',array('type'=>1))}" class="mui-col-xs-3 icon-20">
+	    		<img src="{SKIN_PATH}statics/images/ico_7.png" />
+	    		<span>待付款</span>
+	    		{if ($member['counts'][pay] > 0)}
+	    			<em class="tag"><?php echo $member['counts']['pay']; ?></em>
+	    		{/if}
+	    	</a>
+	    	<a href="{url('member/order/index',array('type'=>3))}" class="mui-col-xs-3 icon-20">
+	    		<img src="{SKIN_PATH}statics/images/ico_8.png" />
+	    		<span>待发货</span>
+	    		{if ($member['counts'][delivery] > 0)}
+	    			<em class="tag"><?php echo $member['counts']['delivery']; ?></em>
+	    		{/if}
+	    	</a>
+	    	<a href="{url('member/order/index',array('type'=>4))}" class="mui-col-xs-3 icon-20">
+	    		<img src="{SKIN_PATH}statics/images/ico_9.png" />
+	    		<span>待收货</span>
+	    		{if ($member['counts'][receipt] > 0)}
+	    			<em class="tag"><?php echo $member['counts']['receipt']; ?></em>
+	    		{/if}
+	    	</a>
+	    	<a href="{url('comment/index/index')}" class="mui-col-xs-3 icon-20">
+	    		<img src="{SKIN_PATH}statics/images/ico_10.png" />
+	    		<span>待评价</span>
+	    		{if ($member['counts'][load_comment] > 0)}
+	    			<em class="tag"><?php echo $member['counts']['load_comment']; ?></em>
+	    		{/if}
+	    	</a>
+	    </div>
+	    <ul class="mui-table-view layout-list-common">
+		   <li class="mui-table-view-cell">
+				<a href="{url('member/consult/index')}" class="mui-navigate-right">
+					<span class="icon-20"><img src="{SKIN_PATH}statics/images/ico_6.png" /></span>
+					<span class="hd-h6">我的咨询</span>
+					<p class="mui-pull-right">查看全部咨询</p>
+				</a>
+			</li>
+			 <li class="mui-table-view-cell">
+				<a href="{url('member/service/index')}" class="mui-navigate-right">
+					<span class="icon-20"><img src="{SKIN_PATH}statics/images/ico_36.png" /></span>
+					<span class="hd-h6">我的售后</span>
+					<p class="mui-pull-right">查看全部</p>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{url('member/account/safe')}" class="mui-navigate-right">
+					<span class="icon-20"><img src="{SKIN_PATH}statics/images/ico_4.png" /></span>
+					<span class="hd-h6">个人资料</span>
+					<p class="mui-pull-right">修改信息</p>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{url('member/account/resetpassword')}" class="mui-navigate-right">
+					<span class="icon-20"><img src="{SKIN_PATH}statics/images/ico_5.png" /></span>
+					<span class="hd-h6">账号安全</span>
+					<p class="mui-pull-right">修改密码</p>
+				</a>
+			</li>
+			{hook/wap_member_index_extra_info data}
+			{loop $data $menu}
+			<li class="mui-table-view-cell">
+				<a href="{$menu[url]}" class="mui-navigate-right">
+					<span class="icon-20"><img src="{$menu[ico]}" /></span>
+					<span class="hd-h6">{$menu[name]}</span>
+					<p class="mui-pull-right">{$menu[desc]}</p>
+				</a>
+			</li>
+			{/loop}
+		</ul>
+	    <div class="margin padding-small">
+	    	<a href="{url('member/public/logout')}" class="mui-btn mui-btn-blue full mui-h5">退出当前账号</a>
+	    </div>
+	</div>
+</body>
+</html>

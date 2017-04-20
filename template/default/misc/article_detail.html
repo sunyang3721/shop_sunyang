@@ -1,0 +1,86 @@
+ <?php include template('toper','common');?>
+ <?php include template('header','common');?>
+		<!--面包屑-->
+		<div class="container crumbs clearfix">
+			<p class="fl layout">
+				<i class="icon-crumbs"></i>
+				<a href="{__APP__}">首页</a>
+				<em>></em>
+				<a href="">{crumbs($category_id)}</a>
+				<em>></em>
+				<a href="<?php echo url('misc/index/article_detail',array('id'=>$id))?>">{$title}</a>
+			</p>
+		</div>
+		<!--文章内容页-->
+		<div class="container article item-two-column clearfix">
+			<div class="right fl padding border border-gray-white item-blue-top">
+				<div class="h2 padding-top padding-big-bottom text-center">{$title}</div>
+				<p class="padding-left border-bottom border-gray-white">
+					发表在<span class="margin-lr">{$category}</span>{date('Y-m-d H:i:s',$dataline)}<span class="margin-left"><a href="javascript:;">复制链接</a></span>
+					<span class="fr margin-big-right">阅读：{$hits}</span>
+				</p>
+				<div class="article-content padding">
+					{$content}
+				</div>
+			</div>
+			<div class="left fr">
+				<div class="padding-lr border border-gray-white item-blue-top">
+					<h5 class="padding-small-top padding-small-bottom border-bottom border-gray-white strong">热门文章</h5>
+					<ul class="article-list">
+						{hd:misc method="lists" where="recommend=1" tagfile="article" num="10" order="sort DESC"}
+						{loop $data $r}
+						<li><a href="{url('misc/index/article_detail',array('id'=>$r['id']))}">{$r[title]}</a></li>
+						{/loop}
+						{/hd}
+					</ul>
+				</div>
+				<div class="padding-lr border border-gray-white item-blue-top margin-top">
+					<h5 class="padding-small-top padding-small-bottom border-bottom border-gray-white strong">文章分类</h5>
+					<ul class="article-list">
+						{hd:misc method="lists" where="parent_id=0" tagfile="categorys"  order="sort DESC"}
+						{loop $data $r}
+						<li><a href="{url('misc/index/article_lists',array('category_id'=>$r['id']))}">{$r[name]}</a></li>
+						{/loop}
+						{/hd}
+					</ul>
+				</div>
+			</div>
+			
+		</div>	
+		<!--底部-->
+	<?php include template('toolbar','common');?>
+	<?php include template('footer','common');?>
+	<script>
+	$(".margin-left").live('click',function(){
+		if(!+[1,]){
+			var url = window.location.href;
+			window.clipboardData.setData("Text", url);
+			top.dialog({
+				title: '消息提示',
+				width: 300,
+				content: '<div class="padding-large text-center">复制成功</div>',
+				okValue: '确定',
+				ok: function(){
+				},
+				onclose: function () {
+					gou(1,result.referer);
+				}
+			})
+			.showModal();
+			
+		}else{
+			top.dialog({
+				title: '消息提示',
+				width: 300,
+				content: '<div class="padding-large text-center">当前浏览器不支持复制，请按ctrl + c 复制链接</div>',
+				okValue: '确定',
+				ok: function(){
+				},
+				onclose: function () {
+					gou(1,result.referer);
+				}
+			})
+			.showModal();
+		}
+	})
+	</script>

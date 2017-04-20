@@ -1,0 +1,60 @@
+<?php include template('toper','common'); ?>
+<?php if ($gateway['gateway_type'] == 'redirect'): ?>
+<?php redirect($gateway['gateway_url']); ?>
+<?php endif ?>
+<div class="header container">
+	<div class="logo fl"><span><a href="{__APP__}"><img width="190" height="64"  src="<?php $cache = model('admin/setting','service')->get(); echo $cache['site_logo'] ? __ROOT__.$cache['site_logo'] : __ROOT__.'template/default/statics/images/logo.png' ?>" /></a></span></div>
+	<div class="step fr"></div>
+</div>
+<!--坐标位置-->
+<div class="layout border-top cart-btn-wrap">
+	<div class="container clearfix">
+		<div class="fl padding-left border-left border-middle border-sub cart-address">收银台</div>
+	</div>
+	<div class="container order border border-gray-white text-default">
+		<div class="order-info bg-gray-white padding-small-top padding-small-bottom padding-large-left padding-large-right border-bottom">
+			<p>订单提交成功，请您尽快付款！ <span class="text-sub">订单交易号：{$gateway['trade_no']}</span></p>
+			<p>应付订单总额：<span class="text-mix">￥{$gateway['total_fee']}</span></p>
+			<p class="text-sub">您选择了微信扫码付款，请使用微信扫一扫功能扫码下方二维码完成付款</p>
+		</div>
+		<div class="padding-small order-container scan-code">
+			<div class="ecode-wrap">
+				<div class="ecode-pic border text-center">
+					<div data-model="qrcode" style="width:260px;height:260px;margin:0 auto;"></div>
+				</div>
+				<div class="ecode-text margin-big-top">
+					<span class="text-white">请使用微信扫一扫<br />扫描二维码支付</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="{__ROOT__}statics/js/jquery.qrcode.min.js?v={HD_VERSION}"></script>
+<script type='text/javascript'>
+var gateway = <?php echo json_encode($gateway);?>
+
+if(gateway.gateway_type == 'qrcode') {
+	$("[data-model='qrcode']").qrcode({
+		render: "table",
+		width: 260,
+		height:260,
+		text: gateway.gateway_url
+	});
+	setInterval("checkStatus()",3000);
+} else {
+	window.location.href  = gateway.gateway_url;
+}
+function checkStatus(){
+	$.getJSON('<?php echo url("pay/index/ajax_check")?>',{order_sn:'<?php echo $gateway['order_sn']?>'},function(ret){
+		if(ret.status==1){
+			location.href = '{$gateway[url_forward]}';
+		}
+		if(ret.status == 0){
+			alert(ret.message);
+			//$('.ecode-wrap').html('');
+			window.close();
+		}
+	})
+}
+</script>
+<?php include template('footer','common'); ?>

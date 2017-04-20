@@ -1,0 +1,52 @@
+{template header common}
+	<div class="mui-content">
+	    <div class="filter-items full border-bottom bg-white mui-clearfix">
+			<div class="mui-pull-left padding-big-left padding-big-right">
+				<a href="{url('member/message/index')}" class="{if (!isset($_GET['status']))}filter-item current{else}filter-item{/if}">全部</a>
+			</div>
+			<div class="mui-pull-left padding-big-left padding-big-right">
+				<a href="{url('member/message/index', array('status' => 1))}" class="{if ($_GET['status'] == '1')}filter-item current{else}filter-item{/if}">已读</a>
+			</div>
+			<div class="mui-pull-left padding-big-left padding-big-right">
+				<a href="{url('member/message/index', array('status' => 0))}" class="{if ($_GET['status'] == '0')}filter-item current{else}filter-item{/if}">未读</a>
+			</div>
+		</div>
+		<div class="has-scorll-top"></div>
+		{if count($result)}
+		<ul class="mui-table-view layout-list-common list-col-10 mui-clearfix">
+		<?php foreach($result as $k => $v){?>
+			<li class="mui-table-view-cell" data-id="{$v['id']}">
+				<a href="#" class="mui-navigate-right hd-h5">
+					<p class="text-black text-ellipsis">时间：{date('Y-m-d H:i:s',$v[dateline])}</p>
+					<p class="text-black">标题：<span {if !$v[status]} class="text-blue"{/if}>{$v[title]}</span></p>
+				</a>
+				<div class="message-detail">
+					{strip_tags($v[message])}
+				</div>
+			</li>
+		<?php }?>
+		</ul>
+		{else}
+		<div class="user-list-none order-lh-40 mui-text-center">
+			<img src="{SKIN_PATH}statics/images/bg_3.png" />
+			<p class="text-black hd-h4">您还没有消息记录</p>
+		</div>
+		{/if}
+	</div>
+	{template footer common}
+</body>
+</html>
+<script>
+$(".mui-table-view-cell").on('tap',function(){
+	$(this).find('.message-detail').toggle(250);
+	var _this = $(this);
+	if(_this.find("p:last span").attr('class')){
+		var url = '<?php echo url('member/message/ajax_update')?>',ids = new Array();
+		ids.push($(this).data('id'));
+		$.post(url,{id:ids},function(ret){
+			if(ret.status == 1) 
+				_this.find("p:last span").removeClass('text-blue');
+		},'json');
+	}
+});
+</script>

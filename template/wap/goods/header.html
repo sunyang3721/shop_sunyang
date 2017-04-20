@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>{if isset($SEO['title']) && !empty($SEO['title'])}{$SEO['title']}{/if}{$SEO['site_title']}</title>
+    <meta name="description" content="{$SEO['keywords']}">
+    <meta name="keywords" content="{$SEO['description']}">
+    <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/mui.min.css?v={HD_VERSION}"/>
+    <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/haidao.css?v={HD_VERSION}"/>
+    <link rel="stylesheet" type="text/css" href="{SKIN_PATH}statics/css/haidao.mobile.css?v={HD_VERSION}"/>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/mui.min.js?v={HD_VERSION}"></script>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/jquery-2.1.1.min.js?v={HD_VERSION}" ></script>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/haidao.js?v={HD_VERSION}"></script>
+    <script type="text/javascript" src="{SKIN_PATH}statics/js/haidao.slider.js?v={HD_VERSION}"></script>
+    <script type="text/javascript" src="{__ROOT__}statics/js/jquery.lazyload.js?v={HD_VERSION}"></script>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>

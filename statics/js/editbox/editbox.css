@@ -1,0 +1,56 @@
+
+.editCanvas_bg{ border:1px #3e454e solid;}
+.editCanvas_bg ul.staff_x{ height:20px; background:#c9ced3; padding-left:18px; overflow:hidden;}
+.editCanvas_bg ul.staff_x span{ float:left; height:20px; line-height:16px; display:block; width:35px; padding-left:5px; overflow:hidden; font-size:12px; background:url(images/Staff_xbg.png) no-repeat;}
+.editCanvas_bg ul{ }
+.editCanvas_bg ul li{ float:left; display:block; height:auto;padding: 0}
+.editCanvas_bg ul li.staff_y{ width:18px; background:url(images/Staff_bg.png) repeat-y; overflow:hidden; position:absolute;}
+.editCanvas_bg ul li.staff_y span{ height:40px; line-height:16px; display:block; width:18px; padding-left:0px; overflow:hidden; font-size:12px; text-align:center;}
+.editCanvas{ position:absolute; width:100%; height:600px; left:18px; clear:both; z-index:0; cursor:default; overflow:hidden; /*background:url(images/grid_bg.png); */}
+.editBox{ position:absolute; width:15px; z-index:1;}
+.editBox#temp{ border:1px #999 dashed;}
+#editBox_SelectBox{ border:1px #F90 dashed; position:relative; width:0px;}
+.editBox ol{ width:4px; height:4px; margin:-3px; border-style:solid; border-width:1px; position:absolute; display:none; z-index:5; overflow:hidden; z-index:2;}
+.editBox ol.tl{ left:0px; top:0px; cursor:nw-resize; z-index:10;}
+.editBox ol.tr{ left:98px; top:0px; cursor:ne-resize; z-index:10;}
+.editBox ol.bl{ left:0px; top:50px; cursor:sw-resize; z-index:10;}
+.editBox ol.br{ left:100px; top:50px; cursor:se-resize; z-index:10;}
+.editBox ol.t{ left:0px; height:3px; border:0px; top:0px; width:100%; cursor:n-resize; opacity:0.5; filter:alpha(opacity=50);}
+.editBox ol.l{ left:0px; width:3px; border:0px; margin:2px 0px 2px -3px; top:0px; height:100%; cursor:w-resize; opacity:0.5; filter:alpha(opacity=50);}
+.editBox ol.b{ left:0px; height:3px; border:0px; margin:0px 0px -3px 0px; width:100%; top:50px; cursor:s-resize; opacity:0.5; filter:alpha(opacity=50);}
+.editBox ol.r{ left:100px; height:100%; top:0px; width:3px; border:0px; margin:2px -3px 2px 0px; cursor:e-resize; opacity:0.5; filter:alpha(opacity=50);}
+.editBox ul{ padding:3px; border-style:solid; border-width:1px; cursor:default; position:absolute; left:0px; top:0px; overflow:hidden; display:block; font-size:12px; line-height:120%; z-index:3;}
+.editBox textarea{ border:1px #484848 solid; padding:2px; margin:1px; display:none; font-size:12px;}
+.editTool{ width:100%; background:url(images/editToolsBg.jpg) repeat-x; display:block; border:1px #3e454e solid; border-bottom:0px; border-radius:3px 3px 0px 0px; padding-bottom:2px;}
+.editTool ul{ position:relative; float:left; width:auto; height:25px; color:#333; cursor:pointer; margin:2px 2px 0px 0px; background:url(images/toolbtn_bg.png) repeat-x; border-radius:3px; border:1px #3e454e solid; line-height:24px; padding:0px 5px 0px 5px; font-size:12px; display:block; z-index:5;}
+.editTool ul:hover{ background:url(images/toolbtn_bg.png) repeat-x 0px -100px;}
+.editTool ul.current{ background:url(images/toolbtn_bg.png) repeat-x 0px -50px;}
+.editTool ul li{float:left; display:block; text-shadow: 1px 1px 1px #BBB; padding: 0;clear:none;border-bottom:none;}
+.editTool ul span{float:left; width:auto; text-shadow: 1px 1px 1px #BBB; width:auto; display:block; padding: 0}
+.editTool ul img{ margin:4px;}
+.editTool ul img.arrow{ float:right;}
+.editTool ul ol{ position:absolute; padding-left: 0; z-index:20; width:100%; background:url(images/toolbtn_bg.png) repeat-x 0px -125px #858e96; left:0px; top:25px; border-radius:0px 0px 3px 3px; border:1px #3e454e solid; border-top:0px; margin:-1px; display:none; height:200; overflow:hidden;}
+.editTool ul ol li{ float:none; width:auto; display:block; border-radius:3px; margin:2px; padding:3px; height:20px; line-height:14px; text-shadow: 1px 1px 0px #A2A2A2; overflow:hidden; }
+.editTool ul ol li:hover{background:url(images/toolbtn_bg.png) repeat-x 0px -50px; border:1px #3e454e solid; padding:2px; text-shadow: 1px 1px 0px #DDD;}
+.editTool ul ol li.current{background:url(images/toolbtn_bg.png) repeat-x 0px -100px; border:1px #3e454e solid; padding:2px; text-shadow: 1px 1px 0px #B8B8B8;}
+.editTool ul input{ width:35px; height:16px; margin:2px; padding:0px; overflow:hidden; border:1px #5c6770 solid; border-radius:3px; background:url(toolbtn_bg.png) repeat-x 0px -50px;line-height: normal;}
+.editTool ul#addTool,.editTool ul#selectTool,.editTool ul#delTool{ width:60px;}
+.editTool ul#panelPage{ width:85px;}
+.editTool ul#panelFontsize{ width:60px;}
+.editTool ul#panelColor{ width:110px;}
+.editTool ul#panelPerpor{ overflow:hidden;}
+.editTool ul#panelColor a{ float:left; width:30px; display:inline-block; height:14px; border-width:1px; border-style:solid; margin-top:4px; margin-left:4px; opacity:0.5; overflow:hidden;}
+.editTool ul#panelColor ol li{ float:none; overflow:hidden;}
+.editTool ul#panelColor ol li b{ float:left; display:inline-block; width:20px; height:10px; border-width:1px; border-style:solid; margin:3px 5px 0px 0px; opacity:0.5; overflow:hidden; filter:alpha(opacity=50);}
+.editTool ul#panelColor ol li span{ float:left; height:16px; line-height:10px; display:block;}
+.editTool ul#panelTemplate{ width:120px;}
+.editTool ul#panelText{ width:200px;}
+.editTool ul#saveTool{ width:80px;}
+.editTool ul#panelPage{ width:75px;}
+.editTool ul#panelPage ol{ width:290px; border-redius:0px 3px 3px 3px;border:1px  #3e454e solid; height:auto !important; top:28px; background:url(images/toolbtn_bg.png) repeat-x 0px -128px #858e96; padding:20px;}
+.editTool ul#panelPage dl{ width:85px; height:6px; display:none; padding:0px; margin:-1px;border-left:1px  #3e454e solid;border-right:1px  #3e454e solid; position:absolute; background:#FF0; background:url(images/toolbtn_bg.png) repeat-x 0px -124px #858e96; top:24px; left:0px; z-index:99; overflow:hidden;}
+.editTool ul#panelPage ol li{ display:block; height:32px; width:135px; float:left; line-height:30px;}
+.editTool ul#panelPage ol li:hover{ background:none; border:1px #858e96 solid;}
+.editBottom{ position:relative; width:100%; background:url(images/editToolsBg.jpg) repeat-x; border:1px #3e454e solid; height:10px; border-top:0px; border-radius:0px 0px 3px 3px;}
+.editBottom ul{ position:absolute; width:100%;height:10px; display:block;/*cursor:se-resize;cursor:s-resize; background:url(images/ico_resize_b.png) no-repeat top center;*/}
+.editBottom ul.br{ width:20px; height:10px; z-index:2; top:0px; right:0px; /*background:url(images/ico_resize.png) no-repeat top right; cursor:se-resize;*/}
